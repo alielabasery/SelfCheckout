@@ -76,7 +76,7 @@ public class TestMembershipCardController {
 		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
 		System.setIn(in);
 		Scanner scanner = new Scanner(System.in); // create a new Scanner object
-		String expectedOutput = MembershipCardController.getValidMembershipNumber(scanner); // pass the Scanner object
+		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner); // pass the Scanner object
 																							// as an argument
 		assertEquals(input, expectedOutput);
 	}
@@ -88,7 +88,7 @@ public class TestMembershipCardController {
 		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
 		System.setIn(in);
 		Scanner scanner = new Scanner(System.in); // create a new Scanner object
-		String expectedOutput = MembershipCardController.getValidMembershipNumber(scanner); // pass the Scanner object
+		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner); // pass the Scanner object
 																							// as an argument
 		assertEquals(input.trim(), expectedOutput);
 	}
@@ -100,7 +100,7 @@ public class TestMembershipCardController {
 		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
 		System.setIn(in);
 		Scanner scanner = new Scanner(System.in); // create a new Scanner object
-		String expectedOutput = MembershipCardController.getValidMembershipNumber(scanner); // pass the Scanner object
+		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner); // pass the Scanner object
 																							// as an argument
 		assertEquals("564823890124", expectedOutput);
 	}
@@ -112,7 +112,7 @@ public class TestMembershipCardController {
 		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
 		System.setIn(in);
 		Scanner scanner = new Scanner(System.in); // create a new Scanner object
-		String expectedOutput = MembershipCardController.getValidMembershipNumber(scanner); // pass the Scanner object
+		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner); // pass the Scanner object
 																							// as an argument
 		assertNull(expectedOutput);
 	}
@@ -124,7 +124,7 @@ public class TestMembershipCardController {
 		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
 		System.setIn(in);
 		Scanner scanner = new Scanner(System.in);
-		String expectedOutput = MembershipCardController.getValidMembershipNumber(scanner);
+		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner);
 		assertEquals("564823890124", expectedOutput);
 	}
 
@@ -135,7 +135,7 @@ public class TestMembershipCardController {
 		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
 		System.setIn(in);
 		Scanner scanner = new Scanner(System.in); // create a new Scanner object
-		String expectedOutput = MembershipCardController.getValidMembershipNumber(scanner); // pass the Scanner object
+		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner); // pass the Scanner object
 																							// as an argument
 		assertTrue(MembershipCardController.isValid(expectedOutput)); // check if the membership number is valid
 	}
@@ -147,7 +147,7 @@ public class TestMembershipCardController {
 		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
 		System.setIn(in);
 		Scanner scanner = new Scanner(System.in);
-		String expectedOutput = MembershipCardController.getValidMembershipNumber(scanner);
+		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner);
 		assertEquals(input, expectedOutput);
 	}
 
@@ -158,7 +158,7 @@ public class TestMembershipCardController {
 		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
 		System.setIn(in);
 		Scanner scanner = new Scanner(System.in);
-		String expectedOutput = MembershipCardController.getValidMembershipNumber(scanner);
+		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner);
 		assertNull(expectedOutput);
 	}
 
@@ -167,7 +167,7 @@ public class TestMembershipCardController {
 		String expected = "123456789012";
 		InputStream in = new ByteArrayInputStream(expected.getBytes());
 		Scanner scanner = new Scanner(in);
-		String actual = MembershipCardController.getValidMembershipNumber(scanner);
+		String actual = MembershipCardController.getValidMembershipNumberByTyping(scanner);
 		assertEquals(expected, actual);
 		assertTrue(MembershipCardController.isValid(actual));
 	}

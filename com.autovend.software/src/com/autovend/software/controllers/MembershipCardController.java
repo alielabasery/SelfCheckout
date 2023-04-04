@@ -28,6 +28,8 @@
 * Nam Nguyen Vu (30154892)
 * 
 */
+
+
 package com.autovend.software.controllers;
 
 import java.util.Scanner;
@@ -80,7 +82,7 @@ public class MembershipCardController {
 	 * entering a valid Membership number, the method returns null.
 	 */
 
-	public static String getValidMembershipNumber(Scanner scan) throws IllegalDigitException {
+	public static String getValidMembershipNumberByTyping(Scanner scan) throws IllegalDigitException {
 		int numTries = 0;
 		String memberNum = null;
 		while (numTries < MAX_TRIES) {
@@ -129,7 +131,7 @@ public class MembershipCardController {
 		System.out.println("Do you have a Membership number? (yes or no or cancel)");
 		String response1 = scan.nextLine();
 		if (response1.equalsIgnoreCase("yes")) {
-			membershipNumber = getValidMembershipNumber(scan);
+			membershipNumber = getValidMembershipNumberByTyping(scan);
 			if (membershipNumber != null) {
 				mc = new MembershipCard("Membership Card", membershipNumber, "Regular Shopper", false);
 				isActive = true;
@@ -143,7 +145,7 @@ public class MembershipCardController {
 				System.out.println("Invalid input. Please enter 'yes' or 'no'.");
 				return;
 			} else if (response2.equalsIgnoreCase("no")) {
-				membershipNumber = getValidMembershipNumber(scan);
+				membershipNumber = getValidMembershipNumberByTyping(scan);
 				if (membershipNumber != null) {
 					mc = new MembershipCard("Membership Card", membershipNumber, "Regular Shopper", false);
 					isActive = true;
