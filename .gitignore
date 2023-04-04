@@ -1,2 +1,10 @@
-*.class
-*.jar
+# IDE Related Preferences
+.idea/
+.metadata/
+.settings/
+
+# macOS specific preferences
+.DS_Store
+
+# Java Compiled .class files (stored in bin/ folders)
+bin/
