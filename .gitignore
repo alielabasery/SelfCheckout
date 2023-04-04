@@ -1,0 +1,7 @@
+# IDE Related Preferences
+.idea/
+.metadata/
+.settings/
+
+# Java Compiled .class files (stored in bin/ folders)
+bin/
