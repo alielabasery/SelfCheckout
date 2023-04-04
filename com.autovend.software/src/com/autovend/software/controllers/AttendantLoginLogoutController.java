@@ -1,7 +1,6 @@
 package com.autovend.software.controllers;
 
 import com.autovend.devices.SimulationException;
-
 import java.util.HashMap;
 
 public class AttendantLoginLogoutController {
@@ -11,7 +10,7 @@ public class AttendantLoginLogoutController {
         if (!idAndPasswords.containsKey(attendantId)) {
             throw new SimulationException("ID does not exist in the system!");
         }
-        if (!idAndPasswords.containsKey(password)) {
+        if (!(idAndPasswords.get(attendantId) == password)) {
             throw new SimulationException("Wrong password!");
         }
         attendantLoggedIn = true;
