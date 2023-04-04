@@ -6,13 +6,13 @@ import java.util.concurrent.ThreadLocalRandom;
 import com.autovend.devices.SimulationException;
 
 /**
- * Represents debit cards.
+ * Represents credit cards.
  */
-public final class DebitCard extends Card {
-	private static final long serialVersionUID = 4453367472439006963L;
+public final class CreditCard extends Card {
+	private static final long serialVersionUID = -4003601866119078650L;
 
 	/**
-	 * Create a debit card instance.
+	 * Create a credit card instance.
 	 * 
 	 * @param type
 	 *            The type of the card.
@@ -35,8 +35,8 @@ public final class DebitCard extends Card {
 	 * @throws SimulationException
 	 *             If hasChip is true but pin is null.
 	 */
-	public DebitCard(String type, String number, String cardholder, String cvv, String pin, boolean isTapEnabled,
+	public CreditCard(String type, String number, String cardholder, String cvv, String pin, boolean isTapEnabled,
 		boolean hasChip) {
-		super(type, number, cardholder, cvv, pin, isTapEnabled, hasChip);
+		super(type, number, cardholder, cvv, pin, isTapEnabled, hasChip, false);
 	}
 }
