@@ -139,6 +139,16 @@ public class MembershipCardController {
 	}
 	
 	
+	/*
+	 * The getValidMembershipNumberBySwiping method prompts the user to swipe their Membership Card
+	 * that submits their number into the system and checks whether the input is valid. If the input is valid (only
+	 * digits between 0-9 and is exactly 12 digits long), the method returns the
+	 * Membership number. If the input is invalid, the method prompts the user to
+	 * try again or continue without a Membership number, up to a maximum number of
+	 * tries (MAX_TRIES). If the user exceeds the maximum number of tries without
+	 * scanning a valid Membership card, the method returns null.
+	 */
+	
 //	TODO
 //	public String getValidMembershipNumberBySwiping() {
 //		// TODO: implementation
@@ -147,7 +157,8 @@ public class MembershipCardController {
 	
 	/*
 	 * The updateMembershipStatus method prompts the user to enter whether they have
-	 * a membership or not. "yes" would call the getValidMembershipNumber method to
+	 * a membership or not. "yes" would call the getValidMembershipNumber method(s) 
+	 * according to the users desired method of input (type,scan, or swipe) to
 	 * retrieve and validate the membership number. If it is valid the Membership
 	 * Card object is created with the given membership number and isActive would be
 	 * set to true. If the membership number is invalid the user will be informed
