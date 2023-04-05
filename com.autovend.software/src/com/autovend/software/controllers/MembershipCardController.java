@@ -36,6 +36,7 @@ import java.util.Scanner;
 
 import com.autovend.IllegalDigitException;
 import com.autovend.MembershipCard;
+import com.autovend.devices.BarcodeScanner;
 
 public class MembershipCardController {
 	private String membershipNumber;
@@ -104,18 +105,29 @@ public class MembershipCardController {
 		return null;
 	}
 
-//	TODO
-//	public String getValidMembershipNumberByScanning() {
-//	    String memberNum = null;
-//	    MembershipBarcode membershipBarcode = new MembershipBarcode(generateRandomMembershipNumber());
-//	    if (barcodeScanner.scan(membershipBarcode)) {
-//	        memberNum = membershipBarcode.getBarcode().toString();
-//	    }
-//	    if (memberNum != null && isValid(memberNum)) {
-//	        return memberNum;
-//	    }
-//	    return null;
-//	}
+  
+	public String getValidMembershipNumberByScanning(BarcodeScanner scanner, MembershipCard membershipCard) {
+	    int numTries = 0;
+	    while (numTries < MAX_TRIES) {
+	    	String memberNum = null;
+		    if (scanner.scan(membershipCard)) {
+		        memberNum = membershipCard.getBarcode().toString();
+		    }
+		    try {
+				if (isValid(memberNum)) {
+					return memberNum;
+				}
+			} catch (IllegalDigitException e) {
+				System.out.println(e.getMessage());
+			}
+		    numTries++; //continue here
+		    if (numTries < MAX_TRIES) {
+		    	System.out.println("Membership card scan failed. Please try again or enter 'yes' to continue without a Membership number");
+		    }
+	    }
+		
+	    return null;
+	}
 	
 	
 //	TODO
