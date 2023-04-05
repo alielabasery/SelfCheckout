@@ -74,8 +74,8 @@ public class MembershipCardController {
 	}
 
 	/*
-	 * The getValidMembershipNumber method prompts the user to enter a Membership
-	 * number and checks whether the input is valid. If the input is valid (only
+	 * The getValidMembershipNumberByTyping method prompts the user to enter a Membership
+	 * number (by tyiping) and checks whether the input is valid. If the input is valid (only
 	 * digits between 0-9 and is exactly 12 digits long), the method returns the
 	 * Membership number. If the input is invalid, the method prompts the user to
 	 * try again or continue without a Membership number, up to a maximum number of
@@ -105,7 +105,16 @@ public class MembershipCardController {
 		return null;
 	}
 
-  
+	/*
+	 * The getValidMembershipNumberByScanning method prompts the user to scan their Membership Card
+	 * that enters their number into the system and checks whether the input is valid. If the input is valid (only
+	 * digits between 0-9 and is exactly 12 digits long), the method returns the
+	 * Membership number. If the input is invalid, the method prompts the user to
+	 * try again or continue without a Membership number, up to a maximum number of
+	 * tries (MAX_TRIES). If the user exceeds the maximum number of tries without
+	 * scanning a valid Membership card, the method returns null.
+	 */
+	
 	public String getValidMembershipNumberByScanning(BarcodeScanner scanner, MembershipCard membershipCard) {
 	    int numTries = 0;
 	    while (numTries < MAX_TRIES) {
