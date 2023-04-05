@@ -1,4 +1,34 @@
-// Placeholder for Group 6: Names + UCID
+/** 
+* Group Members: 
+* 
+* Ella Tomlinson (30140549)
+* Kofi Frempong (30054189) 
+* Adam Beauferris (30056865) 
+* Niran Malla (30086877)
+* Owen Tinning (30102041)
+* Victor Campos Goitia (30106934)
+* Zoe Kirsman (30113704) 
+* Youssef Abdelrhafour (30085837) 
+* James Rettie (30123362) 
+* Rezwan Ahmed (30134609)
+* Angeline Tran (30139846) 
+* Saad Elkadri (30089084) 
+* Dante Kirsman (30120778) 
+* Riyad Abdullayev (30140509)
+* Saksham Puri (30140617) 
+* Faisal Islam (30140826)
+* Naheen Kabir (30142101) 
+* Jose Perales Rivera (30143354) 
+* Aditi Yadav (30143652)
+* Sahaj Malhotra () 
+* Ali Elabasery (30148424)
+* Fabiha Fairuzz Subha (30148674) 
+* Umesh Oad (30152293)
+* Daniel Boettcher (30153811) 
+* Nam Nguyen Vu (30154892)
+* 
+*/
+
 
 package com.autovend.software.controllers;
 
@@ -52,7 +82,7 @@ public class MembershipCardController {
 	 * entering a valid Membership number, the method returns null.
 	 */
 
-	public static String getValidMembershipNumber(Scanner scan) throws IllegalDigitException {
+	public static String getValidMembershipNumberByTyping(Scanner scan) throws IllegalDigitException {
 		int numTries = 0;
 		String memberNum = null;
 		while (numTries < MAX_TRIES) {
@@ -74,6 +104,26 @@ public class MembershipCardController {
 		return null;
 	}
 
+//	TODO
+//	public String getValidMembershipNumberByScanning() {
+//	    String memberNum = null;
+//	    MembershipBarcode membershipBarcode = new MembershipBarcode(generateRandomMembershipNumber());
+//	    if (barcodeScanner.scan(membershipBarcode)) {
+//	        memberNum = membershipBarcode.getBarcode().toString();
+//	    }
+//	    if (memberNum != null && isValid(memberNum)) {
+//	        return memberNum;
+//	    }
+//	    return null;
+//	}
+	
+	
+//	TODO
+//	public String getValidMembershipNumberBySwiping() {
+//		// TODO: implementation
+//	}
+//	
+	
 	/*
 	 * The updateMembershipStatus method prompts the user to enter whether they have
 	 * a membership or not. "yes" would call the getValidMembershipNumber method to
@@ -99,23 +149,38 @@ public class MembershipCardController {
 		Scanner scan = new Scanner(System.in);
 		MembershipCard mc = new MembershipCard("Membership Card", "0000", "XYZ", false);
 		System.out.println("Do you have a Membership number? (yes or no or cancel)");
-		String response1 = scan.nextLine();
-		if (response1.equalsIgnoreCase("yes")) {
-			membershipNumber = getValidMembershipNumber(scan);
+		String haveCardResponse = scan.nextLine();
+		
+		if (haveCardResponse.equalsIgnoreCase("yes")) {
+			System.out.println("Choose how you would like to enter your membership card (type or scan or swipe)");
+			String scanMethodResponse = scan.nextLine();
+			
+			if (scanMethodResponse.equalsIgnoreCase("type")) {
+				membershipNumber = getValidMembershipNumberByTyping(scan);
+			} else if (scanMethodResponse.equalsIgnoreCase("scan")) {
+				// TODO: implementation of scanning method
+				//membershipNumber = getValidMembershipNumberByScanning();
+			} else {
+				// TODO: implementation of swiping method
+				//membershipNumber = getValidMembershipNumberBySwiping();
+			}
+			
 			if (membershipNumber != null) {
 				mc = new MembershipCard("Membership Card", membershipNumber, "Regular Shopper", false);
 				isActive = true;
 			} else {
 				System.out.println("You will be enrolled without a membership number.");
 			}
-		} else if (response1.equalsIgnoreCase("no")) {
+			
+		} else if (haveCardResponse.equalsIgnoreCase("no")) {
 			System.out.println("Do you want to continue without a Membership number? (yes or no)");
 			String response2 = scan.nextLine();
+			
 			if (!response2.equalsIgnoreCase("no") && !response2.equalsIgnoreCase("yes")) {
 				System.out.println("Invalid input. Please enter 'yes' or 'no'.");
 				return;
 			} else if (response2.equalsIgnoreCase("no")) {
-				membershipNumber = getValidMembershipNumber(scan);
+				membershipNumber = getValidMembershipNumberByTyping(scan);
 				if (membershipNumber != null) {
 					mc = new MembershipCard("Membership Card", membershipNumber, "Regular Shopper", false);
 					isActive = true;
@@ -123,10 +188,12 @@ public class MembershipCardController {
 					System.out.println("You will be enrolled without a membership number.");
 				}
 			}
-		} else if (response1.equalsIgnoreCase("cancel")) {
+			
+		} else if (haveCardResponse.equalsIgnoreCase("cancel")){
 			System.out.println("Membership enrollment has been cancelled.");
 			return;
 		}
+		
 		System.out.println("Membership status: " + isActive);
 		System.out.println("Membership card information: " + mc.toString());
 	}
