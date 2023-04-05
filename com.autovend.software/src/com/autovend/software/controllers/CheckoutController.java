@@ -398,10 +398,52 @@ public class CheckoutController {
 		baggingItemLock = true;
 	}
 
+	
+	/**
+	 * Method to remove items from the order
+	 */
+	public void removeItem(Product itemToRemove) {
+		if (itemToRemove == null || !this.order.containsKey(itemToRemove)) {
+			return;
+		}
+		if (baggingItemLock || systemProtectionLock) {
+			return;
+		}
+
+		Number[] currentItemInfo = this.order.get(itemToRemove);
+
+		// Subtract the cost of the removed item from the current cost.
+		this.cost = this.cost.subtract(itemToRemove.getPrice());
+
+		if (currentItemInfo[0].intValue() > 1) {
+			// Decrement the quantity of the item in the order
+			currentItemInfo[0] = currentItemInfo[0].intValue() - 1;
+			currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).subtract(itemToRemove.getPrice());
+			this.order.put(itemToRemove, currentItemInfo);
+		} else {
+			// Remove the item from the order if there is only one left
+			this.order.remove(itemToRemove);
+		}
+
+		for (BaggingAreaController baggingController : this.validBaggingControllers) {
+			baggingController.updateExpectedBaggingArea(itemToRemove, 0);
+		}
+
+		baggingItemLock = true;
+	}
+	
+	/**
+	 * Method to add the price of the product to add to the total
+	 * @param val 
+	 */
 	public void addToAmountPaid(BigDecimal val) {
 		amountPaid = amountPaid.add(val);
 	}
 
+	/**
+	 * Method to get the remaining amount to be paid
+	 * @return
+	 */
 	public BigDecimal getRemainingAmount() {
 		return getCost().subtract(amountPaid);
 	}
@@ -499,11 +541,11 @@ public class CheckoutController {
 
 	public void setOrder(LinkedHashMap<Product, Number[]> newOrd) {
 		this.order = newOrd;
-		
-		for (Map.Entry<Product, Number[]> entry: this.order.entrySet()) {
-			   Product product = entry.getKey();
-			   this.cost = this.cost.add(product.getPrice());
-			}
+
+		for (Map.Entry<Product, Number[]> entry : this.order.entrySet()) {
+			Product product = entry.getKey();
+			this.cost = this.cost.add(product.getPrice());
+		}
 	}
 
 	/**
