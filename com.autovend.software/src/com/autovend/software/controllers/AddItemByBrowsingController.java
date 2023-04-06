@@ -47,6 +47,9 @@ public class AddItemByBrowsingController extends ItemAdderController<TouchScreen
 		}
 	}
 	
+	/*
+	 * Reaction event when item is added by browsing
+	 */
 	public void reactToAddByBrowseEvent(TouchScreen touchscreen) {
 		disableDevice();
 		
