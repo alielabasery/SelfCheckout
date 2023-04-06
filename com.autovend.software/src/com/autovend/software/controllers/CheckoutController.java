@@ -631,6 +631,24 @@ public class CheckoutController {
 		}
 		// TODO: If this fails then do stuff idk
 	}
+	
+	public void payByGiftCard(BigDecimal amount) {
+		if (baggingItemLock || systemProtectionLock || payingChangeLock) {
+			return;
+		}
+		if (amount.compareTo(getRemainingAmount()) > 0) {
+			return;
+			// only reason to pay more than the order with card is to mess with the amount
+			// of change the system has for some reason
+			// so preventing stuff like this would be a good idea.
+		}
+		for (PaymentController controller : validPaymentControllers) {
+			if (controller instanceof CardReaderController) {
+				((CardReaderController) controller).enablePayment(null, amount);
+			}
+		}
+		// TODO: If this fails then do stuff idk
+	}
 
 	/*
 	 * This method is called when the user indicates they want to add their own bags

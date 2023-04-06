@@ -3,6 +3,8 @@
 package com.autovend.software.controllers;
 
 import com.autovend.Card;
+import com.autovend.ChipFailureException;
+import com.autovend.GiftCard.GiftCardInsertData;
 import com.autovend.devices.CardReader;
 import com.autovend.devices.observers.CardReaderObserver;
 import com.autovend.external.CardIssuer;
@@ -42,21 +44,38 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 
 	@Override
 	public void reactToCardDataReadEvent(CardReader reader, Card.CardData data) {
-		if (reader != this.getDevice() || !this.isPaying || this.bank==null) {
+		if (reader != this.getDevice() || !this.isPaying || (this.bank==null && !data.getType().equals("Gift Card"))) {
 			return;
 		}
-		// TODO: Given the data, handle stuff with the transaction
-		int holdNum = bank.authorizeHold(data.getNumber(), this.amount);
-		if (holdNum !=-1 && (bank.postTransaction(data.getNumber(), holdNum, this.amount))) {
-			getMainController().addToAmountPaid(this.amount);
+		
+		if(data.getType().equals("Gift Card")) {
+			GiftCardInsertData d = (GiftCardInsertData) data;
+			
+			try {
+				if(d.deduct(this.amount)) {
+					getMainController().addToAmountPaid(this.amount);
+				}else {
+					getMainController().addToAmountPaid(d.getRemainingBalance());
+					d.deduct(d.getRemainingBalance());
+				}
+			} catch (ChipFailureException e) {
+				//Do something (probably GUI related)
+			}
+			
+		}else{
+			// TODO: Given the data, handle stuff with the transaction
+			int holdNum = bank.authorizeHold(data.getNumber(), this.amount);
+			if (holdNum !=-1 && (bank.postTransaction(data.getNumber(), holdNum, this.amount))) {
+				getMainController().addToAmountPaid(this.amount);
+			}
+		
 		}
+		
 
 		this.disableDevice();
 
 		this.amount = BigDecimal.ZERO;
 		this.bank = null;
-		// Clear bank and such if it fails to hold or not (might change this, I am tired
-		// rn so might be dumb here)
 	}
 
 	public void enablePayment(CardIssuer issuer, BigDecimal amount) {
