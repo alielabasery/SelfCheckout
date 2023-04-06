@@ -115,7 +115,7 @@ public class MembershipCardController {
 	 * scanning a valid Membership card, the method returns null.
 	 */
 	
-	public String getValidMembershipNumberByScanning(BarcodeScanner scanner, MembershipCard membershipCard) {
+	public static String getValidMembershipNumberByScanning(BarcodeScanner scanner, MembershipCard membershipCard) {
 	    int numTries = 0;
 	    while (numTries < MAX_TRIES) {
 	    	String memberNum = null;

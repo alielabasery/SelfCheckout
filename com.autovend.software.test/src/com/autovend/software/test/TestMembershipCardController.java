@@ -17,6 +17,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.autovend.MembershipCard;
+import com.autovend.devices.BarcodeScanner;
 import com.autovend.IllegalDigitException;
 import com.autovend.software.controllers.MembershipCardController;
 
@@ -25,17 +27,18 @@ import com.autovend.software.controllers.MembershipCardController;
 public class TestMembershipCardController {
 
 	@Before
-	public void setup() {
-	}
+	public void setup() { 
+    }
 
 	MembershipCardController mcc = new MembershipCardController();
 	Scanner scanner = new Scanner(System.in);
 	InputStreamReader inputReader;
-
+    MembershipCard membershipCard = new MembershipCard("Membership Card", "564823890124", "John Doe", true);
+    
 	@After
 	public void teardown() {
 	}
-
+ 
 	@Test
 	public void testIsValidNullValue() throws IllegalDigitException {
 		String expectedMessage = "The Membership number should be exactly 12 digits long.";
@@ -68,8 +71,18 @@ public class TestMembershipCardController {
 		boolean actual = MembershipCardController.isValid("564823890124");
 		assertEquals(expected, actual);
 	}
+	
+	
+	// start of tests for get valid number	
+    @Test
+    public void testGetByScanning() {
+        String expectedCardNumber = "564823890124";
+        BarcodeScanner barcodeScanner = new BarcodeScanner(); 
+        String actualCardNumber = MembershipCardController.getValidMembershipNumberByScanning(barcodeScanner, membershipCard); 
+        assertTrue(expectedCardNumber.equals(actualCardNumber));
+    }
 
-	@Test
+    @Test
 	public void testGetValidMembershipNumberValidInput() {
 		String input = "564823890124";
 		InputStream sysInBackup = System.in;
@@ -171,6 +184,8 @@ public class TestMembershipCardController {
 		assertEquals(expected, actual);
 		assertTrue(MembershipCardController.isValid(actual));
 	}
+	
+	// end of tests for get valid number
 
 	@Test
 	public void testUpdateMembershipStatus_WithValidMember() {
