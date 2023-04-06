@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.autovend.IllegalDigitException;
+import com.autovend.MembershipCard;
 import com.autovend.software.controllers.MembershipCardController;
 
 @SuppressWarnings("unused")
@@ -31,6 +32,7 @@ public class TestMembershipCardController {
 	MembershipCardController mcc = new MembershipCardController();
 	Scanner scanner = new Scanner(System.in);
 	InputStreamReader inputReader;
+	MembershipCard mc;
 
 	@After
 	public void teardown() {
@@ -256,5 +258,24 @@ public class TestMembershipCardController {
 		mcc.updateMembershipStatus();
 		assertFalse(mcc.getIsActive());
 	}
+	//Added Swipe Tests
+	@Test
+	public void testSwipeValidMembershipNumber() {
+		String membershipnumber = "564823890124";
+		mc = new MembershipCard("Membership Card", "564823890124", "XYZ", false);
+		String expectedOutput = mcc.getValidMembershipNumberBySwiping(mc); // pass the Scanner object
+																							// as an argument
+		assertEquals(membershipnumber, expectedOutput);
+	}
+	
+	@Test
+	public void testSwipeInValidMembershipNumber() {
+		mc = new MembershipCard("Membership Card", "123", "XYZ", false);
+		String expectedOutput = mcc.getValidMembershipNumberBySwiping(mc);
+		
+	
+  	assertEquals(null, expectedOutput);
+	}
+
 
 }
