@@ -31,12 +31,16 @@
 
 
 package com.autovend.software.controllers;
-
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Scanner;
 
 import com.autovend.IllegalDigitException;
 import com.autovend.MembershipCard;
+import com.autovend.Card.CardData;
 import com.autovend.devices.BarcodeScanner;
+import com.autovend.devices.CardReader;
+
 
 public class MembershipCardController {
 	private String membershipNumber;
@@ -139,11 +143,46 @@ public class MembershipCardController {
 	}
 	
 	
-//	TODO
-//	public String getValidMembershipNumberBySwiping() {
-//		// TODO: implementation
-//	}
-//	
+	/*
+	 * The getValidMembershipNumberBySwiping method prompts the user to enter a Membership
+	 * number (by swiping) and checks whether the input is valid. If the input is valid (only
+	 * digits between 0-9 and is exactly 12 digits long), the method returns the
+	 * Membership number. If the input is invalid, the method prompts the user to
+	 * try again or continue without a Membership number, up to a maximum number of
+	 * tries (MAX_TRIES). If the user exceeds the maximum number of tries without
+	 * entering a valid Membership number, the method returns null.
+	 */
+	
+public String getValidMembershipNumberBySwiping(MembershipCard mc) {
+	    int numTries = 0;
+	    while (numTries < MAX_TRIES) {
+		BufferedImage image = new BufferedImage(1,2,3);
+		String number = null;
+		CardReader read = new CardReader();
+		
+		try {
+		CardData cardunit = read.swipe(mc, image);
+		number = cardunit.getNumber();
+		  if (isValid(number)) {
+		        return number;
+		    }
+		}
+		
+		catch (IOException io) {
+			System.out.println("Swipe failure");
+		}
+		catch (IllegalDigitException e) {
+			System.out.println(e.getMessage());
+		}
+	    
+	    numTries++; 
+	    if (numTries < MAX_TRIES) {
+	    	System.out.println("Membership card scan failed. Please try again or enter 'yes' to continue without a Membership number");
+	    }
+	    }
+		return null;
+		
+	}
 	
 	/*
 	 * The updateMembershipStatus method prompts the user to enter whether they have
@@ -182,8 +221,7 @@ public class MembershipCardController {
 				// TODO: implementation of scanning method
 				//membershipNumber = getValidMembershipNumberByScanning();
 			} else {
-				// TODO: implementation of swiping method
-				//membershipNumber = getValidMembershipNumberBySwiping();
+				membershipNumber = getValidMembershipNumberBySwiping(mc);
 			}
 			
 			if (membershipNumber != null) {
