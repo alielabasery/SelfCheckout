@@ -406,9 +406,10 @@ public class CheckoutController {
 		if (itemToRemove == null || !this.order.containsKey(itemToRemove)) {
 			return;
 		}
-		if (baggingItemLock || systemProtectionLock) {
-			return;
-		}
+
+	    // Lock the system and bagging area
+	    baggingItemLock = true;
+	    systemProtectionLock = true;
 
 		Number[] currentItemInfo = this.order.get(itemToRemove);
 
@@ -429,7 +430,10 @@ public class CheckoutController {
 			baggingController.updateExpectedBaggingArea(itemToRemove, 0);
 		}
 
-		baggingItemLock = true;
+	    // Unlock the system and bagging area
+	    baggingItemLock = false;
+	    systemProtectionLock = false;
+
 	}
 	
 	/**
