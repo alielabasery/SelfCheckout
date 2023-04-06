@@ -7,6 +7,7 @@ import com.autovend.SellableUnit;
 import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.TouchScreenObserver;
 import com.autovend.external.ProductDatabases;
+import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.software.utils.BarcodeUtils;
 
@@ -58,16 +59,20 @@ public class AddItemByPLUController extends ItemAdderController<TouchScreen, Tou
 
         PriceLookUpCode pluCode = BarcodeUtils.stringPLUToPLU(pluString);
 
-
-
         PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(pluCode);
 
-        // trying to get the weight from pluCode and product
-        // PriceLookUpCodedUnit unit = PriceLookUpCodedUnit
+        double productWeight = 0;
+
+        // trying to get the weight having only the PlU product
+        for (BarcodedProduct barcodedProduct : ProductDatabases.BARCODED_PRODUCT_DATABASE.values()) {
+            if (barcodedProduct.getDescription().equalsIgnoreCase(product.getDescription())) {
+                productWeight = barcodedProduct.getExpectedWeight();
+            }
+        }
 
         if (product != null) {
             // 6. Bagging Area: Signals the System that the weight has changed.
-            this.getMainController().addItem(this, product, 1.0);
+            this.getMainController().addItem(this, product, productWeight);
         }
         else {
             while (!ProductDatabases.PLU_PRODUCT_DATABASE.containsKey(pluCode)) {
@@ -93,14 +98,19 @@ public class AddItemByPLUController extends ItemAdderController<TouchScreen, Tou
 
                 product = ProductDatabases.PLU_PRODUCT_DATABASE.get(pluCode);
 
-                // trying to get the weight from pluCode and product
-                // unit = PriceLookUpCodedUnit
+                productWeight = 0;
+
+                // trying to get the weight having only the PLU product
+                for (BarcodedProduct barcodedProduct : ProductDatabases.BARCODED_PRODUCT_DATABASE.values()) {
+                    if (barcodedProduct.getDescription().equalsIgnoreCase(product.getDescription())) {
+                        productWeight = barcodedProduct.getExpectedWeight();
+                    }
+                }
             }
             // 6. Bagging Area: Signals the System that the weight has changed.
-            this.getMainController().addItem(this, product, 1.0);
+            this.getMainController().addItem(this, product, productWeight);
 
         }
-
         // 5. Customer I/O: Signals to the customer to add the item to the Bagging Area.
         // signalToAddToBaggingArea() executes point no. 5
         signalToAddToBaggingArea();  // provided by GUI team
