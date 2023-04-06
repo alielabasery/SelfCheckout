@@ -41,6 +41,7 @@ import com.autovend.devices.BarcodeScanner;
 public class MembershipCardController {
 	private String membershipNumber;
 	private boolean isActive = false;
+	private BarcodeScanner barcodeScanner;
 	// Did a max tries of 3, having a limit would help with like not having a
 	// infinite input that is invalid,
 	// and after the three invalid attempts it will return null
@@ -190,8 +191,7 @@ public class MembershipCardController {
 			if (scanMethodResponse.equalsIgnoreCase("type")) {
 				membershipNumber = getValidMembershipNumberByTyping(scan);
 			} else if (scanMethodResponse.equalsIgnoreCase("scan")) {
-				// TODO: implementation of scanning method
-				//membershipNumber = getValidMembershipNumberByScanning();
+				membershipNumber = getValidMembershipNumberByScanning(barcodeScanner, mc);
 			} else {
 				// TODO: implementation of swiping method
 				//membershipNumber = getValidMembershipNumberBySwiping();
