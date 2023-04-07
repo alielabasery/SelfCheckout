@@ -460,7 +460,8 @@ public class CheckoutController {
 		}
 
 		for (BaggingAreaController baggingController : this.validBaggingControllers) {
-			baggingController.updateExpectedBaggingArea(itemToRemove, weight);
+			baggingController.updateExpectedBaggingArea(itemToRemove, 
+					electronicScaleController.getExpectedWeight() - weight);
 		}
 
 	    // Unlock the system and bagging area
