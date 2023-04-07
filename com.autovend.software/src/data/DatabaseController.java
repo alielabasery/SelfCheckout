@@ -8,13 +8,13 @@ import com.autovend.PriceLookUpCode;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
+import com.autovend.products.Product;
 import com.autovend.software.pojo.ProductDescriptionEntry;
 
 public class DatabaseController {
     public static void addBarcodedProduct(Barcode code, BarcodedProduct product) {
-
         ProductDatabases.BARCODED_PRODUCT_DATABASE.put(code, product);
-        ProductIndex.productDescriptions.add(new ProductDescriptionEntry("", 'B', code));
+        ProductIndex.productDescriptions.add(new ProductDescriptionEntry(product.getDescription(), 'B', code));
     }
     public static void addPLUdProduct(PriceLookUpCode code, PLUCodedProduct product) {
         ProductDatabases.PLU_PRODUCT_DATABASE.put(code, product);
@@ -34,4 +34,15 @@ public class DatabaseController {
         }
         return foundProducts;
     }
+    
+    public static Product getProduct(Object code, char type) {
+    	Product product = null;
+    	if (type == 'P') {
+    		product = ProductDatabases.PLU_PRODUCT_DATABASE.get(code);
+    	} else if (type == 'B') {
+    		product = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(code);
+    	}
+    	return product;
+    }
+    
 }

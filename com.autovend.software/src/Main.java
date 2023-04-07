@@ -4,12 +4,17 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import com.autovend.software.gui.frmApplication;
+import com.autovend.software.pojo.ProductDescriptionEntry;
+import com.autovend.software.utils.CodeUtils;
 
 import data.DatabaseController;
 
 import com.autovend.PriceLookUpCode;
 import com.autovend.products.PLUCodedProduct;
+import com.autovend.products.BarcodedProduct;
+import com.autovend.Barcode;
 import com.autovend.Numeral;
+import com.autovend.products.*;
 
 
 public class Main {
@@ -27,6 +32,10 @@ public class Main {
             DatabaseController.addPLUdProduct(code, new PLUCodedProduct(code, "Granny Smith Apples", new BigDecimal(1.35)));
             code = new PriceLookUpCode(new Numeral[] {Numeral.eight, Numeral.two, Numeral.five, Numeral.four});
             DatabaseController.addPLUdProduct(code, new PLUCodedProduct(code, "Honey Crisp Apples", new BigDecimal(1.99)));
+            Barcode bcode = CodeUtils.stringBarcodeToBarcode("349896");
+            DatabaseController.addBarcodedProduct(bcode, new BarcodedProduct(bcode, "Ham", new BigDecimal(15.00), 4.00));
+            bcode = CodeUtils.stringBarcodeToBarcode("127634");
+            DatabaseController.addBarcodedProduct(bcode, new BarcodedProduct(bcode, "Herbal Essance Shampoo", new BigDecimal(8.59), 2.09));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -37,5 +46,17 @@ public class Main {
         frame.setSize(400, 300);
         frame.pack();
         frame.setVisible(true);
+        
+        PriceLookUpCode PLUcode = CodeUtils.stringPLUToPLU("8219");
+        Product product = DatabaseController.getProduct(PLUcode, 'P');
+        if (product instanceof BarcodedProduct) {
+        	BarcodedProduct barcodedProduct = (BarcodedProduct)product;
+        	String productDescription = barcodedProduct.getDescription();
+        	System.out.println("product found: " + productDescription);
+        } else if (product instanceof PLUCodedProduct) {
+        	PLUCodedProduct pludProduct = (PLUCodedProduct)product;
+        	String productDescription = pludProduct.getDescription();
+        	System.out.println("Product found: " + productDescription);
+        }
     }
 }

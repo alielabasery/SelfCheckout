@@ -4,6 +4,8 @@ package com.autovend.software.pojo;
 
 import java.util.ArrayList;
 
+import javax.print.attribute.standard.JobMessageFromOperator;
+
 	public class Cart {
 	    private ArrayList<CartLineItem> cartLineItems;
 	    private double subtotal;
@@ -108,4 +110,12 @@ import java.util.ArrayList;
 	        this.subtotal = linesSubtotal;
 	        this.total = cartTotal;
 	    }
+	    public double CartTotalWeight() {
+	    	double totalWeight = 0.0;
+	    	for (CartLineItem lineItem: this.cartLineItems) {
+	    		totalWeight += lineItem.getWeight();
+	    	}
+	    	return totalWeight;
+	    }
+	    
 	}

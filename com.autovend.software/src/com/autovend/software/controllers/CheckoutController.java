@@ -3,6 +3,7 @@
 package com.autovend.software.controllers;
 
 import java.math.BigDecimal;
+import java.nio.channels.NetworkChannel;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +20,10 @@ import com.autovend.external.CardIssuer;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
+import com.autovend.software.pojo.Cart;
+import com.autovend.software.pojo.CartLineItem;
+
+import Networking.NetworkController;
 
 @SuppressWarnings("rawtypes")
 
@@ -41,6 +46,7 @@ public class CheckoutController {
 	private ItemRemoverController itemRemoverController;
 	private final LinkedHashSet<ChangeSlotController> changeSlotControllers;
 	private TreeMap<BigDecimal, ChangeDispenserController> changeDispenserControllers;
+	private Cart cart;
 
 	// Flag to prevent further addition of items if waiting to bag item or an
 	// invalid item was found in the bagging area.
@@ -128,6 +134,9 @@ public class CheckoutController {
 		// Add additional device peripherals for Customer I/O and Attendant I/O here
 		registerAll();
 		clearOrder();
+		
+		cart = new Cart("GST", 0.05, null, 0.0, false);
+		NetworkController.attendentController.registerCheckoutController("checkout station 1", this);
 	}
 
 	public int getID() {
@@ -408,6 +417,10 @@ public class CheckoutController {
 
 		System.out.println("Reusable bag has been added, you may continue.");
 
+	}
+	
+	public void addItem(CartLineItem item) {
+		cart.addCartItem(item);
 	}
 
 	/*

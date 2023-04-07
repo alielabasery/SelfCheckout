@@ -15,17 +15,22 @@ public class CartLineItem {
 	private boolean isPerUnit;
 	private String description;
 	private double expectedWeight;
+	private double weight;
 	private double quantity;
 	private double lineTotalPrice;
 
 	public CartLineItem(String productCode, CODETYPE codeType, BigDecimal price, boolean isPerUnit, String description,
-			double expectedWeight, double quantity) {
+			double expectedWeight, double weight, double quantity) {
 		this.productCode = productCode;
 		this.codeType = codeType;
 		this.price = price;
 		this.isPerUnit = isPerUnit;
 		this.description = description;
 		this.expectedWeight = expectedWeight;
+		this.weight = weight;
+		if (this.isPerUnit) {
+			this.weight = this.expectedWeight;
+		}
 		this.quantity = quantity;
 	}
 
@@ -80,6 +85,19 @@ public class CartLineItem {
 	}
 
 	private void recalculate() {
-		this.lineTotalPrice = this.price.doubleValue() * quantity;
+		if (this.isPerUnit) {
+			this.lineTotalPrice = this.price.doubleValue() * quantity;
+		} else {
+			this.lineTotalPrice = this.price.doubleValue() * weight;
+		}
+	}
+
+	public double getWeight() {
+		return weight;
+	}
+
+	private void setWeight(double weight) {
+		this.weight = weight;
+		recalculate();
 	}
 }
