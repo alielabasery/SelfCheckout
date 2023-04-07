@@ -20,7 +20,7 @@
 * Naheen Kabir (30142101) 
 * Jose Perales Rivera (30143354) 
 * Aditi Yadav (30143652)
-* Sahaj Malhotra () 
+* Sahaj Malhotra (30144405) 
 * Ali Elabasery (30148424)
 * Fabiha Fairuzz Subha (30148674) 
 * Umesh Oad (30152293)
@@ -31,15 +31,21 @@
 
 
 package com.autovend.software.controllers;
-
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Scanner;
 
 import com.autovend.IllegalDigitException;
 import com.autovend.MembershipCard;
+import com.autovend.Card.CardData;
+import com.autovend.devices.BarcodeScanner;
+import com.autovend.devices.CardReader;
+
 
 public class MembershipCardController {
 	private String membershipNumber;
 	private boolean isActive = false;
+	private BarcodeScanner barcodeScanner = new BarcodeScanner();
 	// Did a max tries of 3, having a limit would help with like not having a
 	// infinite input that is invalid,
 	// and after the three invalid attempts it will return null
@@ -73,8 +79,8 @@ public class MembershipCardController {
 	}
 
 	/*
-	 * The getValidMembershipNumber method prompts the user to enter a Membership
-	 * number and checks whether the input is valid. If the input is valid (only
+	 * The getValidMembershipNumberByTyping method prompts the user to enter a Membership
+	 * number (by tyiping) and checks whether the input is valid. If the input is valid (only
 	 * digits between 0-9 and is exactly 12 digits long), the method returns the
 	 * Membership number. If the input is invalid, the method prompts the user to
 	 * try again or continue without a Membership number, up to a maximum number of
@@ -104,29 +110,85 @@ public class MembershipCardController {
 		return null;
 	}
 
-//	TODO
-//	public String getValidMembershipNumberByScanning() {
-//	    String memberNum = null;
-//	    MembershipBarcode membershipBarcode = new MembershipBarcode(generateRandomMembershipNumber());
-//	    if (barcodeScanner.scan(membershipBarcode)) {
-//	        memberNum = membershipBarcode.getBarcode().toString();
-//	    }
-//	    if (memberNum != null && isValid(memberNum)) {
-//	        return memberNum;
-//	    }
-//	    return null;
-//	}
+	/*
+	 * The getValidMembershipNumberByScanning method prompts the user to scan their Membership Card
+	 * that enters their number into the system and checks whether the input is valid. If the input is valid (only
+	 * digits between 0-9 and is exactly 12 digits long), the method returns the
+	 * Membership number. If the input is invalid, the method prompts the user to
+	 * try again or continue without a Membership number, up to a maximum number of
+	 * tries (MAX_TRIES). If the user exceeds the maximum number of tries without
+	 * scanning a valid Membership card, the method returns null.
+	 */
+	
+	public static String getValidMembershipNumberByScanning(BarcodeScanner scanner, MembershipCard membershipCard) {
+	    int numTries = 0;
+	    while (numTries < MAX_TRIES) {
+	    	String memberNum = null;
+		    if (scanner.scan(membershipCard)) {
+		        memberNum = membershipCard.getBarcode().toString();
+		    }
+		    try {
+				if (isValid(memberNum)) {
+					return memberNum;
+				}
+			} catch (IllegalDigitException e) {
+				System.out.println(e.getMessage());
+			}
+		    numTries++; //continue here
+		    if (numTries < MAX_TRIES) {
+		    	System.out.println("Membership card scan failed. Please try again or enter 'yes' to continue without a Membership number");
+		    }
+	    }
+		
+	    return null;
+	}
 	
 	
-//	TODO
-//	public String getValidMembershipNumberBySwiping() {
-//		// TODO: implementation
-//	}
-//	
+	/*
+	 * The getValidMembershipNumberBySwiping method prompts the user to enter a Membership
+	 * number (by swiping) and checks whether the input is valid. If the input is valid (only
+	 * digits between 0-9 and is exactly 12 digits long), the method returns the
+	 * Membership number. If the input is invalid, the method prompts the user to
+	 * try again or continue without a Membership number, up to a maximum number of
+	 * tries (MAX_TRIES). If the user exceeds the maximum number of tries without
+	 * entering a valid Membership number, the method returns null.
+	 */
+	
+public String getValidMembershipNumberBySwiping(MembershipCard mc) {
+	    int numTries = 0;
+	    while (numTries < MAX_TRIES) {
+		BufferedImage image = new BufferedImage(1,2,3);
+		String number = null;
+		CardReader read = new CardReader();
+		
+		try {
+		CardData cardunit = read.swipe(mc, image);
+		number = cardunit.getNumber();
+		  if (isValid(number)) {
+		        return number;
+		    }
+		}
+		
+		catch (IOException io) {
+			System.out.println("Swipe failure");
+		}
+		catch (IllegalDigitException e) {
+			System.out.println(e.getMessage());
+		}
+	    
+	    numTries++; 
+	    if (numTries < MAX_TRIES) {
+	    	System.out.println("Membership card scan failed. Please try again or enter 'yes' to continue without a Membership number");
+	    }
+	    }
+		return null;
+		
+	}
 	
 	/*
 	 * The updateMembershipStatus method prompts the user to enter whether they have
-	 * a membership or not. "yes" would call the getValidMembershipNumber method to
+	 * a membership or not. "yes" would call the getValidMembershipNumber method(s) 
+	 * according to the users desired method of input (type,scan, or swipe) to
 	 * retrieve and validate the membership number. If it is valid the Membership
 	 * Card object is created with the given membership number and isActive would be
 	 * set to true. If the membership number is invalid the user will be informed
@@ -147,7 +209,7 @@ public class MembershipCardController {
 	@SuppressWarnings("resource")
 	public void updateMembershipStatus() {
 		Scanner scan = new Scanner(System.in);
-		MembershipCard mc = new MembershipCard("Membership Card", "0000", "XYZ", false);
+		MembershipCard mc = new MembershipCard("Membership Card", "123456789012", "XYZ", false);
 		System.out.println("Do you have a Membership number? (yes or no or cancel)");
 		String haveCardResponse = scan.nextLine();
 		
@@ -158,11 +220,9 @@ public class MembershipCardController {
 			if (scanMethodResponse.equalsIgnoreCase("type")) {
 				membershipNumber = getValidMembershipNumberByTyping(scan);
 			} else if (scanMethodResponse.equalsIgnoreCase("scan")) {
-				// TODO: implementation of scanning method
-				//membershipNumber = getValidMembershipNumberByScanning();
+				membershipNumber = getValidMembershipNumberByScanning(barcodeScanner, mc);
 			} else {
-				// TODO: implementation of swiping method
-				//membershipNumber = getValidMembershipNumberBySwiping();
+				membershipNumber = getValidMembershipNumberBySwiping(mc);
 			}
 			
 			if (membershipNumber != null) {
