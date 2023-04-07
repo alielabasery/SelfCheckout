@@ -3,6 +3,9 @@
 package com.autovend.software.test;
 
 import com.autovend.CreditCard;
+import com.autovend.GiftCard;
+import com.autovend.GiftCard.GiftCardInsertData;
+import com.autovend.InvalidPINException;
 import com.autovend.devices.CardReader;
 import com.autovend.devices.SimulationException;
 import com.autovend.external.CardIssuer;
@@ -15,6 +18,7 @@ import org.junit.Test;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Currency;
 
 import static org.junit.Assert.*;
 
@@ -24,6 +28,9 @@ public class CardPaymentTest {
     CreditCard cardStub;
     CardReader cardReaderStub;
     CardReaderController readerControllerStub;
+    
+    GiftCard giftCardStub;
+    
     private class TestBank extends CardIssuer {
         public boolean held;
         public boolean posted;
@@ -31,6 +38,7 @@ public class CardPaymentTest {
         public boolean noHoldCall;
         public boolean holdAuthorized;
         public boolean canPostTransaction;
+        
         /**
          * Create a card provider.
          *
@@ -70,6 +78,7 @@ public class CardPaymentTest {
         cardStub= new CreditCard(
                 "Credit Card", "12345","Steve", "987","1337",true, true
         );
+        giftCardStub = new GiftCard("Gift Card", "43110", "1234", Currency.getInstance("CAD"), new BigDecimal(100));
         controllerStub = new CheckoutController();
         cardReaderStub = new CardReader();
         readerControllerStub = new CardReaderController(cardReaderStub);
@@ -269,6 +278,71 @@ public class CardPaymentTest {
         controllerStub.payByCard(null,BigDecimal.ONE);
         assertTrue(cardReaderStub.isDisabled());
 
+    }
+    
+    
+    @Test
+    public void payByGiftCardSuccessTest() throws InvalidPINException {
+    	GiftCardInsertData data = null;
+        assertTrue(cardReaderStub.isDisabled());
+        readerControllerStub.enablePayment(null, new BigDecimal(47.85));
+        assertFalse(cardReaderStub.isDisabled());
+        try {
+            cardReaderStub.insert(giftCardStub, "1234");
+        } catch (Exception ex){
+            fail("Exception incorrectly thrown");
+        }
+        assertTrue(readerControllerStub.isPaying);
+        cardReaderStub.remove();
+        assertFalse(readerControllerStub.isPaying);
+        assertEquals(-47.85, controllerStub.getRemainingAmount().floatValue(), 0.01);
+        assertTrue(cardReaderStub.isDisabled());
+        
+        
+        data = giftCardStub.createCardInsertData("1234");
+        double expected = 100-47.85;
+        assertEquals(expected, data.getRemainingBalance().doubleValue(), 0.01);
+    }
+    
+    @Test
+    public void payByGiftCardInsufficentFunds() throws InvalidPINException {
+    	controllerStub.cost = new BigDecimal(125);
+        readerControllerStub.enablePayment(null, controllerStub.cost);
+
+    	try {
+            cardReaderStub.insert(giftCardStub, "1234");
+        } catch (Exception ex){
+            fail("Exception incorrectly thrown");
+        }
+    	
+    	assertEquals(25, controllerStub.getRemainingAmount().floatValue(), 0.01);
+    	
+    	GiftCardInsertData data = giftCardStub.createCardInsertData("1234");
+        double expected = 0;
+        assertEquals(expected, data.getRemainingBalance().doubleValue(), 0.01);
+    }
+    
+    @Test
+    public void payByGiftCardNoFunds() throws IOException {
+    	controllerStub.cost = new BigDecimal(125);
+        readerControllerStub.enablePayment(null, controllerStub.cost);
+
+        cardReaderStub.insert(giftCardStub, "1234");
+    	
+    	cardReaderStub.remove();
+        cardReaderStub.insert(giftCardStub, "1234");
+
+    	
+    	assertEquals(25, controllerStub.getRemainingAmount().floatValue(), 0.01);
+    	
+    	GiftCardInsertData data = giftCardStub.createCardInsertData("1234");
+        double expected = 0;
+        assertEquals(expected, data.getRemainingBalance().doubleValue(), 0.01); 
+    }
+    
+    @Test (expected = InvalidPINException.class)
+    public void payByGiftCardIncorrectPIN() throws IOException {
+    	cardReaderStub.insert(giftCardStub, "2222");
     }
 
 
