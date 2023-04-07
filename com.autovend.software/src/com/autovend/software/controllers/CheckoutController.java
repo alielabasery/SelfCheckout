@@ -15,6 +15,8 @@ import java.util.TreeMap;
 
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.external.CardIssuer;
+import com.autovend.products.BarcodedProduct;
+import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 
 @SuppressWarnings("rawtypes")
@@ -24,6 +26,7 @@ public class CheckoutController {
 	private int stationID = IDcounter++;
 
 	private LinkedHashMap<Product, Number[]> order;
+	public Map<Product, Double> PLUProd;
 	public BigDecimal cost;
 	protected BigDecimal amountPaid;
 
@@ -32,6 +35,7 @@ public class CheckoutController {
 	private final HashSet<ItemAdderController> validItemAdderControllers;
 	private HashSet<PaymentController> validPaymentControllers;
 	private ReceiptPrinterController receiptPrinter;
+	private ElectronicScaleController electronicScaleController;
 	private final LinkedHashSet<ChangeSlotController> changeSlotControllers;
 	private TreeMap<BigDecimal, ChangeDispenserController> changeDispenserControllers;
 
@@ -77,8 +81,12 @@ public class CheckoutController {
 
 		ElectronicScaleController scaleController = new ElectronicScaleController(checkout.baggingArea);
 		this.validBaggingControllers = new HashSet<>(List.of(scaleController));
+		
 
 		this.receiptPrinter = new ReceiptPrinterController(checkout.printer);
+		
+		
+		this.electronicScaleController = new ElectronicScaleController(checkout.scale);
 
 		BillPaymentController billPayController = new BillPaymentController(checkout.billValidator);
 		CoinPaymentController coinPaymentController = new CoinPaymentController(checkout.coinValidator);
@@ -143,12 +151,30 @@ public class CheckoutController {
 	public BigDecimal getCost() {
 		return this.cost;
 	}
+	
+	public double getPLUWeight(Product product) {
+		if (this.PLUProd.containsKey(product)) {
+			
+			double weight = PLUProd.get(product);
+			return weight;	
+		}
+		return 0.0;
+	}
+	
+	public boolean checkPLUProd(Product product) {
+		
+		if (product instanceof PLUCodedProduct) {
+			return true;
+		}
+		return false;
+	}
+
 
 	/**
 	 * Methods to register and deregister peripherals for controlling the bagging
 	 * area and scanning and printer and methods of payment.
 	 */
-
+	
 	void registerBaggingAreaController(BaggingAreaController controller) {
 		if (validBaggingControllers.contains(controller)) {
 			return;
@@ -390,8 +416,15 @@ public class CheckoutController {
 		currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(newItem.getPrice());
 
 		this.order.put(newItem, currentItemInfo);
-
+		
+		if (checkPLUProd(newItem)) {
+			
+			weight = this.electronicScaleController.getCurrentWeight();
+			this.PLUProd.put(newItem, weight);
+		}
+		
 		for (BaggingAreaController baggingController : this.validBaggingControllers) {
+			
 			baggingController.updateExpectedBaggingArea(newItem, weight);
 		}
 
@@ -402,7 +435,7 @@ public class CheckoutController {
 	/**
 	 * Method to remove items from the order
 	 */
-	public void removeItem(Product itemToRemove) {
+	public void removeItem(Product itemToRemove, double weight) {
 		if (itemToRemove == null || !this.order.containsKey(itemToRemove)) {
 			return;
 		}
@@ -427,7 +460,8 @@ public class CheckoutController {
 		}
 
 		for (BaggingAreaController baggingController : this.validBaggingControllers) {
-			baggingController.updateExpectedBaggingArea(itemToRemove, 0);
+			baggingController.updateExpectedBaggingArea(itemToRemove, 
+					electronicScaleController.getExpectedWeight() - weight);
 		}
 
 	    // Unlock the system and bagging area
@@ -698,4 +732,7 @@ public class CheckoutController {
 	public HashSet<BaggingAreaController> getValidBaggingControllers() {
 		return this.validBaggingControllers;
 	}
+
+
+
 }
