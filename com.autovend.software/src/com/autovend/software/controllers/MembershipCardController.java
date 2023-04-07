@@ -45,7 +45,7 @@ import com.autovend.devices.CardReader;
 public class MembershipCardController {
 	private String membershipNumber;
 	private boolean isActive = false;
-	private BarcodeScanner barcodeScanner;
+	private BarcodeScanner barcodeScanner = new BarcodeScanner();
 	// Did a max tries of 3, having a limit would help with like not having a
 	// infinite input that is invalid,
 	// and after the three invalid attempts it will return null
@@ -209,7 +209,7 @@ public String getValidMembershipNumberBySwiping(MembershipCard mc) {
 	@SuppressWarnings("resource")
 	public void updateMembershipStatus() {
 		Scanner scan = new Scanner(System.in);
-		MembershipCard mc = new MembershipCard("Membership Card", "0000", "XYZ", false);
+		MembershipCard mc = new MembershipCard("Membership Card", "123456789012", "XYZ", false);
 		System.out.println("Do you have a Membership number? (yes or no or cancel)");
 		String haveCardResponse = scan.nextLine();
 		

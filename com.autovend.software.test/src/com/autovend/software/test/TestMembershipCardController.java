@@ -218,7 +218,17 @@ public class TestMembershipCardController {
 	// end of tests for get valid number
 
 	@Test
-	public void testUpdateMembershipStatus_WithValidMember() {
+	public void testUpdateMembershipStatusScan_WithValidMember() {
+		String input = "yes\nscan\n";
+		InputStream sysInBackup = System.in;
+		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+		System.setIn(in);
+		mcc.updateMembershipStatus();
+		assertTrue(mcc.getIsActive());
+	}
+	
+	@Test
+	public void testUpdateMembershipStatusType_WithValidMember() {
 		String input = "yes\ntype\n564823890124\n";
 		InputStream sysInBackup = System.in;
 		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
