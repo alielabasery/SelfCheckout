@@ -45,6 +45,9 @@ public class AddItemByBrowsingController extends ItemAdderController<TouchScreen
 				barcodedProduct = product;
 			}
 		}
+		if(item == null) {
+			throw new NullPointerException("Item not in databse!");
+		}
 	}
 	
 	/*
@@ -91,10 +94,25 @@ public class AddItemByBrowsingController extends ItemAdderController<TouchScreen
 	public BarcodedUnit getItem() {
 		return item;
 	}
+	
+	/*
+	 * Getter for selected Product
+	 */
+	public BarcodedProduct getBarcodedProduct() {
+		return barcodedProduct;
+	}
+	
 	/*
 	 * Getter for selected Item's price
 	 */
 	public BigDecimal getPrice() {
 		return price;
+	}
+	
+	/*
+	 * Getter for selected Item's weight
+	 */
+	public double getWeight() {
+		return weight;
 	}
 }
