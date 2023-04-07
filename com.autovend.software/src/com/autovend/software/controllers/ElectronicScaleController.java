@@ -18,6 +18,7 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 		super(newDevice);
 	}
 
+	// ******* I think that there has to be a maximum weight that a item is allowed ot be in order for it to go on the for electronic scale 
 	/**
 	 * Method used to update the expected weight for validation of orders.
 	 * 
@@ -45,6 +46,8 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 		return;
 	}
 
+	
+	// i dont want to chnage your code but i also think that .baggingareaerror has to be called within this method in case customer chooses not to bag item 
 	@Override
 	public void reactToWeightChangedEvent(ElectronicScale scale, double weightInGrams) {
 		if (scale != this.getDevice()) {
@@ -89,7 +92,7 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 
 		}
 	}
-
+ 
 	@Override
 	public void reactToOverloadEvent(ElectronicScale scale) {
 		if (scale != this.getDevice()) {
@@ -129,4 +132,6 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 		return this.addingBags;
 	}
 
+	
 }
+
