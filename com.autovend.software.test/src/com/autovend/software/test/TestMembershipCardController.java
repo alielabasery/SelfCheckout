@@ -3,6 +3,7 @@
 package com.autovend.software.test;
 
 import static org.junit.Assert.assertEquals;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
@@ -17,20 +18,32 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.autovend.MembershipCard;
+import com.autovend.devices.BarcodeScanner;
 import com.autovend.IllegalDigitException;
+import com.autovend.MembershipCard;
 import com.autovend.software.controllers.MembershipCardController;
 
 @SuppressWarnings("unused")
 
 public class TestMembershipCardController {
 
+	private BarcodeScanner barcodeScanner;
+	private MembershipCardController mcc;
+	private Scanner scanner;
+	private InputStreamReader inputReader;
+	private MembershipCard validMembershipCard;
+	private MembershipCard invalidMembershipCard;
+	MembershipCard mc;
+    
 	@Before
 	public void setup() {
+		mcc = new MembershipCardController();
+		scanner = new Scanner(System.in);
+		barcodeScanner = new BarcodeScanner();
+		validMembershipCard = new MembershipCard("Membership Card", "564823890124", "John Doe", true);
+		invalidMembershipCard = new MembershipCard("Membership Card", "435", "John Doe", true);
 	}
-
-	MembershipCardController mcc = new MembershipCardController();
-	Scanner scanner = new Scanner(System.in);
-	InputStreamReader inputReader;
 
 	@After
 	public void teardown() {
@@ -70,14 +83,40 @@ public class TestMembershipCardController {
 	}
 
 	@Test
+	public void testGetValidMembershipNumberByScanning_ValidCard() {
+		String scannedMembershipNumber = MembershipCardController.getValidMembershipNumberByScanning(barcodeScanner,
+				validMembershipCard);
+		assertEquals(validMembershipCard.getBarcode().toString(), scannedMembershipNumber);
+	}
+
+	@Test
+	public void testGetValidMembershipNumberByScanning_InvalidCard() {
+		String scannedMembershipNumber = MembershipCardController.getValidMembershipNumberByScanning(barcodeScanner,
+				invalidMembershipCard);
+		assertNull(scannedMembershipNumber);
+	}
+
+	@Test
+	public void testGetValidMembershipNumberByScanning_FailedScan() {
+		String scannedMembershipNumber = null;
+		for (int i = 0; i < 10; i++) {
+			scannedMembershipNumber = MembershipCardController.getValidMembershipNumberByScanning(barcodeScanner,
+					invalidMembershipCard);
+		}
+
+		assertNull(scannedMembershipNumber);
+	}
+
+	@Test
 	public void testGetValidMembershipNumberValidInput() {
 		String input = "564823890124";
 		InputStream sysInBackup = System.in;
 		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
 		System.setIn(in);
 		Scanner scanner = new Scanner(System.in); // create a new Scanner object
-		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner); // pass the Scanner object
-																							// as an argument
+		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner); // pass the Scanner
+																									// object
+		// as an argument
 		assertEquals(input, expectedOutput);
 	}
 
@@ -88,8 +127,9 @@ public class TestMembershipCardController {
 		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
 		System.setIn(in);
 		Scanner scanner = new Scanner(System.in); // create a new Scanner object
-		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner); // pass the Scanner object
-																							// as an argument
+		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner); // pass the Scanner
+																									// object
+		// as an argument
 		assertEquals(input.trim(), expectedOutput);
 	}
 
@@ -100,8 +140,9 @@ public class TestMembershipCardController {
 		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
 		System.setIn(in);
 		Scanner scanner = new Scanner(System.in); // create a new Scanner object
-		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner); // pass the Scanner object
-																							// as an argument
+		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner); // pass the Scanner
+																									// object
+		// as an argument
 		assertEquals("564823890124", expectedOutput);
 	}
 
@@ -112,8 +153,9 @@ public class TestMembershipCardController {
 		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
 		System.setIn(in);
 		Scanner scanner = new Scanner(System.in); // create a new Scanner object
-		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner); // pass the Scanner object
-																							// as an argument
+		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner); // pass the Scanner
+																									// object
+		// as an argument
 		assertNull(expectedOutput);
 	}
 
@@ -135,8 +177,9 @@ public class TestMembershipCardController {
 		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
 		System.setIn(in);
 		Scanner scanner = new Scanner(System.in); // create a new Scanner object
-		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner); // pass the Scanner object
-																							// as an argument
+		String expectedOutput = MembershipCardController.getValidMembershipNumberByTyping(scanner); // pass the Scanner
+																									// object
+		// as an argument
 		assertTrue(MembershipCardController.isValid(expectedOutput)); // check if the membership number is valid
 	}
 
@@ -172,9 +215,21 @@ public class TestMembershipCardController {
 		assertTrue(MembershipCardController.isValid(actual));
 	}
 
+	// end of tests for get valid number
+
 	@Test
-	public void testUpdateMembershipStatus_WithValidMember() {
-		String input = "yes\n564823890124\n";
+	public void testUpdateMembershipStatusScan_WithValidMember() {
+		String input = "yes\nscan\n";
+		InputStream sysInBackup = System.in;
+		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+		System.setIn(in);
+		mcc.updateMembershipStatus();
+		assertTrue(mcc.getIsActive());
+	}
+	
+	@Test
+	public void testUpdateMembershipStatusType_WithValidMember() {
+		String input = "yes\ntype\n564823890124\n";
 		InputStream sysInBackup = System.in;
 		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
 		System.setIn(in);
@@ -209,7 +264,7 @@ public class TestMembershipCardController {
 
 	@Test
 	public void testUpdateMembershipStatus_AfterYesMaxOutTries() {
-		String input = "yes\n1234\n564823890\n56294\n";
+		String input = "yes\ntype\n1234\n564823890\n56294\n";
 		InputStream sysInBackup = System.in;
 		ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
 		System.setIn(in);
@@ -256,5 +311,24 @@ public class TestMembershipCardController {
 		mcc.updateMembershipStatus();
 		assertFalse(mcc.getIsActive());
 	}
+	//Added Swipe Tests
+	@Test
+	public void testSwipeValidMembershipNumber() {
+		String membershipnumber = "564823890124";
+		mc = new MembershipCard("Membership Card", "564823890124", "XYZ", false);
+		String expectedOutput = mcc.getValidMembershipNumberBySwiping(mc); // pass the Scanner object
+																							// as an argument
+		assertEquals(membershipnumber, expectedOutput);
+	}
+	
+	@Test
+	public void testSwipeInValidMembershipNumber() {
+		mc = new MembershipCard("Membership Card", "123", "XYZ", false);
+		String expectedOutput = mcc.getValidMembershipNumberBySwiping(mc);
+		
+	
+  	assertEquals(null, expectedOutput);
+	}
+
 
 }
