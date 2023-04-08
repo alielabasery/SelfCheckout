@@ -3,7 +3,7 @@
 // Placeholder for Group 6: Names + UCID
 
 package com.autovend.software.controllers;
-
+import com.autovend.software.controllers.*;
 import com.autovend.devices.AbstractDevice;
 import com.autovend.devices.observers.AbstractDeviceObserver;
 import com.autovend.products.Product;
@@ -41,7 +41,7 @@ public abstract class BaggingAreaController<D extends AbstractDevice<O>, O exten
 	}
 	
 	
-	//methos used as a private getter and setter to be used below 
+	//method used as a private getter and setter to be used below 
 	private boolean attendantApproval;
 
 	public void setAttendantApproval(boolean approval) {
@@ -79,40 +79,40 @@ public abstract class BaggingAreaController<D extends AbstractDevice<O>, O exten
 	// Author Victor Campos  
 	// method not fully complete but is the bagging area error from electronic scale 
 	// needs to be called from electronic scale in the react to WEIGHTDISCREP event 
-	// method bascially locks the system and calls for an attendant once attendant removes item just added after it is approaved
+	// method basically locks the system and calls for an attendant once attendant removes item just added after it is approved
 	// station will not continue until approval is had 
 
-	public void baggingAreaError(double currentWeight) {
+	public double baggingAreaError(double currentWeight, double expectedWeight) {
         // 1. Block the self-checkout station from further customer input.
         this.getMainController().baggingItemLock = true;
-        System.out.println("Item is too heavy or Too big for bagging area, station is blocked see Attendant");
-
-        // 2. Signal to the Attendant I/O that a no-bagging request is in progress.
-        this.getAttendant().baggingAreaError();
-
-        // 3. Wait for approval from the Attendant I/O. By using a While loop, method also sets attendant approval to whatever got response will be 
+      
+    
+        // 2. Wait for approval from the Attendant I/O. By using a While loop, method also sets attendant approval to whatever got response will be 
         boolean gotResponse = false;
         while (!gotResponse) {
-            gotResponse = this.getAttendant().waitForApproval();
+            gotResponse = this.getAttendantApproval();
             this.setAttendantApproval(gotResponse);
         }
 
         if (this.getAttendantApproval()) {
-                // 4. Reduce the expected weight in the Bagging Area by the expected weight of the item.
-                double expectedWeight = this.getExpectedWeight();
+                // 3. Reduce the expected weight in the Bagging Area by the expected weight of the item.
                 double newExpectedWeight = expectedWeight - currentWeight;
-                this.setExpectedWeight(newExpectedWeight);
 
-                // 5. Unblock the station.
+                // 4. Unblock the station.
                 this.getMainController().baggingItemLock = false;
+                return newExpectedWeight;
         } else {
             // Attendant did not approve, disable the station.
             this.getMainController().baggingItemLock = true;
-        }
-    } 
+       }
+        
+        return 1;
+	
+	}
 
 
 
+	
 
 }
 

@@ -694,4 +694,8 @@ public class CheckoutController {
 	public HashSet<BaggingAreaController> getValidBaggingControllers() {
 		return this.validBaggingControllers;
 	}
-}
+
+
+
+	}
+

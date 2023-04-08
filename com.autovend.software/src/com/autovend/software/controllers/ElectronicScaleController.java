@@ -47,7 +47,7 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 	}
 
 	
-	// i dont want to chnage your code but i also think that .baggingareaerror has to be called within this method in case customer chooses not to bag item 
+	
 	@Override
 	public void reactToWeightChangedEvent(ElectronicScale scale, double weightInGrams) {
 		if (scale != this.getDevice()) {
@@ -131,6 +131,7 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 	public boolean getAddingBags() {
 		return this.addingBags;
 	}
+
 
 	
 }
