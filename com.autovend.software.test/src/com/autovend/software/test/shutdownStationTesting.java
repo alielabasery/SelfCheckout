@@ -46,11 +46,13 @@ public class shutdownStationTesting {
     	
     	supervisionStation.add(station);
     	
+    	//Add attendant login info to database
     	AttendantLoginLogoutController.idAndPasswords.put(attendantID, attendantPassword);
     }
     
     @After
     public void teardown() {
+    	//Make variables ready for garbage collector after each test
     	attendantShutdownStationController = null;
     	attendantLoginLogoutController = null;
     	supervisionStation = null;
@@ -60,6 +62,7 @@ public class shutdownStationTesting {
     
     @Test
     public void testValidShutdown() {
+    	//Login the attendant and shutdown the station
     	attendantLoginLogoutController.AttendantLogin(attendantID, attendantPassword);
     	attendantShutdownStationController.shutdownStation(station, false);
         assertTrue(attendantShutdownStationController.isShutdown());
@@ -67,6 +70,7 @@ public class shutdownStationTesting {
     
     @Test
     public void testConfirmShutdown() {
+    	//Shutdown the station while still in use by confirming shutdown
     	attendantLoginLogoutController.AttendantLogin(attendantID, attendantPassword);
     	attendantShutdownStationController.setSessionInProgress(true);
     	attendantShutdownStationController.shutdownStation(station, true);
@@ -75,6 +79,7 @@ public class shutdownStationTesting {
     
     @Test
     public void testSessionInProgress() {
+    	//Test if session in progress is updated to true
     	attendantLoginLogoutController.AttendantLogin(attendantID, attendantPassword);
     	attendantShutdownStationController.setSessionInProgress(true);
     	assertTrue(attendantShutdownStationController.isSessionInProgress());
@@ -82,6 +87,7 @@ public class shutdownStationTesting {
     
     @Test
     public void testSessionNotInProgress() {
+    	//Test if session in progress is updates to false
     	attendantLoginLogoutController.AttendantLogin(attendantID, attendantPassword);
     	attendantShutdownStationController.setSessionInProgress(false);
     	assertFalse(attendantShutdownStationController.isSessionInProgress());
@@ -89,12 +95,14 @@ public class shutdownStationTesting {
     
     @Test (expected = SimulationException.class)
     public void testShutdownNotLoggedIn() {
+    	//Try shutting down the station without an attendant being logged in
     	attendantShutdownStationController.shutdownStation(station, false);
         assertFalse(attendantShutdownStationController.isShutdown());
     }
     
     @Test (expected = SimulationException.class)
     public void testUnsupervisedShutdown() {
+    	//Try shutting down the station without the station being supervised
     	attendantLoginLogoutController.AttendantLogin(attendantID, attendantPassword);
     	supervisionStation.remove(station);
     	attendantShutdownStationController.shutdownStation(station, false);
@@ -103,6 +111,7 @@ public class shutdownStationTesting {
     
     @Test (expected = SimulationException.class)
     public void testInUseShutdown() {
+    	//Try shutting down the station which is in use and not overriding shutdown
     	attendantLoginLogoutController.AttendantLogin(attendantID, attendantPassword);
     	attendantShutdownStationController.setSessionInProgress(true);
     	attendantShutdownStationController.shutdownStation(station, false);
