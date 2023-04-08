@@ -7,18 +7,57 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class AttendantLogin {
+    JFrame loginFrame;
+    JPanel loginPanel;
+    JLabel loginLabel;
+    JTextField IDField;
+    JTextField passField;
+    JLabel IDLabel;
+    JLabel passLabel;
+    JButton button;
+
     public AttendantLogin() {
-        JFrame startFrame = new JFrame();
+        loginFrame = new JFrame();
+        loginPanel = new JPanel();
+        loginPanel.setPreferredSize(new Dimension(1280, 720));
+        loginPanel.setLayout(null);
 
-        JPanel startPanel = new JPanel();
-        startPanel.setPreferredSize(new Dimension(1280, 720));
-        startPanel.setLayout(null);
+        IDField = new JTextField();
+        IDField.setBounds(540,325,200,20);
 
-        startFrame.getContentPane().add(startPanel, BorderLayout.CENTER);
-        startFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        startFrame.pack();
-        startFrame.setVisible(true);
-        startFrame.setResizable(false);
+        passField = new JTextField();
+        passField.setBounds(540, 375, 200, 20);
+
+        IDLabel = new JLabel("UserID:");
+        IDLabel.setBounds(487, 323, 100, 20);
+
+        passLabel = new JLabel("Password:");
+        passLabel.setBounds(475, 373, 100, 20);
+
+        loginLabel = new JLabel("Please enter your userID and password below:");
+        loginLabel.setBounds(400, 200, 500, 150);
+        loginLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 18));
+
+        button = new JButton("Submit");
+        button.setBackground(Color.decode("#ade89b"));
+        button.setForeground(Color.BLACK);
+        button.setBorder(new LineBorder(Color.BLACK, 1, true));
+        button.setBounds(590, 450, 100, 20);
+        button.setOpaque(true);
+
+        loginPanel.add(loginLabel);
+        loginPanel.add(IDField);
+        loginPanel.add(passField);
+        loginPanel.add(IDLabel);
+        loginPanel.add(passLabel);
+        loginPanel.add(button);
+
+        loginFrame.getContentPane().add(loginPanel, BorderLayout.CENTER);
+        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        loginFrame.pack();
+        loginFrame.setVisible(true);
+        loginFrame.setResizable(false);
+
     }
 
     // Below is only for visualization, delete later.
