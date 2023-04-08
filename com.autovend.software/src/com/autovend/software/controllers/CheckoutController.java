@@ -49,6 +49,13 @@ public class CheckoutController {
 	public boolean systemProtectionLock;
 
 	private boolean payingChangeLock;
+	
+	/*
+	 * A flag tracking whether or not the system is currently available for customer use. This 
+	 * flag is set false upon start up and must be cleared by the attendant to allow for usage
+	 * by customers. 
+	 */
+	public boolean systemAvailableForCustomerUse;
 
 	/*
 	 * Boolean that indicates if an attendant has approved a certain action
