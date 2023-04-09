@@ -36,6 +36,7 @@ public class CheckoutController {
 	private HashSet<PaymentController> validPaymentControllers;
 	private ReceiptPrinterController receiptPrinter;
 	private ElectronicScaleController electronicScaleController;
+	private ItemRemoverController itemRemoverController;
 	private final LinkedHashSet<ChangeSlotController> changeSlotControllers;
 	private TreeMap<BigDecimal, ChangeDispenserController> changeDispenserControllers;
 
@@ -76,6 +77,7 @@ public class CheckoutController {
 		validItemAdderControllers = new HashSet<>();
 		validPaymentControllers = new HashSet<>();
 		receiptPrinter = null;
+		itemRemoverController = null;
 		this.changeDispenserControllers = new TreeMap<>();
 		this.changeSlotControllers = new LinkedHashSet<>();
 		clearOrder();
@@ -92,8 +94,9 @@ public class CheckoutController {
 
 		this.receiptPrinter = new ReceiptPrinterController(checkout.printer);
 		
-		
 		this.electronicScaleController = new ElectronicScaleController(checkout.scale);
+		
+		this.itemRemoverController = new ItemRemoverController(checkout.screen);
 
 		BillPaymentController billPayController = new BillPaymentController(checkout.billValidator);
 		CoinPaymentController coinPaymentController = new CoinPaymentController(checkout.coinValidator);
@@ -209,6 +212,18 @@ public class CheckoutController {
 		}
 		this.validItemAdderControllers.remove(adder);
 	}
+	
+	public void registerItemRemoverController(ItemRemoverController remover) {
+		if (itemRemoverController == null) {
+			this.itemRemoverController = remover;
+		}
+	}
+
+	void deregisterItemRemoverController(ItemRemoverController remover) {
+		if (itemRemoverController.equals(remover)) {
+			this.itemRemoverController = null;
+		}
+	}
 
 	public void registerPaymentController(PaymentController controller) {
 		if (validPaymentControllers.contains(controller)) {
@@ -265,6 +280,7 @@ public class CheckoutController {
 		for (ItemAdderController controller : validItemAdderControllers) {
 			controller.setMainController(this);
 		}
+		itemRemoverController.setMainController(this);
 		for (BaggingAreaController controller : validBaggingControllers) {
 			controller.setMainController(this);
 		}
@@ -290,6 +306,10 @@ public class CheckoutController {
 
 	public HashSet<ItemAdderController> getAllItemAdders() {
 		return this.validItemAdderControllers;
+	}
+	
+	ItemRemoverController getItemRemover() {
+		return this.itemRemoverController;
 	}
 
 	HashSet<PaymentController> getAllPaymentControllers() {

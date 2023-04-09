@@ -1,23 +1,37 @@
 package com.autovend.software.controllers;
 
 import com.autovend.devices.AbstractDevice;
+import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.AbstractDeviceObserver;
+import com.autovend.devices.observers.TouchScreenObserver;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
 
-abstract class ItemRemoverController<D extends AbstractDevice<O>, O extends AbstractDeviceObserver>
-extends DeviceController<D, O> {
+public class ItemRemoverController extends DeviceController<TouchScreen, TouchScreenObserver> implements TouchScreenObserver {
 	
 	CheckoutController mainController;
 	BarcodedProduct barcodedProduct =null;
 	PLUCodedProduct pluProduct = null;
 	double expectedWeight;
 	
-public ItemRemoverController(D newDevice) {
-		super(newDevice);
+public ItemRemoverController(TouchScreen touchScreen) {
+		super(touchScreen);
 	}
 
+public final CheckoutController getMainController() {
+	return this.mainController;
+}
+
+public final void setMainController(CheckoutController newMainController) {
+	if (this.mainController != null) {
+		this.mainController.deregisterItemRemoverController(this);
+	}
+	this.mainController = newMainController;
+	if (this.mainController != null) {
+		this.mainController.registerItemRemoverController(this);
+	}
+}
 
 public void removeFromOrder(Product product) {
 	
