@@ -104,6 +104,9 @@ public class RemoveItemTest {
 
 	}
 	
+	/**
+	 * Test to check if the new TouchScreen is being created properly
+	 */
 	@Test
 	public void testNewScreen() {
 		TouchScreen newScreen = new TouchScreen();
@@ -111,6 +114,9 @@ public class RemoveItemTest {
 		assertNotSame("New screen should be ..", stubRemover, removerController.getDevice());
 	}
 	
+	/**
+	 * Test to check if the new MainController is being created properly
+	 */
 	@Test
 	public void testNewMainController() {
 		CheckoutController newMainController = new CheckoutController();
@@ -121,9 +127,13 @@ public class RemoveItemTest {
 
 	}
 
+	/**
+	 * Test to check if the method returns properly after passing an invalid controller
+	 */
 	@Test
 	public void testRemove_invalidItemRemoverController() {
 
+		// Trying to remove an item with a null controller
 		checkoutController.removeItem(null, Item1, validUnit1.getWeight());
 
 		assertEquals(0, checkoutController.getOrder().size());
@@ -131,32 +141,45 @@ public class RemoveItemTest {
 
 	}
 	
+	/**
+	 * Test to check if the method returns correctly with the item not being in the order
+	 */
 	@Test
 	public void testRemoveItemNotInOrder() {
-		
-		
 	    
 		// Add an item to the cart, then try to remove a different item
 	    checkoutController.addItem(scannerController, Item1, validUnit1.getWeight());
 	    checkoutController.removeItem(removerController, Item2, validUnit2.getWeight());
+	    
 	    assertEquals(BigDecimal.valueOf(83.29), checkoutController.getCost());
 	}
 	
+	/**
+	 * Test to check if the method correctly removes only one item from a one item order
+	 */
 	@Test
 	public void testRemoveOnlyItemInOrder() {
 		
+		// Add only one item to the order
 	    checkoutController.addItem(scannerController, Item1, validUnit1.getWeight());
 	    
+		// Simulates the item being put on the bagging area and lets us scan another item
 	    assertTrue(checkoutController.getOrder().containsKey(Item1));
 
+	    // Removing the only item present in the order
 		checkoutController.removeItem(removerController, Item1, validUnit1.getWeight());
 
+		// Checking if the order size is 0 after removing the only order
 		assertEquals(0, checkoutController.getOrder().size());
 
 	}
 	
+	/**
+	 * Test to check if the method correctly removes an item from order containing multiple items
+	 */
 	@Test
 	public void testRemoveItem_MultipleItemsInOrder() {
+		
 	    // Add two items to the cart, then remove one of them
 	    checkoutController.addItem(scannerController, Item1, validUnit1.getWeight());
 	    
@@ -168,13 +191,20 @@ public class RemoveItemTest {
 		// Unblocks the station and lets a new item be scanned
 		checkoutController.baggedItemsValid(scaleController);
 	    
+		// Removing one item from the order leaving only 1 item there
 	    checkoutController.removeItem(removerController, Item3, validUnit3.getWeight());
 	    
+	    // Checking of the order size is 1
+	    //Check the price is correct according to the item remaining in the order
 	    assertEquals(1, checkoutController.getOrder().size());
 	    assertEquals(BigDecimal.valueOf(83.29), checkoutController.getCost());
 	    
 	}
 	
+	/**
+	 * Test to check if the method correctly removes an item from order
+	 * The order containing more that one quantity of the same product
+	 */
 	@Test
 	public void testRemoveItem_DuplicateItemsInOrder() {
 	    
@@ -196,13 +226,19 @@ public class RemoveItemTest {
 		// Unblocks the station and lets a new item be scanned
 		checkoutController.baggedItemsValid(scaleController);
 		
+		// Remove only one quantity of the duplicate item in the order
 	    checkoutController.removeItem(removerController, Item1, validUnit1.getWeight());
 	    
+	    // Check if there are 2 items left after removing the duplicate item
+	    // Check the price of the order is correct according to the items remaining in the order
 	    assertEquals(2, checkoutController.getOrder().size());
 	    assertEquals(BigDecimal.valueOf(125.29), checkoutController.getCost());
 	    
 	}
 	
+	/** 
+	 * Test to check the if the weight discrepancy gets resolved after removal of the item
+	 */
 	@Test
 	public void testDiscrepancyResolved() {
 		scaleController.resetOrder();
@@ -211,6 +247,9 @@ public class RemoveItemTest {
 		assertFalse(scaleController.getMainController().baggingItemLock);
 	}
 
+	/** 
+	 * Test to check the if the weight discrepancy is unresolved after removal of the item
+	 */	
 	@Test
 	public void testDiscrepancUnesolved() {
 		scaleController.resetOrder();
@@ -218,7 +257,6 @@ public class RemoveItemTest {
 		scaleController.reactToWeightChangedEvent(stubScale, 10.0);
 		assertTrue(scaleController.getMainController().baggingItemLock);
 	}
-	
 	
 	
 	
