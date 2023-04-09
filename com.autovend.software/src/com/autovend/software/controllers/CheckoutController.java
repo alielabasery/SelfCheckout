@@ -461,8 +461,12 @@ public class CheckoutController {
 	/**
 	 * Method to remove items from the order
 	 */
-	public void removeItem(Product itemToRemove, double weight) {
-		if (itemToRemove == null || !this.order.containsKey(itemToRemove)) {
+	public void removeItem(ItemRemoverController remover, Product itemToRemove, double weight) {
+		if (remover != this.itemRemoverController) {
+			return;
+		}
+		
+		if (!this.order.containsKey(itemToRemove)) {
 			return;
 		}
 
@@ -489,7 +493,6 @@ public class CheckoutController {
 			ElectronicScaleController scale = (ElectronicScaleController) baggingController;
 			scale.updateExpectedBaggingArea(itemToRemove, -weight);
 		}
-
 	}
 
 	/**

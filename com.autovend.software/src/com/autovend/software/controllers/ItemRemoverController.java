@@ -41,15 +41,15 @@ public void removeFromOrder(Product product) {
 	if(product instanceof PLUCodedProduct) {
 		
 		expectedWeight = mainController.getPLUWeight(product);
-		mainController.removeItem(product, expectedWeight);
+		mainController.removeItem(this, product, expectedWeight);
 	}
 	else {
 		barcodedProduct = (BarcodedProduct) product;
 		expectedWeight = barcodedProduct.getExpectedWeight();
-		mainController.removeItem(product, expectedWeight);
+		mainController.removeItem(this, product, expectedWeight);
 	}
-	//5. System: Signals to the Customer I/O that the item should be removed from the bagging area.
-	signalToRemoveFromBaggingArea(); // implemented by the GUI team
+//	//5. System: Signals to the Customer I/O that the item should be removed from the bagging area.
+//	signalToRemoveFromBaggingArea(); // implemented by the GUI team
 	
 	if (scaleController.getCurrentWeight() != scaleController.getExpectedWeight()) {
 	
@@ -57,8 +57,8 @@ public void removeFromOrder(Product product) {
 	}
 	
 	mainController.systemProtectionLock = false;
-	//6. System:Unblockstheself-checkoutstation.
-    resetGUI();  // implemented by the GUI team
+//	//6. System:Unblockstheself-checkoutstation.
+//    resetGUI();  // implemented by the GUI team
 }
 
 
