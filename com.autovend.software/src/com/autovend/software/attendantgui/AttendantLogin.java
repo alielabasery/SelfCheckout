@@ -71,7 +71,7 @@ public class AttendantLogin extends JPanel {
                 try {
                     // If login information passes, got to attendant panel
                     a.AttendantLogin(userID, password);
-//                    gc.attendantLoginToAttendantScreen();
+                    gc.attendantLoginToAttendantScreen();
                 } catch (SimulationException s) {
                     // If login failed
                     IDField.setText("");

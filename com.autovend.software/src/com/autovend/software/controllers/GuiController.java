@@ -20,7 +20,8 @@ public class GuiController {
 
     public void startScreen() {
         JFrame screen = station.screen.getFrame();
-        screen.setPreferredSize(screen.getSize());
+        screen.setExtendedState(JFrame.NORMAL);
+        screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
         StartScreenPanel scp = new StartScreenPanel(this);
@@ -28,13 +29,19 @@ public class GuiController {
         panel.add(scp);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
         screen.pack();
+        // Make the JFrame display in the middle of the screen
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) (screenSize.getWidth() - screen.getWidth()) / 2;
+        int y = (int) (screenSize.getHeight() - screen.getHeight()) / 2;
+        screen.setLocation(x, y);
         screen.validate();
         station.screen.setVisible(true);
     }
 
     public void startToAddItemsScreen() {
         JFrame screen = station.screen.getFrame();
-        screen.setPreferredSize(screen.getSize());
+        screen.setExtendedState(JFrame.NORMAL);
+        screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
         AddItemsPanel aip = new AddItemsPanel();
@@ -42,6 +49,11 @@ public class GuiController {
         panel.add(aip);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
         screen.pack();
+        // Make the JFrame display in the middle of the screen
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) (screenSize.getWidth() - screen.getWidth()) / 2;
+        int y = (int) (screenSize.getHeight() - screen.getHeight()) / 2;
+        screen.setLocation(x, y);
         screen.validate();
         station.screen.setVisible(true);
     }
@@ -49,7 +61,8 @@ public class GuiController {
     // Attendant Station
     public void attendantLoginScreen() {
         JFrame screen = station.screen.getFrame();
-        screen.setPreferredSize(screen.getSize());
+        screen.setExtendedState(JFrame.NORMAL);
+        screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
         AttendantLogin al = new AttendantLogin(this);
@@ -57,13 +70,19 @@ public class GuiController {
         panel.add(al);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
         screen.pack();
+        // Make the JFrame display in the middle of the screen
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) (screenSize.getWidth() - screen.getWidth()) / 2;
+        int y = (int) (screenSize.getHeight() - screen.getHeight()) / 2;
+        screen.setLocation(x, y);
         screen.validate();
         station.screen.setVisible(true);
     }
 
     public void attendantLoginToAttendantScreen() {
         JFrame screen = station.screen.getFrame();
-        screen.setPreferredSize(screen.getSize());
+        screen.setExtendedState(JFrame.NORMAL);
+        screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
         AttendantPanel ap = new AttendantPanel();
@@ -71,6 +90,11 @@ public class GuiController {
         panel.add(ap);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
         screen.pack();
+        // Make the JFrame display in the middle of the screen
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) (screenSize.getWidth() - screen.getWidth()) / 2;
+        int y = (int) (screenSize.getHeight() - screen.getHeight()) / 2;
+        screen.setLocation(x, y);
         screen.validate();
         station.screen.setVisible(true);
     }
