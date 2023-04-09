@@ -14,6 +14,7 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 import com.autovend.devices.SelfCheckoutStation;
+import com.autovend.devices.ElectronicScale;
 import com.autovend.external.CardIssuer;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
@@ -29,6 +30,7 @@ public class CheckoutController {
 	public Map<Product, Double> PLUProd;
 	public BigDecimal cost;
 	protected BigDecimal amountPaid;
+	public ElectronicScale electronicScale;
 
 	// sets of valid sources of information to the main controller.
 	private final HashSet<BaggingAreaController> validBaggingControllers;
@@ -36,6 +38,7 @@ public class CheckoutController {
 	private HashSet<PaymentController> validPaymentControllers;
 	private ReceiptPrinterController receiptPrinter;
 	private ElectronicScaleController electronicScaleController;
+	private ItemRemoverController itemRemoverController;
 	private final LinkedHashSet<ChangeSlotController> changeSlotControllers;
 	private TreeMap<BigDecimal, ChangeDispenserController> changeDispenserControllers;
 
@@ -49,11 +52,11 @@ public class CheckoutController {
 	public boolean systemProtectionLock;
 
 	private boolean payingChangeLock;
-	
+
 	/*
-	 * A flag tracking whether or not the system is currently available for customer use. This 
-	 * flag is set false upon start up and must be cleared by the attendant to allow for usage
-	 * by customers. 
+	 * A flag tracking whether or not the system is currently available for customer
+	 * use. This flag is set false upon start up and must be cleared by the
+	 * attendant to allow for usage by customers.
 	 */
 	public boolean systemAvailableForCustomerUse;
 
@@ -76,6 +79,7 @@ public class CheckoutController {
 		validItemAdderControllers = new HashSet<>();
 		validPaymentControllers = new HashSet<>();
 		receiptPrinter = null;
+		itemRemoverController = null;
 		this.changeDispenserControllers = new TreeMap<>();
 		this.changeSlotControllers = new LinkedHashSet<>();
 		clearOrder();
@@ -88,12 +92,12 @@ public class CheckoutController {
 
 		ElectronicScaleController scaleController = new ElectronicScaleController(checkout.baggingArea);
 		this.validBaggingControllers = new HashSet<>(List.of(scaleController));
-		
 
 		this.receiptPrinter = new ReceiptPrinterController(checkout.printer);
-		
-		
+
 		this.electronicScaleController = new ElectronicScaleController(checkout.scale);
+
+		this.itemRemoverController = new ItemRemoverController(checkout.screen);
 
 		BillPaymentController billPayController = new BillPaymentController(checkout.billValidator);
 		CoinPaymentController coinPaymentController = new CoinPaymentController(checkout.coinValidator);
@@ -158,30 +162,29 @@ public class CheckoutController {
 	public BigDecimal getCost() {
 		return this.cost;
 	}
-	
+
 	public double getPLUWeight(Product product) {
 		if (this.PLUProd.containsKey(product)) {
-			
+
 			double weight = PLUProd.get(product);
-			return weight;	
+			return weight;
 		}
 		return 0.0;
 	}
-	
+
 	public boolean checkPLUProd(Product product) {
-		
+
 		if (product instanceof PLUCodedProduct) {
 			return true;
 		}
 		return false;
 	}
 
-
 	/**
 	 * Methods to register and deregister peripherals for controlling the bagging
 	 * area and scanning and printer and methods of payment.
 	 */
-	
+
 	void registerBaggingAreaController(BaggingAreaController controller) {
 		if (validBaggingControllers.contains(controller)) {
 			return;
@@ -208,6 +211,18 @@ public class CheckoutController {
 			return;
 		}
 		this.validItemAdderControllers.remove(adder);
+	}
+
+	public void registerItemRemoverController(ItemRemoverController remover) {
+		if (itemRemoverController == null) {
+			this.itemRemoverController = remover;
+		}
+	}
+
+	void deregisterItemRemoverController(ItemRemoverController remover) {
+		if (itemRemoverController.equals(remover)) {
+			this.itemRemoverController = null;
+		}
 	}
 
 	public void registerPaymentController(PaymentController controller) {
@@ -265,6 +280,7 @@ public class CheckoutController {
 		for (ItemAdderController controller : validItemAdderControllers) {
 			controller.setMainController(this);
 		}
+		itemRemoverController.setMainController(this);
 		for (BaggingAreaController controller : validBaggingControllers) {
 			controller.setMainController(this);
 		}
@@ -290,6 +306,10 @@ public class CheckoutController {
 
 	public HashSet<ItemAdderController> getAllItemAdders() {
 		return this.validItemAdderControllers;
+	}
+
+	ItemRemoverController getItemRemover() {
+		return this.itemRemoverController;
 	}
 
 	HashSet<PaymentController> getAllPaymentControllers() {
@@ -423,33 +443,36 @@ public class CheckoutController {
 		currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(newItem.getPrice());
 
 		this.order.put(newItem, currentItemInfo);
-		
+
 		if (checkPLUProd(newItem)) {
-			
+
 			weight = this.electronicScaleController.getCurrentWeight();
 			this.PLUProd.put(newItem, weight);
 		}
-		
+
 		for (BaggingAreaController baggingController : this.validBaggingControllers) {
-			
+
 			baggingController.updateExpectedBaggingArea(newItem, weight);
 		}
 
 		baggingItemLock = true;
 	}
 
-	
 	/**
 	 * Method to remove items from the order
 	 */
-	public void removeItem(Product itemToRemove, double weight) {
-		if (itemToRemove == null || !this.order.containsKey(itemToRemove)) {
+	public void removeItem(ItemRemoverController remover, Product itemToRemove, double weight) {
+		if (remover != this.itemRemoverController) {
+			return;
+		}
+		
+		if (!this.order.containsKey(itemToRemove)) {
 			return;
 		}
 
-	    // Lock the system and bagging area
-	    baggingItemLock = true;
-	    systemProtectionLock = true;
+		// Lock the system and bagging area
+		baggingItemLock = true;
+		systemProtectionLock = true;
 
 		Number[] currentItemInfo = this.order.get(itemToRemove);
 
@@ -465,21 +488,17 @@ public class CheckoutController {
 			// Remove the item from the order if there is only one left
 			this.order.remove(itemToRemove);
 		}
-
 		for (BaggingAreaController baggingController : this.validBaggingControllers) {
-			baggingController.updateExpectedBaggingArea(itemToRemove, 
-					electronicScaleController.getExpectedWeight() - weight);
+			
+			ElectronicScaleController scale = (ElectronicScaleController) baggingController;
+			scale.updateExpectedBaggingArea(itemToRemove, -weight);
 		}
-
-	    // Unlock the system and bagging area
-	    baggingItemLock = false;
-	    systemProtectionLock = false;
-
 	}
-	
+
 	/**
 	 * Method to add the price of the product to add to the total
-	 * @param val 
+	 * 
+	 * @param val
 	 */
 	public void addToAmountPaid(BigDecimal val) {
 		amountPaid = amountPaid.add(val);
@@ -487,6 +506,7 @@ public class CheckoutController {
 
 	/**
 	 * Method to get the remaining amount to be paid
+	 * 
 	 * @return
 	 */
 	public BigDecimal getRemainingAmount() {
@@ -757,7 +777,5 @@ public class CheckoutController {
 	public HashSet<BaggingAreaController> getValidBaggingControllers() {
 		return this.validBaggingControllers;
 	}
-
-
 
 }
