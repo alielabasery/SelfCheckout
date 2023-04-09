@@ -2,6 +2,8 @@ package com.autovend.software.attendantgui;
 
 import com.autovend.devices.SimulationException;
 import com.autovend.software.controllers.AttendantLoginLogoutController;
+import com.autovend.software.attendantgui.AttendantPanel;
+
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -66,8 +68,10 @@ public class AttendantLogin {
             // Run the AttendantLogin method from the AttendantLoginLogoutController
             try {
                 a.AttendantLogin(userID, password);
+                loginPanel.removeAll();
                 // If login information passes, go to attendant panel
                 // TODO: Go to main attendant access panel
+                new AttendantPanel(loginFrame);
             }
             catch (SimulationException s){
                 // If login failed
