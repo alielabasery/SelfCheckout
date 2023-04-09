@@ -117,5 +117,4 @@ import javax.print.attribute.standard.JobMessageFromOperator;
 	    	}
 	    	return totalWeight;
 	    }
-	    
 	}

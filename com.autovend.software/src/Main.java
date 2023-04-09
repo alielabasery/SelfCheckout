@@ -19,7 +19,7 @@ import com.autovend.products.*;
 
 public class Main {
 	public static void main(String[] args) {
-        try {
+        try {        	
             PriceLookUpCode code = new PriceLookUpCode(new Numeral[] {Numeral.eight, Numeral.five, Numeral.six, Numeral.eight});
             DatabaseController.addPLUdProduct(code, new PLUCodedProduct(code, "Gala Apples", new BigDecimal(1.50)));
             code = new PriceLookUpCode(new Numeral[] {Numeral.eight, Numeral.two, Numeral.one, Numeral.one});
@@ -36,6 +36,8 @@ public class Main {
             DatabaseController.addBarcodedProduct(bcode, new BarcodedProduct(bcode, "Ham", new BigDecimal(15.00), 4.00));
             bcode = CodeUtils.stringBarcodeToBarcode("127634");
             DatabaseController.addBarcodedProduct(bcode, new BarcodedProduct(bcode, "Herbal Essance Shampoo", new BigDecimal(8.59), 2.09));
+            code = CodeUtils.stringPLUToPLU("0001");
+            DatabaseController.addPLUdProduct(code, new PLUCodedProduct(code, "Plastic bag", new BigDecimal(0.05)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
