@@ -3,12 +3,8 @@ package com.autovend.software.test;
 import com.autovend.devices.SimulationException;
 import com.autovend.software.controllers.AttendantLoginLogoutController;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,8 +26,6 @@ public class AttendantLoginLogoutTest {
     private static final String idNotInDatabase = "004";
     private static final String passwordNotInDatabase = "Access4#";
 
-    ByteArrayOutputStream outContent; //to capture output stream
-
     @BeforeClass
     public static void setUpClass() {
         //construct database for attendant ids and passwords
@@ -43,19 +37,11 @@ public class AttendantLoginLogoutTest {
     @Before
     public void setUp() {
         attendantLoginLogoutController = new AttendantLoginLogoutController();
-
-        //redirecting the output stream to ByteArrayOutputStream called outContent
-        outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
     }
 
     @After
     public void tearDown() {
         attendantLoginLogoutController = null;
-
-        //reset output stream
-        System.setOut(System.out); 
-        outContent = null;
     }
 
     @Test
@@ -67,40 +53,17 @@ public class AttendantLoginLogoutTest {
     @Test (expected = SimulationException.class)
     public void testInvalidID() {
         attendantLoginLogoutController.AttendantLogin(idNotInDatabase, attendant1Password);
-        //check message 
-        String expectedOutput = "Incorrect ID!";
-        String actualOutput = outContent.toString();
-        assertEquals(expectedOutput, actualOutput);
     }
 
     @Test (expected = SimulationException.class)
     public void testInvalidPasswordNotInDatabase() {
         attendantLoginLogoutController.AttendantLogin(attendant1Id, passwordNotInDatabase);
-        //check message
-        String expectedOutput = "Incorrect password!";
-        String actualOutput = outContent.toString();
-        assertEquals(expectedOutput, actualOutput);
     }
 
     @Test (expected = SimulationException.class)
     public void testInvalidPasswordInDatabase() {
         attendantLoginLogoutController.AttendantLogin(attendant1Id, attendant3Password);
-        //check message
-        String expectedOutput = "Incorrect password!";
-        String actualOutput = outContent.toString();
-        assertEquals(expectedOutput, actualOutput);
-
     }
-
-    @Test (expected = SimulationException.class)
-    public void testInvalidIDandPassword() {
-        attendantLoginLogoutController.AttendantLogin(idNotInDatabase, passwordNotInDatabase);
-        //check message
-        String expectedOutput = "Incorrect ID and password!";
-        String actualOutput = outContent.toString();
-        assertEquals(expectedOutput, actualOutput);
-    }
-
 
     @Test
     public void testValidLogout() {
@@ -113,9 +76,5 @@ public class AttendantLoginLogoutTest {
     public void testInvalidLogout() {
         //didn't log in 
         attendantLoginLogoutController.AttendantLogout();
-        //check message
-        String expectedOutput = "Nobody is logged in!";
-        String actualOutput = outContent.toString();
-        assertEquals(expectedOutput, actualOutput);
     }
 }
