@@ -68,10 +68,10 @@ public class AttendantLogin {
             // Run the AttendantLogin method from the AttendantLoginLogoutController
             try {
                 a.AttendantLogin(userID, password);
-                loginPanel.removeAll();
+            	loginPanel.removeAll();
                 // If login information passes, go to attendant panel
                 // TODO: Go to main attendant access panel
-                new AttendantPanel(loginFrame);
+                new AttendantPanel(loginFrame, loginPanel);
             }
             catch (SimulationException s){
                 // If login failed
