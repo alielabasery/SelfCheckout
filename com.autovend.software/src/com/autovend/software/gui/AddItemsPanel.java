@@ -1,4 +1,9 @@
 package com.autovend.software.gui;
 
-public class AddItemsPanel {
+import javax.swing.*;
+
+public class AddItemsPanel extends JPanel {
+    public AddItemsPanel() {
+        
+    }
 }
