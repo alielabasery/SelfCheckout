@@ -30,6 +30,7 @@ public class MembershipByTypingPanel extends JPanel{
     String userID;
     Scanner sc;
 
+    //Needs to take input from Textfield and not console
     public MembershipByTypingPanel() {
         MembershipByTypingFrame = new JFrame();
         MembershipByTypingPanel = new JPanel();
