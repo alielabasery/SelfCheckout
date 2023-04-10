@@ -67,7 +67,7 @@ public class AttendantLogin extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String userID = IDField.getText();
-                String password = passField.getText();
+                String password = String.valueOf(passField.getPassword());
                 try {
                     // If login information passes, got to attendant panel
                     a.AttendantLogin(userID, password);
