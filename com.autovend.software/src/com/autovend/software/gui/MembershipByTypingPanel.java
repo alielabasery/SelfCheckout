@@ -5,13 +5,16 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
+import com.autovend.devices.SimulationException;
+import com.autovend.software.controllers.GuiController;
 import com.autovend.software.controllers.MembershipCardController;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Scanner;
 
-public class MembershipByTypingPanel {
+public class MembershipByTypingPanel extends JPanel{
 	JFrame MembershipByTypingFrame;
 	JPanel MembershipByTypingPanel;
 	JLabel MembershipByTypingLabel;
@@ -24,9 +27,11 @@ public class MembershipByTypingPanel {
 
 	String testID = "2222";
 	MembershipCardController a = new MembershipCardController();
+	String userID = IDField.getText();
+	Scanner sc = new Scanner(System.in);
 
 	public MembershipByTypingPanel() {
-		MembershipCardController.getValidMembershipNumberByTyping(null);
+		MembershipCardController.getValidMembershipNumberByTyping(sc);
 		MembershipByTypingFrame = new JFrame();
 		MembershipByTypingPanel = new JPanel();
 		MembershipByTypingPanel.setPreferredSize(new Dimension(1280, 720));
@@ -53,10 +58,27 @@ public class MembershipByTypingPanel {
 		failLabel.setBounds(510, 410, 300, 20);
 		failLabel.setForeground(Color.RED);
 		
-		
-		
-		
-		
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String userID = IDField.getText();
+				Scanner sc = new Scanner(System.in);
+			     int i = sc.nextInt();
+				try {
+					MembershipCardController.getValidMembershipNumberByTyping(sc);
+				}
+					catch(SimulationException s) {
+						IDField.setText("");
+						add(failLabel);
+						revalidate();
+						repaint();
+					}	
+				}
+		});
+		add(MembershipByTypingLabel);
+		add(IDField);
+		add(IDLabel);
+		add(button);
 		
 	}
 }
