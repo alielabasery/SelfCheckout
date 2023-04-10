@@ -35,22 +35,23 @@ public class MembershipByTypingPanel extends JPanel{
         MembershipByTypingFrame = new JFrame();
         MembershipByTypingPanel = new JPanel();
         MembershipByTypingPanel.setPreferredSize(new Dimension(1280, 720));
-        MembershipByTypingPanel.setLayout(null);
-
-        IDField = new JTextField();
-        IDField.setBounds(540, 325, 200, 100);
-        IDLabel = new JLabel("Membership Number:");
-        IDLabel.setBounds(487, 323, 20, 20);
-
+        setLayout(null);
+  
         MembershipByTypingLabel = new JLabel("Please enter your membership below:");
-        MembershipByTypingLabel.setBounds(380, 200, 500, 150);
+        MembershipByTypingLabel.setBounds(450, 150, 750, 150);
         MembershipByTypingLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 18));
+        IDField = new JTextField();
+        IDField.setBounds(540,200, 200, 100);
+        IDField.setHorizontalAlignment(JTextField.CENTER); // set the horizontal alignment
+        IDLabel = new JLabel("Membership Number:");
+        IDField.setBounds(540,270, 200, 25);
+        IDField.setHorizontalAlignment(JLabel.CENTER); // set the horizontal alignment
 
         button = new JButton("Connect");
         button.setBackground(Color.decode("#ade89b"));
         button.setForeground(Color.BLACK);
         button.setBorder(new LineBorder(Color.BLACK, 1, true));
-        button.setBounds(590, 450, 100, 20);
+        button.setBounds(590, 300, 100, 20);
         button.setOpaque(true);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
