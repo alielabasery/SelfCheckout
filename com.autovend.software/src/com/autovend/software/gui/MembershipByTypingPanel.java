@@ -39,10 +39,10 @@ public class MembershipByTypingPanel extends JPanel{
         IDField = new JTextField();
         IDField.setBounds(540, 325, 200, 100);
         IDLabel = new JLabel("Membership Number:");
-        IDLabel.setBounds(487, 323, 400, 20);
+        IDLabel.setBounds(487, 323, 20, 20);
 
         MembershipByTypingLabel = new JLabel("Please enter your membership below:");
-        MembershipByTypingLabel.setBounds(400, 200, 400, 150);
+        MembershipByTypingLabel.setBounds(380, 200, 500, 150);
         MembershipByTypingLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 18));
 
         button = new JButton("Connect");
@@ -74,7 +74,7 @@ public class MembershipByTypingPanel extends JPanel{
                 }   
             }
         });
-
+        
         // initialization moved to here
         userID = IDField.getText();
         sc = new Scanner(System.in);
