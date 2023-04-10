@@ -16,7 +16,7 @@ public class AttendantLogin extends JPanel {
     GuiController gc;
     JLabel loginLabel;
     JTextField IDField;
-    JTextField passField;
+    JPasswordField passField;
     JLabel IDLabel;
     JLabel passLabel;
     JButton button;
@@ -37,7 +37,7 @@ public class AttendantLogin extends JPanel {
         IDField = new JTextField();
         IDField.setBounds(540,325,200,20);
 
-        passField = new JTextField();
+        passField = new JPasswordField();
         passField.setBounds(540, 375, 200, 20);
 
         IDLabel = new JLabel("UserID:");
