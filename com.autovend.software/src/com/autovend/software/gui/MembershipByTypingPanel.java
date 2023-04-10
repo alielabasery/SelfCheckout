@@ -63,8 +63,6 @@ public class MembershipByTypingPanel extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 userID = IDField.getText();
-                sc = new Scanner(System.in);
-                int i = sc.nextInt();
                 String m = "123456789012";
                 try {
                     MembershipCardController.getValidMembershipNumberByTyping(m);
@@ -77,13 +75,7 @@ public class MembershipByTypingPanel extends JPanel{
                 }   
             }
         });
-        
-        // initialization moved to here
-        userID = IDField.getText();
-     //   sc = new Scanner(System.in);
-        String m = "123456789012";
-        String validMembershipNumber = MembershipCardController.getValidMembershipNumberByTyping(m);
-
+       
         add(MembershipByTypingLabel);
         add(IDField);
         add(IDLabel);
