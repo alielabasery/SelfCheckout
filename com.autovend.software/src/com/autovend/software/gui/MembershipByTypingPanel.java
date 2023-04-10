@@ -47,12 +47,13 @@ public class MembershipByTypingPanel {
 		button.setBorder(new LineBorder(Color.BLACK, 1, true));
 		button.setBounds(590, 450, 100, 20);
 		button.setOpaque(true);
+		button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
 		failLabel = new JLabel("The membership number entered was invalid");
 		failLabel.setBounds(510, 410, 300, 20);
 		failLabel.setForeground(Color.RED);
 		
-	
+		
 		
 		
 		
