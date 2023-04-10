@@ -8,7 +8,7 @@ import com.autovend.Barcode;
 import com.autovend.Numeral;
 import com.autovend.PriceLookUpCode;
 
-public class BarcodeUtils {
+public class CodeUtils {
 	 private static Numeral[] stringToNumeralArray(String input) {
 	        char[] chars = input.toCharArray();
 	        ArrayList<Numeral> numerals = new ArrayList<Numeral>();
