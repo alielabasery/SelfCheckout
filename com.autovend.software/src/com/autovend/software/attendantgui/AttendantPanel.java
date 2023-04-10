@@ -15,14 +15,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
 import com.autovend.devices.SimulationException;
+import com.autovend.devices.SupervisionStation;
 import com.autovend.software.controllers.GuiController;
 
 public class AttendantPanel extends JPanel {
 	GuiController gc;
+	SupervisionStation attendantStation;
     int stationCounter = 0;
-    
-	public AttendantPanel(GuiController gc) {
+        
+	public AttendantPanel(GuiController gc, SupervisionStation attendantStation) {
 		this.gc = gc;
+		this.attendantStation = attendantStation;
 		
 		setPreferredSize(new Dimension(1280, 720));
 		setLayout(null);
@@ -40,36 +43,36 @@ public class AttendantPanel extends JPanel {
 		stationsBox.add(getStationPanels());
 		stationsBox.add(new JSeparator());
 
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < attendantStation.supervisedStationCount(); i++) {
 			stationsBox.add(getStationPanels());
 			stationsBox.add(new JSeparator());
 		}
 		
-		JLabel lblNewLabel = new JLabel("Supervised Stations");
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblNewLabel.setBounds(469, 10, 183, 33);
-		add(lblNewLabel);
+		JLabel stationsLabel = new JLabel("Supervised Stations");
+		stationsLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		stationsLabel.setBounds(469, 10, 183, 33);
+		add(stationsLabel);
 		
-		JButton btnNewButton = new JButton("Logout");
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnNewButton.setBounds(1185, 20, 85, 21);
-		btnNewButton.addActionListener(new ActionListener() {
+		JButton logoutButton = new JButton("Logout");
+		logoutButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		logoutButton.setBounds(1185, 20, 85, 21);
+		logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
             	gc.attendantLoginScreen();
             }
         });
-		add(btnNewButton);
+		add(logoutButton);
 		
-		JButton btnNewButton_1 = new JButton("Add New Station");
-		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnNewButton_1.setBounds(801, 661, 156, 27);
-		add(btnNewButton_1);
+		JButton addStationButton = new JButton("Add New Station");
+		addStationButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		addStationButton.setBounds(801, 661, 156, 27);
+		add(addStationButton);
 		
-		JLabel lblNotifications = new JLabel("Notifications");
-		lblNotifications.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblNotifications.setBounds(10, 10, 183, 33);
-		add(lblNotifications);
+		JLabel notificationsLabel = new JLabel("Notifications");
+		notificationsLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		notificationsLabel.setBounds(10, 10, 183, 33);
+		add(notificationsLabel);
 		
 		Panel notificationsPanel = new Panel();
 		notificationsPanel.setBounds(10, 52, 453, 587);
@@ -94,8 +97,8 @@ public class AttendantPanel extends JPanel {
 		panel.add(lblNewLabel_1);
 		panel.add(Box.createRigidArea(new Dimension(100, 0)));
 		
-		JButton btnNewButton_1 = new JButton("Button 1");
-		panel.add(btnNewButton_1);
+		JButton addStationButton = new JButton("Button 1");
+		panel.add(addStationButton);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
 		JButton btnNewButton_2 = new JButton("Button 2");
@@ -117,8 +120,8 @@ public class AttendantPanel extends JPanel {
 		panel.add(lblNewLabel_1);
 		panel.add(Box.createRigidArea(new Dimension(100, 0)));
 		
-		JButton btnNewButton_1 = new JButton("Allow");
-		panel.add(btnNewButton_1);
+		JButton addStationButton = new JButton("Allow");
+		panel.add(addStationButton);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
 		JButton btnNewButton_2 = new JButton("Deny");
