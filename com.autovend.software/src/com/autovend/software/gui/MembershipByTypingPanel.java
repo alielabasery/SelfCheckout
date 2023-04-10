@@ -30,7 +30,7 @@ public class MembershipByTypingPanel extends JPanel{
     String userID;
     Scanner sc;
 
-    //Needs to take input from Textfield and not console
+    
     public MembershipByTypingPanel() {
         MembershipByTypingFrame = new JFrame();
         MembershipByTypingPanel = new JPanel();
@@ -64,8 +64,9 @@ public class MembershipByTypingPanel extends JPanel{
                 userID = IDField.getText();
                 sc = new Scanner(System.in);
                 int i = sc.nextInt();
+                String m = "123456789012";
                 try {
-                    MembershipCardController.getValidMembershipNumberByTyping(sc);
+                    MembershipCardController.getValidMembershipNumberByTyping(m);
                 }
                 catch(SimulationException s) {
                     IDField.setText("");
@@ -78,8 +79,9 @@ public class MembershipByTypingPanel extends JPanel{
         
         // initialization moved to here
         userID = IDField.getText();
-        sc = new Scanner(System.in);
-        String validMembershipNumber = MembershipCardController.getValidMembershipNumberByTyping(sc);
+     //   sc = new Scanner(System.in);
+        String m = "123456789012";
+        String validMembershipNumber = MembershipCardController.getValidMembershipNumberByTyping(m);
 
         add(MembershipByTypingLabel);
         add(IDField);
