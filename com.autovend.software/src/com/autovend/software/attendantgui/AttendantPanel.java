@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -12,10 +14,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
+import com.autovend.devices.SimulationException;
+import com.autovend.software.controllers.GuiController;
+
 public class AttendantPanel extends JPanel {
+	GuiController gc;
     int stationCounter = 0;
     
-	public AttendantPanel() {
+	public AttendantPanel(GuiController gc) {
+		this.gc = gc;
+		
 		setPreferredSize(new Dimension(1280, 720));
 		setLayout(null);
 		
@@ -45,6 +53,12 @@ public class AttendantPanel extends JPanel {
 		JButton btnNewButton = new JButton("Logout");
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnNewButton.setBounds(1185, 20, 85, 21);
+		btnNewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	gc.attendantLoginScreen();
+            }
+        });
 		add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("Add New Station");

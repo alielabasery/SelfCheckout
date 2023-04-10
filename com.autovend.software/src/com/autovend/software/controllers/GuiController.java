@@ -85,7 +85,7 @@ public class GuiController {
         screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
-        AttendantPanel ap = new AttendantPanel();
+        AttendantPanel ap = new AttendantPanel(this);
         JPanel panel = new JPanel();
         panel.add(ap);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
