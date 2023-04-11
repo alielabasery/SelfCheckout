@@ -224,8 +224,10 @@ public String getValidMembershipNumberBySwiping(MembershipCard mc) {
 			String scanMethodResponse = scan.nextLine();
 			
 			if (scanMethodResponse.equalsIgnoreCase("type")) {
+
 				 input = scan.nextLine();
 				membershipNumber = getValidMembershipNumberByTyping(input);
+
 			} else if (scanMethodResponse.equalsIgnoreCase("scan")) {
 				membershipNumber = getValidMembershipNumberByScanning(barcodeScanner, mc);
 			} else {
@@ -247,8 +249,10 @@ public String getValidMembershipNumberBySwiping(MembershipCard mc) {
 				System.out.println("Invalid input. Please enter 'yes' or 'no'.");
 				return;
 			} else if (response2.equalsIgnoreCase("no")) {
+
 				 input = scan.nextLine();
 				membershipNumber = getValidMembershipNumberByTyping(input);
+
 				if (membershipNumber != null) {
 					mc = new MembershipCard("Membership Card", membershipNumber, "Regular Shopper", false);
 					isActive = true;
