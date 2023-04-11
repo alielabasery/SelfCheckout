@@ -19,6 +19,8 @@ public abstract class BaggingAreaController<D extends AbstractDevice<O>, O exten
 
 	private CheckoutController mainController;
 	private boolean orderValidated;
+	private boolean attendantApproval;
+
 
 	public BaggingAreaController(D newDevice) {
 		super(newDevice);
@@ -41,8 +43,6 @@ public abstract class BaggingAreaController<D extends AbstractDevice<O>, O exten
 	}
 	
 	
-	//method used as a private getter and setter to be used below 
-	private boolean attendantApproval;
 
 	public void setAttendantApproval(boolean approval) {
 	    this.attendantApproval = approval;
@@ -63,6 +63,7 @@ public abstract class BaggingAreaController<D extends AbstractDevice<O>, O exten
 	// that it works with
 	// more than just weight based bagging area devices (so it can implement more
 	// types of validation)
+
 	abstract void updateExpectedBaggingArea(Product nextProduct, double weightInGrams);
 
 	abstract public void resetOrder();
