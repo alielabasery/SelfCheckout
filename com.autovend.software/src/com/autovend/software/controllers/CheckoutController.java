@@ -43,7 +43,7 @@ public class CheckoutController {
 	private ReceiptPrinterController receiptPrinter;
 	private ElectronicScaleController electronicScaleController;
 	private ItemRemoverController itemRemoverController;
-	private ReusableBagDispenserController bagDispenserController;
+	private BagDispenserController bagDispenserController;
 	private final LinkedHashSet<ChangeSlotController> changeSlotControllers;
 	private TreeMap<BigDecimal, ChangeDispenserController> changeDispenserControllers;
 	private Cart cart;
@@ -106,7 +106,7 @@ public class CheckoutController {
 
 		this.itemRemoverController = new ItemRemoverController(checkout.screen);
 		
-		this.bagDispenserController = new ReusableBagDispenserController();
+		this.bagDispenserController = new BagDispenserController(checkout.bagDispenser);
 
 		BillPaymentController billPayController = new BillPaymentController(checkout.billValidator);
 		CoinPaymentController coinPaymentController = new CoinPaymentController(checkout.coinValidator);
@@ -288,6 +288,18 @@ public class CheckoutController {
 			this.changeDispenserControllers.remove(denom, controller);
 		}
 	}
+	
+	public void registerBagDispenserController(BagDispenserController controller) {
+		if (bagDispenserController == null) {
+			this.bagDispenserController = controller;
+		}
+	}
+
+	void deregisterBagDispenserController(BagDispenserController controller) {
+		if (bagDispenserController.equals(controller)) {
+			this.bagDispenserController = null;
+		}
+	}
 
 	void registerAll() {
 		for (ItemAdderController controller : validItemAdderControllers) {
@@ -324,6 +336,10 @@ public class CheckoutController {
 	ItemRemoverController getItemRemover() {
 		return this.itemRemoverController;
 	}
+	
+	BagDispenserController getBagController() {
+		return this.bagDispenserController;
+	}
 
 	HashSet<PaymentController> getAllPaymentControllers() {
 		return this.validPaymentControllers;
@@ -342,6 +358,8 @@ public class CheckoutController {
 		newSet.addAll(this.validBaggingControllers);
 		newSet.addAll(this.validPaymentControllers);
 		newSet.add(this.receiptPrinter);
+		newSet.add(this.bagDispenserController);
+		newSet.add(itemRemoverController);
 		newSet.addAll(this.changeSlotControllers);
 		newSet.addAll(this.changeDispenserControllers.values());
 		newSet.remove(null);
@@ -414,7 +432,7 @@ public class CheckoutController {
 		this.order.put(newBag, currentBagInfo);
 
 		for (BaggingAreaController baggingController : this.validBaggingControllers) {
-			baggingController.updateExpectedBaggingArea(newBag, weight);
+			baggingController.updateExpectedBaggingArea(weight);
 		}
 
 		baggingItemLock = true;
@@ -469,7 +487,7 @@ public class CheckoutController {
 
 		for (BaggingAreaController baggingController : this.validBaggingControllers) {
 
-			baggingController.updateExpectedBaggingArea(newItem, weight);
+			baggingController.updateExpectedBaggingArea(weight);
 		}
 
 		baggingItemLock = true;
@@ -508,10 +526,10 @@ public class CheckoutController {
 		for (BaggingAreaController baggingController : this.validBaggingControllers) {
 			
 			ElectronicScaleController scale = (ElectronicScaleController) baggingController;
-			scale.updateExpectedBaggingArea(itemToRemove, -weight);
+			scale.updateExpectedBaggingArea(-weight);
 		}
 	}
-
+	
 	/**
 	 * Method to add the price of the product to add to the total
 	 * 

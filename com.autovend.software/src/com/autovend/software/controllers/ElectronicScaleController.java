@@ -26,7 +26,7 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 	 * @param weightInGrams
 	 */
 	@Override
-	void updateExpectedBaggingArea(Product nextProduct, double weightInGrams) {
+	void updateExpectedBaggingArea(double weightInGrams) {
 		this.expectedWeight += weightInGrams;
 		this.setBaggingValid(false);
 		// TODO: Figure out how changes smaller than sensitivity would be handled
