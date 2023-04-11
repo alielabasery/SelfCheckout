@@ -69,8 +69,11 @@ public class MembershipCardController {
 		if (memberNum == null || memberNum.length() != 12) {
 			throw new IllegalDigitException("The Membership number should be exactly 12 digits long.");
 		}
+	
 		for (int i = 0; i < memberNum.length(); i++) {
+			
 			char c = memberNum.charAt(i);
+			
 			if (!Character.isDigit(c)) {
 				throw new IllegalDigitException("The Membership number should only contain digits between 0-9.");
 			}
@@ -87,25 +90,28 @@ public class MembershipCardController {
 	 * tries (MAX_TRIES). If the user exceeds the maximum number of tries without
 	 * entering a valid Membership number, the method returns null.
 	 */
+	
+	//Takes string input now
 
 	public static String getValidMembershipNumberByTyping(String memberNum) throws IllegalDigitException {
-        int numTries = 0;
-        while (numTries < MAX_TRIES) {
-            try {
-                if (isValid(memberNum)) {
-                    return memberNum;
-                }
-            } catch (IllegalDigitException e) {
-                System.out.println(e.getMessage());
-            }
-            numTries++;
-            if (numTries < MAX_TRIES) {
-                System.out.println(
-                        "Invalid membership number. Please try again or enter 'yes' to continue without a Membership number.");
-            }
-        }
-        return null;
-    }
+		int numTries = 0;
+		while (numTries < MAX_TRIES) {
+			System.out.println("Enter your Membership number: ");
+			try {
+				if (isValid(memberNum)) {
+					return memberNum;
+				}
+			} catch (IllegalDigitException e) {
+				System.out.println(e.getMessage());
+			}
+			numTries++;
+			if (numTries < MAX_TRIES) {
+				System.out.println(
+						"Invalid membership number. Please try again or enter 'yes' to continue without a Membership number.");
+			}
+		}
+		return null;
+	}
 
 	/*
 	 * The getValidMembershipNumberByScanning method prompts the user to scan their Membership Card
@@ -203,8 +209,11 @@ public String getValidMembershipNumberBySwiping(MembershipCard mc) {
 	 * process.
 	 */
 
+// Changed String input lines
+
 	@SuppressWarnings("resource")
 	public void updateMembershipStatus() {
+		String input = "";
 		Scanner scan = new Scanner(System.in);
 		MembershipCard mc = new MembershipCard("Membership Card", "123456789012", "XYZ", false);
 		System.out.println("Do you have a Membership number? (yes or no or cancel)");
@@ -215,7 +224,10 @@ public String getValidMembershipNumberBySwiping(MembershipCard mc) {
 			String scanMethodResponse = scan.nextLine();
 			
 			if (scanMethodResponse.equalsIgnoreCase("type")) {
-				membershipNumber = getValidMembershipNumberByTyping(scanMethodResponse);
+
+				 input = scan.nextLine();
+				membershipNumber = getValidMembershipNumberByTyping(input);
+
 			} else if (scanMethodResponse.equalsIgnoreCase("scan")) {
 				membershipNumber = getValidMembershipNumberByScanning(barcodeScanner, mc);
 			} else {
@@ -237,7 +249,10 @@ public String getValidMembershipNumberBySwiping(MembershipCard mc) {
 				System.out.println("Invalid input. Please enter 'yes' or 'no'.");
 				return;
 			} else if (response2.equalsIgnoreCase("no")) {
-				membershipNumber = getValidMembershipNumberByTyping(response2);
+
+				 input = scan.nextLine();
+				membershipNumber = getValidMembershipNumberByTyping(input);
+
 				if (membershipNumber != null) {
 					mc = new MembershipCard("Membership Card", membershipNumber, "Regular Shopper", false);
 					isActive = true;
