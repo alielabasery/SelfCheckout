@@ -15,6 +15,7 @@ import java.util.TreeMap;
 
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.devices.ElectronicScale;
+import com.autovend.devices.ReusableBagDispenser;
 import com.autovend.external.CardIssuer;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
@@ -34,7 +35,8 @@ public class CheckoutController {
 	public Map<Product, Double> PLUProd;
 	public BigDecimal cost;
 	protected BigDecimal amountPaid;
-	public ElectronicScale electronicScale;
+	public ReusableBagDispenser dispenser;
+	public int bagCount;
 
 	// sets of valid sources of information to the main controller.
 	private final HashSet<BaggingAreaController> validBaggingControllers;
@@ -439,6 +441,26 @@ public class CheckoutController {
 
 		System.out.println("Reusable bag has been added, you may continue.");
 
+	}
+	
+	public void bagDispense(BagDispenserController controller) {
+		
+		if (!bagDispenserController.equals(controller)) {
+			return;
+		}
+		
+		int bags = getBagNumber();
+		while (bags != 0) {
+			controller.dispenseBags();
+		}
+	}
+	
+	public void bagDispenseFailed(BagDispenserController controller) {
+		
+		if (!bagDispenserController.equals(controller)) {
+			return;
+		}
+		controller.bagsLoaded(dispenser,bagCount);
 	}
 	
 	public void addItem(CartLineItem item) {

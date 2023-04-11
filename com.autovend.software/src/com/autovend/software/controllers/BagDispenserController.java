@@ -1,6 +1,8 @@
 package com.autovend.software.controllers;
 
+import com.autovend.ReusableBag;
 import com.autovend.devices.EmptyException;
+import com.autovend.devices.OverloadException;
 import com.autovend.devices.ReusableBagDispenser;
 import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.ReusableBagDispenserObserver;
@@ -10,6 +12,8 @@ public class BagDispenserController extends DeviceController<ReusableBagDispense
 		implements ReusableBagDispenserObserver{
 	
 	CheckoutController mainController;
+	ReusableBagDispenser bagDispenser;
+	ReusableBag bags;
 
 	public BagDispenserController(ReusableBagDispenser dispenser) {
 		super(dispenser);
@@ -30,32 +34,48 @@ public class BagDispenserController extends DeviceController<ReusableBagDispense
 		}
 	}
 	
-	public void dispenceBags() {
+	public void dispenseBags() {
 		
 		try {
 			this.getDevice().dispense();
 		} catch (EmptyException e) {
-			this.getMainController().bagDispenceFailed(this);
-			
+			this.outOfBags(bagDispenser);
 		}
+	}
+	
+	@Override
+	public void bagsLoaded(ReusableBagDispenser dispenser,int count) {
+		int capacity = this.getDevice().getCapacity();
+		if (count <= capacity) {			
+			try {
+				this.getDevice().load(bags);
+			} catch (OverloadException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 	@Override
 	public void bagDispensed(ReusableBagDispenser dispenser) {
-		// TODO Auto-generated method stub
+		if (dispenser != this.getDevice()) {
+			return;
+		}
+		this.getMainController().bagDispense(this);
 		
 	}
 
 	@Override
 	public void outOfBags(ReusableBagDispenser dispenser) {
-		// TODO Auto-generated method stub
+		if (dispenser != this.getDevice()) {
+			return;
+		}
+		this.getMainController().bagDispenseFailed(this);
 		
 	}
 
-	@Override
-	public void bagsLoaded(ReusableBagDispenser dispenser, int count) {
-		// TODO Auto-generated method stub
-		
-	}
+
+
 
 }
