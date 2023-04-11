@@ -4,12 +4,20 @@ package com.autovend.software.controllers;
 import com.autovend.PriceLookUpCode;
 import com.autovend.PriceLookUpCodedUnit;
 import com.autovend.SellableUnit;
+import com.autovend.devices.DisabledException;
+import com.autovend.devices.SimulationException;
 import com.autovend.devices.TouchScreen;
 import com.autovend.devices.observers.TouchScreenObserver;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.software.utils.BarcodeUtils;
+import com.autovend.devices.observers.AbstractDeviceObserver;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Controller for adding items by their PLU code, communicates with main checkout
@@ -17,93 +25,97 @@ import com.autovend.software.utils.BarcodeUtils;
  */
 public class AddItemByPLUController extends ItemAdderController<TouchScreen, TouchScreenObserver> implements TouchScreenObserver {
 
-    /*
-    1. Customer I/O: Displays a virtual numeric keyboard.
-    2. Customer I/O: Accepts the customer’s input of the PLU code.
-    3. Customer I/O: Signals to the System that an item with a given PLU code is being added.
-    4. System: Blocks the self-checkout station from further input.
-    5. Customer I/O: Signals to the customer to add the item to the Bagging Area.
-    6. Bagging Area: Signals the System that the weight has changed.
-    7. System: Unblocks the station.
-    8. Customer I/O: Returns to its standard display.
+    List<PLUCodedProduct> catalog = new ArrayList<PLUCodedProduct>();
+    BigDecimal price;  // used for testing
+    PLUCodedProduct pluProduct;
+    String newItemDescription;  // used for testing
 
-
-    1. Simple mechanisms for self-correction by the customer,like a backspace key,should be supported.
-    2. The customer ought to have the opportunity to see that the PLU does not correspond to their item.
-        At this point, communication with the attendant is likely the best option for correcting the problem.
-     */
 
     public AddItemByPLUController(TouchScreen touchScreen) {
         super(touchScreen);
     }
 
-    public void reactToAddByPLUCodeEvent(TouchScreen touchScreen) {
-        // 3. Customer I/O: Signals to the System that an item with a given PLU code is being added.
-        // 4. System: Blocks the self-checkout station from further input.
+
+    /*
+     * Add products in database to catalog
+     */
+    public void addProducts() {
+        catalog.addAll(ProductDatabases.PLU_PRODUCT_DATABASE.values());
+    }
+
+
+    /*
+     * Gets the selected Item's PLUCodedProduct, price and weight based on quantity
+     */
+    public void handleInputPLU(PriceLookUpCode pluCode, String quantity) {
+        BigDecimal productQuantity = new BigDecimal(quantity);
+        pluProduct = ProductDatabases.PLU_PRODUCT_DATABASE.get(pluCode);
+
+        price = pluProduct.getPrice().multiply(productQuantity);
+        newItemDescription = pluProduct.getDescription();
+    }
+
+
+    /*
+     * Reaction event when item is added by PLU
+     */
+    public void reactToAddByPLUEvent(TouchScreen touchScreen) {
+        if(isDeviceDisabled())
+            throw new DisabledException();
+
+        if (touchScreen == null)
+            throw new SimulationException(new NullPointerException("touch screen cannot be null"));
+
         disableDevice();
 
-        // 1. Customer I/O: Displays a virtual numeric keyboard.
-        // 1. Simple mechanisms for self-correction by the customer, like a backspace key, should be supported.
-        // displayNumericKeyboard() return type: return pluString + "," + exit;
-        String result = displayNumericKeyboard();  // provided by GUI team
-        String[] values = result.split(",");
-        String pluString = values[0];
-        boolean exit = Boolean.parseBoolean(values[1]);  // true if user wants to exit the process of entering a PLU code
-
-        if (exit) {
-            enableDevice();
-            // resetGUI() executes point no. 8
-            resetGUI();  // provided by GUI team
-            return;
-        }
+        String pluString = displayNumericKeyboard();  // provided by GUI team, passes in string of product's plu code
+        String entryQuantity = selectQuantity(); //provided by GUI team, passes in string of item's quantity
 
         PriceLookUpCode pluCode = BarcodeUtils.stringPLUToPLU(pluString);
 
-        PLUCodedProduct product = ProductDatabases.PLU_PRODUCT_DATABASE.get(pluCode);
+        handleInputPLU(pluCode, entryQuantity);
 
-        if (product != null) {
+        if (pluProduct != null) {
             // 1.0 is a placeholder, addItem() gets the weight of the product from the electronic scale
-            this.getMainController().addItem(this, product, 1.0);
+            this.getMainController().addItem(this, pluProduct, 1.0);
         }
         else {
-            while (!ProductDatabases.PLU_PRODUCT_DATABASE.containsKey(pluCode)) {
-
-                // 2. The customer ought to have the opportunity to see that the PLU does not correspond to their item.
-                // At this point, communication with the attendant is likely the best option for correcting the problem.
-                // incorrectPLUCode() executes point no. 2
-                incorrectPLUCode();  // provided by GUi team
-
-                // displayNumericKeyboard() return type: return pluString + "," + exit;
-                result = displayNumericKeyboard();  // provided by GUI team
-                values = result.split(",");
-                pluString = values[0];
-                exit = Boolean.parseBoolean(values[1]);  // true if user wants to exit the process of entering a PLU code
-
-                if (exit) {
-                    enableDevice();
-                    // resetGUI() executes point no. 8
-                    resetGUI();  // provided by GUI team
-                    return;
-                }
-
-                pluCode = BarcodeUtils.stringPLUToPLU(pluString);
-                product = ProductDatabases.PLU_PRODUCT_DATABASE.get(pluCode);
-            }
-            // 1.0 is a placeholder, addItem() gets the weight of the product from the electronic scale
-            this.getMainController().addItem(this, product, 1.0);
-
+            enableDevice();
+            throw new SimulationException(new NullPointerException("the entered product does not exist"));
         }
 
-        // 5. Customer I/O: Signals to the customer to add the item to the Bagging Area.
-        // signalToAddToBaggingArea() executes point no. 5
         signalToAddToBaggingArea();  // provided by GUI team
-
-        // 7. System: Unblocks the station.
         enableDevice();
-
-        // 8. Customer I/O: Returns to its standard display.
-        // resetGUI() executes point no. 8
         resetGUI();  // provided by GUi team
+    }
+
+
+    /*
+     * Getter for Catalog List
+     */
+    public List<PLUCodedProduct> getCatalog(){
+        return catalog;
+    }
+
+    /*
+     * Getter for selected Product
+     */
+    public PLUCodedProduct getPluProduct() {
+        return pluProduct;
+    }
+
+    /*
+     * Getter for selected Item's price
+     */
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    /*
+     * Getter for the new Item's description
+     */
+    public String getNewItemDescription() {
+        return newItemDescription;
     }
 
 }

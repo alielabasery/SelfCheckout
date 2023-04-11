@@ -5,6 +5,7 @@ import com.autovend.PriceLookUpCode;
 import com.autovend.PriceLookUpCodedUnit;
 import com.autovend.devices.BarcodeScanner;
 import com.autovend.devices.DisabledException;
+import com.autovend.devices.SimulationException;
 import com.autovend.devices.TouchScreen;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.PLUCodedProduct;
@@ -12,8 +13,20 @@ import com.autovend.products.Product;
 import com.autovend.software.controllers.AddItemByPLUController;
 import com.autovend.software.controllers.CheckoutController;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Set;
+import java.util.List;
 
 
 /**
@@ -24,6 +37,7 @@ public class AddItemByPLUTest {
     private CheckoutController checkoutController;
     private AddItemByPLUController addItemByPLUController;
     private TouchScreen touchScreen;
+    private List<PLUCodedProduct> testCatalog;
 
     PLUCodedProduct product1;
     PLUCodedProduct product2;
@@ -35,30 +49,34 @@ public class AddItemByPLUTest {
     static final PriceLookUpCode PLUCODE_2 = new PriceLookUpCode(Numeral.one, Numeral.two, Numeral.three, Numeral.four, Numeral.five);
 
 
-    /**
+    /*
      * Setup for testing
      */
     @Before
     public void setup() {
         checkoutController = new CheckoutController();
         touchScreen = new TouchScreen();
+        addItemByPLUController = new AddItemByPLUController(touchScreen);
+        testCatalog = new ArrayList<PLUCodedProduct>();
 
         unit1 = new PriceLookUpCodedUnit(PLUCODE_1, 1f);
         unit2 = new PriceLookUpCodedUnit(PLUCODE_2, 2f);
 
-        product1 = new PLUCodedProduct(PLUCODE_1, "Item 1", BigDecimal.valueOf(1f));
-        product2 = new PLUCodedProduct(PLUCODE_2, "Item 2", BigDecimal.valueOf(2f));
+        product1 = new PLUCodedProduct(PLUCODE_1, "Item 1", new BigDecimal("4.0"));
+        product2 = new PLUCodedProduct(PLUCODE_2, "Item 2", new BigDecimal("2.5"));
 
         ProductDatabases.PLU_PRODUCT_DATABASE.put(PLUCODE_1, product1);
-        ProductDatabases.PLU_PRODUCT_DATABASE.put(PLUCODE_2, product2);
+
+        testCatalog.add(product1);
 
         addItemByPLUController.setMainController(checkoutController);
+        addItemByPLUController.addProducts();
 
-        touchScreen.register(addItemByPLUController);  // not sure abt this
+        touchScreen.register(addItemByPLUController);
     }
 
 
-    /**
+    /*
      * Tears down objects so that they can be initialized again with setup
      */
     @After
@@ -72,37 +90,69 @@ public class AddItemByPLUTest {
         product1 = null;
         product2 = null;
 
-        ProductDatabases.PLU_PRODUCT_DATABASE.remove(PLUCODE_1);
-        ProductDatabases.PLU_PRODUCT_DATABASE.remove(PLUCODE_2);
+        ProductDatabases.PLU_PRODUCT_DATABASE.clear();
     }
 
 
-    // Testing AddItemByPLUController methods
-
-
-    /**
-     * Tests that AddItemBYPLUController reacts correctly to the addition of an
-     * item in the database
+    /*
+     * Test to see if catalog is populated with products correctly
      */
     @Test
-    public void testValidItem() {
-
+    public void getCatalog() {
+        List<PLUCodedProduct> catalog = addItemByPLUController.getCatalog();
+        boolean match = catalog.containsAll(testCatalog);
+        assertTrue(match);
+        assertFalse(catalog.isEmpty());
+        assertEquals(1, catalog.size());
     }
 
-    /**
+
+    /*
+     * Test to see if correct price of product1 is returned
+     */
+    @Test
+    public void getProductPrice() {
+        addItemByPLUController.handleInputPLU(PLUCODE_1, "1");
+        BigDecimal product1_price = addItemByPLUController.getPrice();
+        assertEquals(new BigDecimal(4), product1_price);
+    }
+
+
+    /*
+     * Test to see if correct description of product1 is returned
+     */
+    @Test
+    public void getProductDescription() {
+        addItemByPLUController.handleInputPLU(PLUCODE_1, "1");
+        String description = addItemByPLUController.getNewItemDescription();
+        assertEquals("Item 1", description);
+    }
+
+
+    /*
+     * Test to see if correct price of multiple products is returned
+     */
+    @Test
+    public void getItemsMultipliedPrice() {
+        addItemByPLUController.handleInputPLU(PLUCODE_1, "5");
+        BigDecimal items_price = addItemByPLUController.getPrice();
+        assertEquals(new BigDecimal(20), items_price);
+    }
+
+
+    /*
      * Tests that AddItemBYPLUController reacts correctly to the addition of an
      * item not in the database
      */
-    @Test
+    @Test (expected = SimulationException.class)
     public void testNotFoundItem() {
-
+        addItemByPLUController.handleInputPLU(PLUCODE_2, "1.0");
     }
 
 
-    //	Testing ItemAdderController methods with AddItemByPLUController
+    // Testing ItemAdderController methods with AddItemByPLUController
 
-
-    /**
+    /*
      * Tests that the setMainController method of ItemAdderController correctly
      * replaces the controller's main controller and deregisters the controller from
      * the old CheckoutController
@@ -123,46 +173,27 @@ public class AddItemByPLUTest {
 
     // Testing DeviceController methods with AddItemByPLUController
 
-
-    /**
+    /*
      * Tests that the disableDevice method of DeviceController causes a
-     * DisabledException to be thrown when a scan is attempted
+     * DisabledException to be thrown when an addition is attempted
      */
     @Test(expected = DisabledException.class)
     public void testDisabledAddItemController() {
         addItemByPLUController.disableDevice();
-        .scan();
+        addItemByPLUController.reactToAddByPLUEvent(touchScreen);
     }
 
 
-    /**
-     * Tests that the enableDevice method of DeviceController works correctly,
-     * allowing scans to take place again
-     */
-    @Test
-    public void testReenabledScanController() {
-        addItemByPLUController.disableDevice();
-        addItemByPLUController.enableDevice();
-        while (!.(validUnit1)) {
-        } // loop until successful scan
-        Set<Product> orderSet = addItemByPLUController.getMainController().getOrder().keySet();
-        Product[] orderArr = orderSet.toArray(new Product[orderSet.size()]);
-        assertSame("Scanned product should be in the order list", orderArr[0].getPrice(), databaseItem1.getPrice());
-    }
-
-
-    /**
+    /*
      * Tests that the setDevice method of DeviceController correctly replaces the
-     * old BarcodeScanner with the new one
+     * old touch screen with the new one
      */
     @Test
     public void testNewScanner() {
-        BarcodeScanner newScanner = new BarcodeScanner();
-        addItemByPLUController.setDevice();
-        assertNotSame("New barcode scanner should be ..", stubScanner, addItemByPLUController.getDevice());
+        TouchScreen secondScreen = new TouchScreen();
+        addItemByPLUController.setDevice(secondScreen);
+        assertNotSame("New touch screen should be ..", secondScreen, addItemByPLUController.getDevice());
     }
-
-
 
 
 }
