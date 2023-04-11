@@ -140,7 +140,4 @@ public class ElectronicScale extends AbstractDevice<ElectronicScaleObserver> {
 				observer.reactToWeightChangedEvent(this, currentWeightInGrams);
 		}
 	}
-
-
-	}
-
+}
