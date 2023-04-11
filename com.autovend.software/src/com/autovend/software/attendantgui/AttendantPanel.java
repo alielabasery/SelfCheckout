@@ -67,6 +67,12 @@ public class AttendantPanel extends JPanel {
 		JButton addStationButton = new JButton("Add New Station");
 		addStationButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		addStationButton.setBounds(801, 661, 156, 27);
+		addStationButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	
+            }
+        });
 		add(addStationButton);
 		
 		JLabel notificationsLabel = new JLabel("Notifications");
@@ -93,20 +99,20 @@ public class AttendantPanel extends JPanel {
 	public JPanel getStationPanels() {
 		JPanel panel = new JPanel();
 		
-		JLabel lblNewLabel_1 = new JLabel("Station: " + stationCounter);
-		panel.add(lblNewLabel_1);
+		JLabel label = new JLabel("Station: " + stationCounter);
+		panel.add(label);
 		panel.add(Box.createRigidArea(new Dimension(100, 0)));
 		
-		JButton addStationButton = new JButton("Button 1");
-		panel.add(addStationButton);
+		JButton bttn = new JButton("Button 1");
+		panel.add(bttn);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
-		JButton btnNewButton_2 = new JButton("Button 2");
-		panel.add(btnNewButton_2);
+		JButton bttn2 = new JButton("Button 2");
+		panel.add(bttn2);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
-		JButton btnNewButton_3 = new JButton("Button 3");
-		panel.add(btnNewButton_3);
+		JButton bttn3 = new JButton("Button 3");
+		panel.add(bttn3);
 				
 		stationCounter++;
 		
