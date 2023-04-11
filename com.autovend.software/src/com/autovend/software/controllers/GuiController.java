@@ -15,10 +15,12 @@ import java.util.Currency;
 public class GuiController {
     SelfCheckoutStation station;
     SupervisionStation attendantStation;
+    AttendentController attendantController;
 
     public GuiController(SelfCheckoutStation station, SupervisionStation attendantStation) {
         this.station = station;
         this.attendantStation = attendantStation;
+        this.attendantController = new AttendentController();
     }
 
     public void startScreen() {
@@ -88,7 +90,7 @@ public class GuiController {
         screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
-        AttendantPanel ap = new AttendantPanel(this, attendantStation);
+        AttendantPanel ap = new AttendantPanel(this, attendantStation, attendantController);
         JPanel panel = new JPanel();
         panel.add(ap);
         screen.getContentPane().add(panel, BorderLayout.CENTER);

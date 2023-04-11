@@ -6,6 +6,9 @@ import java.awt.Font;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.util.Currency;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -16,16 +19,35 @@ import javax.swing.JSeparator;
 
 import com.autovend.devices.SimulationException;
 import com.autovend.devices.SupervisionStation;
+import com.autovend.devices.SelfCheckoutStation;
+import com.autovend.software.controllers.AttendentController;
+import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.GuiController;
+
+import Networking.NetworkController;
 
 public class AttendantPanel extends JPanel {
 	GuiController gc;
 	SupervisionStation attendantStation;
+	AttendentController attendantController;
+	
+	private Currency currency;
+	private int[] billDenominations;
+	private BigDecimal[] coinDenominations;
+	
+	private int scaleMaximumWeight = 1000;
+	private int scaleSensitivity = 100;
+	
     int stationCounter = 0;
         
-	public AttendantPanel(GuiController gc, SupervisionStation attendantStation) {
+	public AttendantPanel(GuiController gc, SupervisionStation attendantStation, AttendentController attendantController) {
 		this.gc = gc;
 		this.attendantStation = attendantStation;
+		this.attendantController = attendantController;
+		
+    	currency = Currency.getInstance("CAD");
+		billDenominations = new int[] {5, 10, 20, 50, 100};
+		coinDenominations = new BigDecimal[] {new BigDecimal(5), new BigDecimal(10), new BigDecimal(25), new BigDecimal(100)};
 		
 		setPreferredSize(new Dimension(1280, 720));
 		setLayout(null);
@@ -70,7 +92,11 @@ public class AttendantPanel extends JPanel {
 		addStationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	
+            	SelfCheckoutStation newStation = new SelfCheckoutStation(
+    					currency, billDenominations, coinDenominations, scaleMaximumWeight, scaleSensitivity);
+            	CheckoutController checkoutController = new CheckoutController(newStation);
+            	NetworkController.registerCheckoutStation(getNextStationName(), checkoutController);
+            	attendantStation.add(newStation);
             }
         });
 		add(addStationButton);
@@ -134,5 +160,9 @@ public class AttendantPanel extends JPanel {
 		panel.add(btnNewButton_2);
 		
 		return panel;
+	}
+	
+	private String getNextStationName() {
+		return "Station: " + ++stationCounter;
 	}
 }
