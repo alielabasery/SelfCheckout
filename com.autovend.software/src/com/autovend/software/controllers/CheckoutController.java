@@ -15,6 +15,8 @@ import java.util.TreeMap;
 
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.devices.ElectronicScale;
+import com.autovend.devices.EmptyException;
+import com.autovend.devices.ReusableBagDispenser;
 import com.autovend.external.CardIssuer;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
@@ -34,7 +36,8 @@ public class CheckoutController {
 	public Map<Product, Double> PLUProd;
 	public BigDecimal cost;
 	protected BigDecimal amountPaid;
-	public ElectronicScale electronicScale;
+	public ReusableBagDispenser dispenser;
+	public int bagCount;
 
 	// sets of valid sources of information to the main controller.
 	private final HashSet<BaggingAreaController> validBaggingControllers;
@@ -43,6 +46,7 @@ public class CheckoutController {
 	private ReceiptPrinterController receiptPrinter;
 	private ElectronicScaleController electronicScaleController;
 	private ItemRemoverController itemRemoverController;
+	private BagDispenserController bagDispenserController;
 	private final LinkedHashSet<ChangeSlotController> changeSlotControllers;
 	private TreeMap<BigDecimal, ChangeDispenserController> changeDispenserControllers;
 	private Cart cart;
@@ -85,6 +89,7 @@ public class CheckoutController {
 		validPaymentControllers = new HashSet<>();
 		receiptPrinter = null;
 		itemRemoverController = null;
+		bagDispenserController = null;
 		this.changeDispenserControllers = new TreeMap<>();
 		this.changeSlotControllers = new LinkedHashSet<>();
 		clearOrder();
@@ -93,7 +98,11 @@ public class CheckoutController {
 	public CheckoutController(SelfCheckoutStation checkout) {
 		BarcodeScannerController mainScannerController = new BarcodeScannerController(checkout.mainScanner);
 		BarcodeScannerController handheldScannerController = new BarcodeScannerController(checkout.handheldScanner);
-		this.validItemAdderControllers = new HashSet<>(Arrays.asList(mainScannerController, handheldScannerController));
+		PurchaseBagController bagController = new PurchaseBagController(checkout.screen);
+		AddItemByPLUController pluController = new AddItemByPLUController(checkout.screen);
+		AddItemByBrowsingController browsingController = new AddItemByBrowsingController(checkout.screen);
+		this.validItemAdderControllers = new HashSet<>(Arrays.asList(mainScannerController, handheldScannerController, bagController,
+																	pluController, browsingController));
 
 		ElectronicScaleController scaleController = new ElectronicScaleController(checkout.baggingArea);
 		this.validBaggingControllers = new HashSet<>(List.of(scaleController));
@@ -103,6 +112,8 @@ public class CheckoutController {
 		this.electronicScaleController = new ElectronicScaleController(checkout.scale);
 
 		this.itemRemoverController = new ItemRemoverController(checkout.screen);
+		
+		this.bagDispenserController = new BagDispenserController(checkout.bagDispenser);
 
 		BillPaymentController billPayController = new BillPaymentController(checkout.billValidator);
 		CoinPaymentController coinPaymentController = new CoinPaymentController(checkout.coinValidator);
@@ -284,6 +295,18 @@ public class CheckoutController {
 			this.changeDispenserControllers.remove(denom, controller);
 		}
 	}
+	
+	public void registerBagDispenserController(BagDispenserController controller) {
+		if (bagDispenserController == null) {
+			this.bagDispenserController = controller;
+		}
+	}
+
+	void deregisterBagDispenserController(BagDispenserController controller) {
+		if (bagDispenserController.equals(controller)) {
+			this.bagDispenserController = null;
+		}
+	}
 
 	void registerAll() {
 		for (ItemAdderController controller : validItemAdderControllers) {
@@ -300,6 +323,7 @@ public class CheckoutController {
 		for (ChangeSlotController controller : changeSlotControllers) {
 			controller.setMainController(this);
 		}
+		bagDispenserController.setMainController(this);
 		for (BigDecimal denom : changeDispenserControllers.keySet()) {
 			changeDispenserControllers.get(denom).setMainController(this);
 		}
@@ -320,6 +344,10 @@ public class CheckoutController {
 	ItemRemoverController getItemRemover() {
 		return this.itemRemoverController;
 	}
+	
+	BagDispenserController getBagController() {
+		return this.bagDispenserController;
+	}
 
 	HashSet<PaymentController> getAllPaymentControllers() {
 		return this.validPaymentControllers;
@@ -338,6 +366,8 @@ public class CheckoutController {
 		newSet.addAll(this.validBaggingControllers);
 		newSet.addAll(this.validPaymentControllers);
 		newSet.add(this.receiptPrinter);
+		newSet.add(this.bagDispenserController);
+		newSet.add(itemRemoverController);
 		newSet.addAll(this.changeSlotControllers);
 		newSet.addAll(this.changeDispenserControllers.values());
 		newSet.remove(null);
@@ -410,13 +440,33 @@ public class CheckoutController {
 		this.order.put(newBag, currentBagInfo);
 
 		for (BaggingAreaController baggingController : this.validBaggingControllers) {
-			baggingController.updateExpectedBaggingArea(newBag, weight);
+			baggingController.updateExpectedBaggingArea(weight);
 		}
 
 		baggingItemLock = true;
 
 		System.out.println("Reusable bag has been added, you may continue.");
 
+	}
+	
+	public void bagDispense(BagDispenserController controller) throws EmptyException {
+		
+		if (!bagDispenserController.equals(controller)) {
+			return;
+		}
+		
+		int bags = getBagNumber();
+		while (bags != 0) {
+			controller.dispenseBags();
+		}
+	}
+	
+	public void bagDispenseFailed(BagDispenserController controller) {
+		
+		if (!bagDispenserController.equals(controller)) {
+			return;
+		}
+		controller.bagsLoaded(dispenser,bagCount);
 	}
 	
 	public void addItem(CartLineItem item) {
@@ -465,7 +515,7 @@ public class CheckoutController {
 
 		for (BaggingAreaController baggingController : this.validBaggingControllers) {
 
-			baggingController.updateExpectedBaggingArea(newItem, weight);
+			baggingController.updateExpectedBaggingArea(weight);
 		}
 
 		baggingItemLock = true;
@@ -504,10 +554,10 @@ public class CheckoutController {
 		for (BaggingAreaController baggingController : this.validBaggingControllers) {
 			
 			ElectronicScaleController scale = (ElectronicScaleController) baggingController;
-			scale.updateExpectedBaggingArea(itemToRemove, -weight);
+			scale.updateExpectedBaggingArea(-weight);
 		}
 	}
-
+	
 	/**
 	 * Method to add the price of the product to add to the total
 	 * 
