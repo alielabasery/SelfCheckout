@@ -34,12 +34,13 @@ public class BagDispenserController extends DeviceController<ReusableBagDispense
 		}
 	}
 	
-	public void dispenseBags() {
+	public void dispenseBags() throws EmptyException {
 		
 		try {
 			this.getDevice().dispense();
 		} catch (EmptyException e) {
-			this.outOfBags(bagDispenser);
+			this.getMainController().bagDispenseFailed(this);
+			this.getDevice().dispense();
 		}
 	}
 	
@@ -59,10 +60,6 @@ public class BagDispenserController extends DeviceController<ReusableBagDispense
 
 	@Override
 	public void bagDispensed(ReusableBagDispenser dispenser) {
-		if (dispenser != this.getDevice()) {
-			return;
-		}
-		this.getMainController().bagDispense(this);
 		
 	}
 

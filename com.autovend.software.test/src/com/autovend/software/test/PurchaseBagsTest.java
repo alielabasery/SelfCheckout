@@ -18,17 +18,19 @@ import com.autovend.BarcodedUnit;
 import com.autovend.Numeral;
 import com.autovend.devices.BarcodeScanner;
 import com.autovend.devices.ElectronicScale;
+import com.autovend.devices.TouchScreen;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.Product;
 import com.autovend.software.controllers.BarcodeScannerController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.ElectronicScaleController;
+import com.autovend.software.controllers.PurchaseBagController;
 
 public class PurchaseBagsTest {
 
-	BarcodeScannerController scannerController;
-	BarcodeScanner stubScanner;
+	PurchaseBagController bagController;
+	TouchScreen stubScreen;
 	ElectronicScaleController scaleController;
 	ElectronicScale stubScale;
 	BarcodedProduct newBag;
@@ -47,11 +49,11 @@ public class PurchaseBagsTest {
 
 		validUnit = new BarcodedUnit(new Barcode(Numeral.three, Numeral.three), 500.0);
 
-		stubScanner = new BarcodeScanner();
+		stubScreen = new TouchScreen();
 		stubScale = new ElectronicScale(1000, 1);
 
-		scannerController = new BarcodeScannerController(stubScanner);
-		scannerController.setMainController(checkoutController);
+		bagController = new PurchaseBagController(stubScreen);
+		bagController.setMainController(checkoutController);
 
 		scaleController = new ElectronicScaleController(stubScale);
 		scaleController.setMainController(checkoutController);
@@ -66,8 +68,8 @@ public class PurchaseBagsTest {
 	public void teardown() {
 
 		checkoutController = null;
-		stubScanner = null;
-		scannerController = null;
+		stubScreen = null;
+		bagController = null;
 		scaleController = null;
 		stubScale = null;
 		scan.close();
@@ -119,7 +121,7 @@ public class PurchaseBagsTest {
 	@Test
 	public void testPurchaseBags_0Bags() {
 
-		checkoutController.purchaseBags(scannerController, newBag, validUnit.getWeight(), 0);
+		checkoutController.purchaseBags(bagController, newBag, validUnit.getWeight(), 0);
 
 		// Unblocks the station and lets a new item be scanned
 		checkoutController.baggedItemsValid(scaleController);
@@ -142,7 +144,7 @@ public class PurchaseBagsTest {
 		HashMap<Product, Number[]> order = checkoutController.getOrder();
 
 		// Add the bag to the order
-		checkoutController.purchaseBags(scannerController, newBag, validUnit.getWeight(), numBags);
+		checkoutController.purchaseBags(bagController, newBag, validUnit.getWeight(), numBags);
 		expectedPrice = expectedPrice.add(newBag.getPrice().multiply(BigDecimal.valueOf(numBags)));
 
 		// Unblocks the station and lets a new item be scanned
@@ -169,21 +171,21 @@ public class PurchaseBagsTest {
 		HashMap<Product, Number[]> order = checkoutController.getOrder();
 
 		// Purchase 2 bags
-		checkoutController.purchaseBags(scannerController, newBag, validUnit.getWeight(), 2);
+		checkoutController.purchaseBags(bagController, newBag, validUnit.getWeight(), 2);
 		expectedPrice = expectedPrice.add(newBag.getPrice().multiply(BigDecimal.valueOf(2)));
 
 		// Unblocks the station and lets a new bag be scanned
 		checkoutController.baggedItemsValid(scaleController);
 
 		// Purchase 1 bag
-		checkoutController.purchaseBags(scannerController, newBag, validUnit.getWeight(), 1);
+		checkoutController.purchaseBags(bagController, newBag, validUnit.getWeight(), 1);
 		expectedPrice = expectedPrice.add(newBag.getPrice().multiply(BigDecimal.valueOf(1)));
 
 		// Unblocks the station and lets a new bag be scanned
 		checkoutController.baggedItemsValid(scaleController);
 
 		// Purchase 1 bag
-		checkoutController.purchaseBags(scannerController, newBag, validUnit.getWeight(), 1);
+		checkoutController.purchaseBags(bagController, newBag, validUnit.getWeight(), 1);
 		expectedPrice = expectedPrice.add(newBag.getPrice().multiply(BigDecimal.valueOf(1)));
 
 		// Unblocks the station and lets a new bag be scanned
@@ -207,7 +209,7 @@ public class PurchaseBagsTest {
 		checkoutController.baggingItemLock = true;
 
 		// Adds Bag
-		checkoutController.purchaseBags(scannerController, newBag, validUnit.getWeight(), numBags);
+		checkoutController.purchaseBags(bagController, newBag, validUnit.getWeight(), numBags);
 
 		// Bag should not be added, order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -222,7 +224,7 @@ public class PurchaseBagsTest {
 		checkoutController.systemProtectionLock = true;
 
 		// Adds the bag
-		checkoutController.purchaseBags(scannerController, newBag, validUnit.getWeight(), numBags);
+		checkoutController.purchaseBags(bagController, newBag, validUnit.getWeight(), numBags);
 
 		// Bag should not be added, order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -259,7 +261,7 @@ public class PurchaseBagsTest {
 		int numBags = 2;
 
 		// Scan bag with negative weight
-		checkoutController.purchaseBags(scannerController, newBag, -1, numBags);
+		checkoutController.purchaseBags(bagController, newBag, -1, numBags);
 
 		// Bag should not be added, and order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());
@@ -268,7 +270,7 @@ public class PurchaseBagsTest {
 		assertEquals(BigDecimal.ZERO, checkoutController.getCost());
 
 		// Scan null bag
-		checkoutController.purchaseBags(scannerController, null, validUnit.getWeight(), numBags);
+		checkoutController.purchaseBags(bagController, null, validUnit.getWeight(), numBags);
 
 		// Bag should not be added, and order size should be 0
 		assertEquals(0, checkoutController.getOrder().size());

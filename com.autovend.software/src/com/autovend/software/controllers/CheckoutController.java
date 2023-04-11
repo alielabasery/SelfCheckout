@@ -15,6 +15,7 @@ import java.util.TreeMap;
 
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.devices.ElectronicScale;
+import com.autovend.devices.EmptyException;
 import com.autovend.devices.ReusableBagDispenser;
 import com.autovend.external.CardIssuer;
 import com.autovend.products.BarcodedProduct;
@@ -97,7 +98,11 @@ public class CheckoutController {
 	public CheckoutController(SelfCheckoutStation checkout) {
 		BarcodeScannerController mainScannerController = new BarcodeScannerController(checkout.mainScanner);
 		BarcodeScannerController handheldScannerController = new BarcodeScannerController(checkout.handheldScanner);
-		this.validItemAdderControllers = new HashSet<>(Arrays.asList(mainScannerController, handheldScannerController));
+		PurchaseBagController bagController = new PurchaseBagController(checkout.screen);
+		AddItemByPLUController pluController = new AddItemByPLUController(checkout.screen);
+		AddItemByBrowsingController browsingController = new AddItemByBrowsingController(checkout.screen);
+		this.validItemAdderControllers = new HashSet<>(Arrays.asList(mainScannerController, handheldScannerController, bagController,
+																	pluController, browsingController));
 
 		ElectronicScaleController scaleController = new ElectronicScaleController(checkout.baggingArea);
 		this.validBaggingControllers = new HashSet<>(List.of(scaleController));
@@ -318,6 +323,7 @@ public class CheckoutController {
 		for (ChangeSlotController controller : changeSlotControllers) {
 			controller.setMainController(this);
 		}
+		bagDispenserController.setMainController(this);
 		for (BigDecimal denom : changeDispenserControllers.keySet()) {
 			changeDispenserControllers.get(denom).setMainController(this);
 		}
@@ -443,7 +449,7 @@ public class CheckoutController {
 
 	}
 	
-	public void bagDispense(BagDispenserController controller) {
+	public void bagDispense(BagDispenserController controller) throws EmptyException {
 		
 		if (!bagDispenserController.equals(controller)) {
 			return;
