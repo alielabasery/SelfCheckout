@@ -3,6 +3,7 @@ package com.autovend.software.attendantgui;
 import com.autovend.devices.SimulationException;
 import com.autovend.software.controllers.AttendantLoginLogoutController;
 import com.autovend.software.attendantgui.AttendantPanel;
+import com.autovend.software.controllers.GuiController;
 
 
 import javax.swing.*;
@@ -11,12 +12,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class AttendantLogin {
-    JFrame loginFrame;
-    JPanel loginPanel;
+public class AttendantLogin extends JPanel {
+    GuiController gc;
     JLabel loginLabel;
     JTextField IDField;
-    JTextField passField;
+    JPasswordField passField;
     JLabel IDLabel;
     JLabel passLabel;
     JButton button;
@@ -26,18 +26,18 @@ public class AttendantLogin {
 
     AttendantLoginLogoutController a = new AttendantLoginLogoutController();
 
-    public AttendantLogin() {
+    public AttendantLogin(GuiController gc) {
+        this.gc = gc;
+
         AttendantLoginLogoutController.idAndPasswords.put(attendant1Id, attendant1Password);
 
-        loginFrame = new JFrame();
-        loginPanel = new JPanel();
-        loginPanel.setPreferredSize(new Dimension(1280, 720));
-        loginPanel.setLayout(null);
+        setPreferredSize(new Dimension(1280, 720));
+        setLayout(null);
 
         IDField = new JTextField();
         IDField.setBounds(540,325,200,20);
 
-        passField = new JTextField();
+        passField = new JPasswordField();
         passField.setBounds(540, 375, 200, 20);
 
         IDLabel = new JLabel("UserID:");
@@ -56,64 +56,37 @@ public class AttendantLogin {
         button.setBorder(new LineBorder(Color.BLACK, 1, true));
         button.setBounds(590, 450, 100, 20);
         button.setOpaque(true);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         failLabel = new JLabel("The userID or password entered was invalid.");
         failLabel.setBounds(510, 410, 300, 20);
         failLabel.setForeground(Color.RED);
 
         // On submit
-        button.addActionListener(e -> {
-            String userID = IDField.getText();
-            String password = passField.getText();
-            // Run the AttendantLogin method from the AttendantLoginLogoutController
-            try {
-                a.AttendantLogin(userID, password);
-                loginPanel.removeAll();
-                // If login information passes, go to attendant panel
-                // TODO: Go to main attendant access panel
-                new AttendantPanel(loginFrame);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userID = IDField.getText();
+                String password = String.valueOf(passField.getPassword());
+                try {
+                    // If login information passes, got to attendant panel
+                    a.AttendantLogin(userID, password);
+                    gc.attendantLoginToAttendantScreen();
+                } catch (SimulationException s) {
+                    // If login failed
+                    IDField.setText("");
+                    passField.setText("");
+                    add(failLabel);
+                    revalidate();
+                    repaint();
+                }
             }
-            catch (SimulationException s){
-                // If login failed
-                IDField.setText("");
-                passField.setText("");
-                loginPanel.add(failLabel);
-                show();
-            }
-
         });
-        loginPanel.add(loginLabel);
-        loginPanel.add(IDField);
-        loginPanel.add(passField);
-        loginPanel.add(IDLabel);
-        loginPanel.add(passLabel);
-        loginPanel.add(button);
-
-        loginFrame.getContentPane().add(loginPanel, BorderLayout.CENTER);
-        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        loginFrame.pack();
-        loginFrame.setVisible(true);
-        loginFrame.setResizable(false);
-
-    }
-
-    public void show(){
-        loginPanel.add(loginLabel);
-        loginPanel.add(IDField);
-        loginPanel.add(passField);
-        loginPanel.add(IDLabel);
-        loginPanel.add(passLabel);
-        loginPanel.add(button);
-
-        loginFrame.getContentPane().add(loginPanel, BorderLayout.CENTER);
-        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        loginFrame.pack();
-        loginFrame.setVisible(true);
-        loginFrame.setResizable(false);
-    }
-
-    // Below is only for visualization, delete later.
-    public static void main(String[] args) {
-        new AttendantLogin();
+        add(loginLabel);
+        add(IDField);
+        add(passField);
+        add(IDLabel);
+        add(passLabel);
+        add(button);
     }
 }
