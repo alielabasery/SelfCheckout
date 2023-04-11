@@ -43,7 +43,7 @@ public class GuiController {
         station.screen.setVisible(true);
     }
 
-    public void startToAddItemsScreen() {
+    public void addItemsScreen() {
         JFrame screen = station.screen.getFrame();
         screen.setExtendedState(JFrame.NORMAL);
         screen.setPreferredSize(new Dimension(1280, 720));
@@ -84,7 +84,7 @@ public class GuiController {
         attendantStation.screen.setVisible(true);
     }
 
-    public void attendantLoginToAttendantScreen() {
+    public void attendantScreen() {
         JFrame screen = attendantStation.screen.getFrame();
         screen.setExtendedState(JFrame.NORMAL);
         screen.setPreferredSize(new Dimension(1280, 720));

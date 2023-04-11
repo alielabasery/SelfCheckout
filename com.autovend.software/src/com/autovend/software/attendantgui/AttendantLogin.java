@@ -2,7 +2,6 @@ package com.autovend.software.attendantgui;
 
 import com.autovend.devices.SimulationException;
 import com.autovend.software.controllers.AttendantLoginLogoutController;
-import com.autovend.software.attendantgui.AttendantPanel;
 import com.autovend.software.controllers.GuiController;
 
 
@@ -71,7 +70,7 @@ public class AttendantLogin extends JPanel {
                 try {
                     // If login information passes, got to attendant panel
                     a.AttendantLogin(userID, password);
-                    gc.attendantLoginToAttendantScreen();
+                    gc.attendantScreen();
                 } catch (SimulationException s) {
                     // If login failed
                     IDField.setText("");
