@@ -43,6 +43,7 @@ public class CheckoutController {
 	private ReceiptPrinterController receiptPrinter;
 	private ElectronicScaleController electronicScaleController;
 	private ItemRemoverController itemRemoverController;
+	private ReusableBagDispenserController bagDispenserController;
 	private final LinkedHashSet<ChangeSlotController> changeSlotControllers;
 	private TreeMap<BigDecimal, ChangeDispenserController> changeDispenserControllers;
 	private Cart cart;
@@ -85,6 +86,7 @@ public class CheckoutController {
 		validPaymentControllers = new HashSet<>();
 		receiptPrinter = null;
 		itemRemoverController = null;
+		bagDispenserController = null;
 		this.changeDispenserControllers = new TreeMap<>();
 		this.changeSlotControllers = new LinkedHashSet<>();
 		clearOrder();
@@ -103,6 +105,8 @@ public class CheckoutController {
 		this.electronicScaleController = new ElectronicScaleController(checkout.scale);
 
 		this.itemRemoverController = new ItemRemoverController(checkout.screen);
+		
+		this.bagDispenserController = new ReusableBagDispenserController();
 
 		BillPaymentController billPayController = new BillPaymentController(checkout.billValidator);
 		CoinPaymentController coinPaymentController = new CoinPaymentController(checkout.coinValidator);
