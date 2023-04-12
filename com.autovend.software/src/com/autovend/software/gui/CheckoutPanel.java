@@ -313,15 +313,15 @@ public class CheckoutPanel extends JPanel {
                 } else if (amount.getText().equals("")) {
                     amount.setText("Enter Amount!");
                 } else {
-                    String type = txtGiftCard.getText();
-                    String number = cardNumber.getText();
-                    String pin = pinNumber.getText();
-                    Currency currencyValue = Currency.getInstance(currency.getText());
-                    BigDecimal amountValue = new BigDecimal(amount.getText());
-                    giftCard = new GiftCard(type, number, pin, currencyValue, amountValue);
-                    //totalAmount.setText("10000");
-                    GiftCardInsertData giftCardInsertData;
                     try {
+                        String type = txtGiftCard.getText();
+                        String number = cardNumber.getText();
+                        String pin = pinNumber.getText();
+                        Currency currencyValue = Currency.getInstance(currency.getText());
+                        BigDecimal amountValue = new BigDecimal(amount.getText());
+                        giftCard = new GiftCard(type, number, pin, currencyValue, amountValue);
+                        //totalAmount.setText("10000");
+                        GiftCardInsertData giftCardInsertData;
                         giftCardInsertData = giftCard.createCardInsertData(pin);
                         BigDecimal balance = giftCardInsertData.getRemainingBalance();
                         BigDecimal total = new BigDecimal(totalAmount.getText());
@@ -336,6 +336,8 @@ public class CheckoutPanel extends JPanel {
                         pinNumber.setText("Incorrect Pin Number!");
                     } catch (ChipFailureException e1) {
                         cardNumber.setText("Chip failure!");
+                    } catch (IllegalArgumentException e1) {
+                        currency.setText("Incorrect Currency type!");
                     }
                 }
             }
