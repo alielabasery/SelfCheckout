@@ -437,7 +437,7 @@ public class CheckoutController {
 		return this.validPaymentControllers;
 	}
 
-	ReceiptPrinterController getReceiptPrinter() {
+	public ReceiptPrinterController getReceiptPrinter() {
 		return this.receiptPrinter;
 	}
 
