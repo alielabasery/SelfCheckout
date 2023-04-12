@@ -35,7 +35,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.*;
-
 import javax.swing.*;
 import com.autovend.GiftCard.*;
 import com.autovend.*;
