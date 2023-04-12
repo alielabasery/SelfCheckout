@@ -25,7 +25,9 @@ public class MembershipPanel extends JPanel {
         scanningButton = new JButton("Scan Membership");
         scanningButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {}
+            public void actionPerformed(ActionEvent e) {
+            	gc.membershipScanningScreen();
+            }
         });
 
         scanningButton.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));

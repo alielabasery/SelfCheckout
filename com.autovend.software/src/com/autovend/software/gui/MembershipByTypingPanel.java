@@ -22,6 +22,7 @@ public class MembershipByTypingPanel extends JPanel{
     JTextField IDField;
     JLabel IDLabel;
     JButton button;
+    JButton backButton;
     JLabel failLabel;
     String userID;
     Scanner sc;
@@ -49,6 +50,23 @@ public class MembershipByTypingPanel extends JPanel{
         button.setBounds(590, 300, 100, 20);
         button.setOpaque(true);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        backButton = new JButton("Back");
+        backButton.setBounds(590, 330, 100, 20);
+        backButton.setBackground(Color.decode("#ade89b"));
+        backButton.setForeground(Color.BLACK);
+        backButton.setBorder(new LineBorder(Color.BLACK, 1, true));
+        backButton.setOpaque(true);
+        backButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gc.membershipScreen();
+            }
+        });
+
+        add(backButton);
 
         failLabel = new JLabel("The membership number entered was invalid");
         failLabel.setBounds(510, 410, 300, 20);
