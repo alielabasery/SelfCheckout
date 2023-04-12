@@ -567,15 +567,16 @@ public class CheckoutPanel extends JPanel {
                     expiry.setTime(date);
                     expiry.add(Calendar.MONTH, 6);
                     BigDecimal amount = BigDecimal.valueOf(1000);
+                    totalAmount.setText("10000");
                     BigDecimal amountDue = new BigDecimal(totalAmount.getText());
 
                     cardIssuer.addCardData(number, cardHolder, expiry, cvvValue, amount);
                     int hold = cardIssuer.authorizeHold(number, amountDue);
 
                     if(cardIssuer.postTransaction(number, hold, amountDue)) {
-                        //went through
+                        cvv.setText("Went through");
                     } else {
-                        //didnt go through
+                    	cvv.setText("didnt go through");
                     }
                     if (type.equals("Credit")) {
                         creditCard = new CreditCard(type, number, cardHolder, cvvValue, pinValue, isTapEnabled, hasChip);
