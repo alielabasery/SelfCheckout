@@ -31,6 +31,7 @@
 package com.autovend.software.controllers;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,6 +50,7 @@ import com.autovend.external.CardIssuer;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
+import com.autovend.software.PreventStation;
 import com.autovend.software.pojo.Cart;
 import com.autovend.software.pojo.CartLineItem;
 
@@ -59,13 +61,14 @@ import Networking.NetworkController;
 public class CheckoutController {
 	private static int IDcounter = 1;
 	private int stationID = IDcounter++;
-
+	private List<PreventStation> suspendedStations;
 	private LinkedHashMap<Product, Number[]> order;
 	public Map<Product, Double> PLUProd;
 	public BigDecimal cost;
 	protected BigDecimal amountPaid;
 	public ReusableBagDispenser dispenser;
 	public int bagCount;
+	private List<PreventStation> preventedStations;
 
 	// sets of valid sources of information to the main controller.
 	private final HashSet<BaggingAreaController> validBaggingControllers;
@@ -120,9 +123,25 @@ public class CheckoutController {
 		bagDispenserController = null;
 		this.changeDispenserControllers = new TreeMap<>();
 		this.changeSlotControllers = new LinkedHashSet<>();
+		suspendedStations = new ArrayList<>();
+		this.preventedStations = preventedStations;
 		clearOrder();
 	}
-
+    
+	/**
+     * Method called when a station is suspended
+     * @param station
+     *          The instance of the PreventStation that has been suspended
+     */
+    public void onStationSuspended(PreventStation station) {
+        // Add the station to the list of suspended stations
+        suspendedStations.add(station);
+        System.out.println("CheckoutController notified: Station ID " + station.hashCode() + " has been suspended.");
+    }
+    public void onStationUnsuspended(PreventStation station) {
+        preventedStations.remove(station);
+        System.out.println("Station ID: " + station.hashCode() + " is now unsuspended.");
+    }
 	/**
 	 * The constructor for the checkout controller
 	 * @param checkout
