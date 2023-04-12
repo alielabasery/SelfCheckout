@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
+import com.autovend.IllegalDigitException;
 import com.autovend.devices.SimulationException;
 import com.autovend.software.controllers.GuiController;
 import com.autovend.software.controllers.MembershipCardController;
@@ -25,7 +26,6 @@ public class MembershipByTypingPanel extends JPanel{
     JButton button;
     JLabel failLabel;
 
-    String testID = "2222";
     MembershipCardController a = new MembershipCardController();
     String userID;
     Scanner sc;
@@ -65,9 +65,9 @@ public class MembershipByTypingPanel extends JPanel{
                 userID = IDField.getText();
                 String m = "123456789012";
                 try {
-                    MembershipCardController.getValidMembershipNumberByTyping(m);
+                    MembershipCardController.isValid(userID);
                 }
-                catch(SimulationException s) {
+                catch(IllegalDigitException s) {
                     IDField.setText("");
                     add(failLabel);
                     revalidate();
@@ -75,7 +75,7 @@ public class MembershipByTypingPanel extends JPanel{
                 }   
             }
         });
-       
+        
         add(MembershipByTypingLabel);
         add(IDField);
         add(IDLabel);
