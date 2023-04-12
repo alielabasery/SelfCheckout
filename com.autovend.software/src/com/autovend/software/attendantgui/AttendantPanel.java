@@ -8,7 +8,6 @@ import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.Box;
@@ -18,14 +17,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTable;
 
 import com.autovend.Barcode;
 import com.autovend.PriceLookUpCode;
 import com.autovend.devices.SupervisionStation;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
-import com.autovend.products.Product;
-import com.autovend.software.PreventStation;
+import com.autovend.software.PreventPermitStation;
 import com.autovend.software.controllers.AttendantLoginLogoutController;
 import com.autovend.software.controllers.AttendantShutdownStationController;
 import com.autovend.software.controllers.AttendentController;
@@ -243,14 +242,15 @@ public class AttendantPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
             	CheckoutController checkoutController = NetworkController.getCheckoutStationController(name);
-            	PreventStation prevent = new PreventStation();
+            	PreventPermitStation prevent = new PreventPermitStation();
         		if (checkoutController != null) {
         			if (bttn2.getText().equals("Prevent " + name)) {
-//        				prevent.suspend();
+        				prevent.suspend(checkoutController);
         				bttn2.setText("Permit " + name);
         			}
         			else if (bttn2.getText().equals("Permit " + name)) {
         				bttn2.setText("Prevent " + name);
+        				prevent.unsuspend(checkoutController);
             			updateScreen();
         			}
         		}
@@ -321,11 +321,17 @@ public class AttendantPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
             	CheckoutController checkoutController = NetworkController.getCheckoutStationController(name);
-            	HashMap<Product, Number[]> order = checkoutController.getOrder();
-            	System.out.println("Here");
-            	for (Product product : order.keySet()) {
-            		System.out.println(product.toString() + " : " + order.get(product).toString());
+            	ArrayList<CartLineItem> order = checkoutController.getCart().getCartLineItems();
+            	Object[][] rows = new Object[order.size()][4];
+            	for (int i = 0; i < order.size(); i++) {
+            		rows[i][0] = order.get(i).getProductCode();
+            		rows[i][1] = order.get(i).getDescription();
+            		rows[i][2] = order.get(i).getPrice().toString();
+            		rows[i][3] = order.get(i).getQuantity();
             	}
+        		String[] cols = {"ID", "Description", "Price", "Quantity"};
+        		JTable table = new JTable(rows, cols);
+        		JOptionPane.showMessageDialog(null, new JScrollPane(table));
             }
         });
 				
