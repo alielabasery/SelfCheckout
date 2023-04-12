@@ -254,6 +254,17 @@ public class AttendantPanel extends JPanel {
             }
         });
 		
+		bttn4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+        		dlgSearchProduct test = new dlgSearchProduct(null, null);
+        		test.setVisible(true);
+        		if (test.selectedItemCode != null) {
+        			
+        		}
+            }
+        });
+		
 		bttn5.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

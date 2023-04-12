@@ -213,20 +213,20 @@ public class GuiController {
         SelfCheckoutStation s2 = new SelfCheckoutStation(c, noteDenom, coinDenom, 10000, 1);
         SelfCheckoutStation s3 = new SelfCheckoutStation(c, noteDenom, coinDenom, 10000, 1);
         
-//        CheckoutController cc = new CheckoutController(s);
-//        CheckoutController cc2 = new CheckoutController(s2);
-//        CheckoutController cc3 = new CheckoutController(s3);
-        
-//        NetworkController.registerCheckoutStation("Station 1", cc);
-//        NetworkController.registerCheckoutStation("Station 2", cc2);
-//        NetworkController.registerCheckoutStation("Station 3", cc3);
+        CheckoutController cc = new CheckoutController("Station 1", s);
+        CheckoutController cc2 = new CheckoutController("Station 2", s2);
+        CheckoutController cc3 = new CheckoutController("Station 3", s3);
+       
+        NetworkController.registerCheckoutStation("Station 1", cc);
+        NetworkController.registerCheckoutStation("Station 2", cc2);
+        NetworkController.registerCheckoutStation("Station 3", cc3);
         
         SupervisionStation ss = new SupervisionStation();
         
         GuiController gc = new GuiController(s, ss);
         // change below to gc.attendantLoginScreen to see the Attendant Station
         // change below to gc.startScreen to see the Customer Station
-//        gc.attendantLoginScreen();
-        gc.startScreen();
+        gc.attendantLoginScreen();
+//        gc.startScreen();
     }
 }
