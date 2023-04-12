@@ -319,6 +319,7 @@ public class CheckoutPanel extends JPanel {
                     Currency currencyValue = Currency.getInstance(currency.getText());
                     BigDecimal amountValue = new BigDecimal(amount.getText());
                     giftCard = new GiftCard(type, number, pin, currencyValue, amountValue);
+                    totalAmount.setText("10000");
                     GiftCardInsertData giftCardInsertData;
                     try {
                         giftCardInsertData = giftCard.createCardInsertData(pin);
@@ -327,8 +328,9 @@ public class CheckoutPanel extends JPanel {
                         int compare = balance.compareTo(total);
                         if (compare >= 0) {
                             giftCardInsertData.deduct(total);
+                            currency.setText("Accepted");
                         } else {
-                            //insufficient funds
+                            currency.setText("Declined");
                         }
                     } catch (InvalidPINException e1) {
                         pinNumber.setText("Incorrect Pin Number!");
@@ -567,7 +569,7 @@ public class CheckoutPanel extends JPanel {
                     expiry.setTime(date);
                     expiry.add(Calendar.MONTH, 6);
                     BigDecimal amount = BigDecimal.valueOf(1000);
-                    totalAmount.setText("10000");
+                    //totalAmount.setText("10000");
                     BigDecimal amountDue = new BigDecimal(totalAmount.getText());
 
                     cardIssuer.addCardData(number, cardHolder, expiry, cvvValue, amount);
@@ -576,7 +578,7 @@ public class CheckoutPanel extends JPanel {
                     if(cardIssuer.postTransaction(number, hold, amountDue)) {
                         cvv.setText("Went through");
                     } else {
-                    	cvv.setText("didnt go through");
+                        cvv.setText("didnt go through");
                     }
                     if (type.equals("Credit")) {
                         creditCard = new CreditCard(type, number, cardHolder, cvvValue, pinValue, isTapEnabled, hasChip);
