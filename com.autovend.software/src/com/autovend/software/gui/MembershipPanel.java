@@ -25,9 +25,7 @@ public class MembershipPanel extends JPanel {
         scanningButton = new JButton("Scan Membership");
         scanningButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-            	gc.membershipScanningScreen();
-            }
+            public void actionPerformed(ActionEvent e) { gc.membershipDetailsScreen(); }
         });
 
         scanningButton.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
@@ -41,7 +39,7 @@ public class MembershipPanel extends JPanel {
         typingButton = new JButton("Enter Membership");
         typingButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) { gc.membershipTypingScreen(); }
+            public void actionPerformed(ActionEvent e) { gc.membershipDetailsScreen(); }
         });
 
         typingButton.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
@@ -55,7 +53,7 @@ public class MembershipPanel extends JPanel {
         swipingButton = new JButton("Swipe Membership");
         swipingButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {}
+            public void actionPerformed(ActionEvent e) { gc.membershipDetailsScreen(); }
         });
 
         swipingButton.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
@@ -69,7 +67,7 @@ public class MembershipPanel extends JPanel {
         goToHomeButton = new JButton("Go back home");
         goToHomeButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {gc.startScreen();}
+            public void actionPerformed(ActionEvent e) { gc.startScreen(); }
         });
 
         goToHomeButton.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));

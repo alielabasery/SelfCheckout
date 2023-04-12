@@ -1,41 +1,38 @@
 package com.autovend.software.gui;
 
-import javax.sound.sampled.Line;
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
 import com.autovend.IllegalDigitException;
-import com.autovend.devices.SimulationException;
 import com.autovend.software.controllers.GuiController;
 import com.autovend.software.controllers.MembershipCardController;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Scanner;
 
-public class MembershipByTypingPanel extends JPanel{
+public class MembershipDetailsPanel extends JPanel{
     MembershipCardController mcc;
     GuiController gc;
-    JLabel MembershipByTypingLabel;
+    JLabel membershipByTypingLabel;
     JTextField IDField;
     JLabel IDLabel;
     JButton button;
     JButton backButton;
     JLabel failLabel;
     String userID;
-    Scanner sc;
 
     
-    public MembershipByTypingPanel(GuiController gc, MembershipCardController mcc) {
+    public MembershipDetailsPanel(GuiController gc, MembershipCardController mcc) {
         this.gc = gc;
+        this.mcc = mcc;
+
         setPreferredSize(new Dimension(1280, 720));
         setLayout(null);
 
-        MembershipByTypingLabel = new JLabel("Please enter your membership below:");
-        MembershipByTypingLabel.setBounds(450, 150, 750, 150);
-        MembershipByTypingLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 18));
+        membershipByTypingLabel = new JLabel("Please enter your membership below:");
+        membershipByTypingLabel.setBounds(450, 150, 750, 150);
+        membershipByTypingLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 18));
         IDField = new JTextField();
         IDField.setBounds(540, 200, 200, 100);
         IDField.setHorizontalAlignment(JTextField.CENTER); // set the horizontal alignment
@@ -76,9 +73,8 @@ public class MembershipByTypingPanel extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 userID = IDField.getText();
-                String m = "123456789012";
                 try {
-                    Boolean success = MembershipCardController.isValid(userID);
+                    Boolean success = mcc.isValid(userID);
                     if (success) { gc.addItemsScreen(); }
                     remove(failLabel);
                     revalidate();
@@ -92,7 +88,7 @@ public class MembershipByTypingPanel extends JPanel{
             }
         });
 
-        add(MembershipByTypingLabel);
+        add(membershipByTypingLabel);
         add(IDField);
         add(IDLabel);
         add(button);

@@ -9,14 +9,10 @@ import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.software.attendantgui.AttendantLogin;
 import com.autovend.software.attendantgui.AttendantPanel;
-import com.autovend.software.gui.AddItemsPanel;
-import com.autovend.software.gui.MembershipByScanningPanel;
-import com.autovend.software.gui.MembershipByTypingPanel;
-import com.autovend.software.gui.MembershipPanel;
-import com.autovend.software.gui.StartScreenPanel;
-import com.autovend.software.utils.CodeUtils;
+import com.autovend.software.gui.*;
 
 import Networking.NetworkController;
+import com.autovend.software.utils.CodeUtils;
 import data.DatabaseController;
 
 import javax.swing.*;
@@ -65,7 +61,7 @@ public class GuiController {
         screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
-        AddItemsPanel aip = new AddItemsPanel();
+        AddItemsPanel aip = new AddItemsPanel(this);
         JPanel panel = new JPanel();
         panel.add(aip);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
@@ -99,15 +95,15 @@ public class GuiController {
         station.screen.setVisible(true);
     }
 
-    public void membershipTypingScreen() {
+    public void membershipDetailsScreen() {
         JFrame screen = station.screen.getFrame();
         screen.setExtendedState(JFrame.NORMAL);
         screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
-        MembershipByTypingPanel mbtp = new MembershipByTypingPanel(this, new MembershipCardController());
+        MembershipDetailsPanel mdp = new MembershipDetailsPanel(this, new MembershipCardController());
         JPanel panel = new JPanel();
-        panel.add(mbtp);
+        panel.add(mdp);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
         screen.pack();
         // Make the JFrame display in the middle of the screen
@@ -119,15 +115,15 @@ public class GuiController {
         station.screen.setVisible(true);
     }
 
-    public void membershipScanningScreen() {
+    public void checkoutScreen() {
         JFrame screen = station.screen.getFrame();
         screen.setExtendedState(JFrame.NORMAL);
         screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
-        MembershipByScanningPanel mbsp = new MembershipByScanningPanel(this, new MembershipCardController());
+        CheckoutPanel cp = new CheckoutPanel();
         JPanel panel = new JPanel();
-        panel.add(mbsp);
+        panel.add(cp);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
         screen.pack();
         // Make the JFrame display in the middle of the screen
@@ -138,6 +134,7 @@ public class GuiController {
         screen.validate();
         station.screen.setVisible(true);
     }
+
     // Attendant Station
     public void attendantLoginScreen() {
     	attendantScreen.setExtendedState(JFrame.NORMAL);
@@ -183,29 +180,6 @@ public class GuiController {
 
     // Delete later
     public static void main(String[] args) {
-    	try {        	
-            PriceLookUpCode code = new PriceLookUpCode(new Numeral[] {Numeral.eight, Numeral.five, Numeral.six, Numeral.eight});
-            DatabaseController.addPLUdProduct(code, new PLUCodedProduct(code, "Gala Apples", new BigDecimal(1.50)));
-            code = new PriceLookUpCode(new Numeral[] {Numeral.eight, Numeral.two, Numeral.one, Numeral.one});
-            DatabaseController.addPLUdProduct(code, new PLUCodedProduct(code, "Ambrosia Apples", new BigDecimal(1.89)));
-            code = new PriceLookUpCode(new Numeral[] {Numeral.eight, Numeral.two, Numeral.eight, Numeral.six});
-            DatabaseController.addPLUdProduct(code, new PLUCodedProduct(code, "Mcintosh Apples", new BigDecimal(2.25)));
-            code = new PriceLookUpCode(new Numeral[] {Numeral.eight, Numeral.two, Numeral.three, Numeral.seven});
-            DatabaseController.addPLUdProduct(code, new PLUCodedProduct(code, "Green Apples", new BigDecimal(0.89)));
-            code = new PriceLookUpCode(new Numeral[] {Numeral.eight, Numeral.two, Numeral.one, Numeral.nine});
-            DatabaseController.addPLUdProduct(code, new PLUCodedProduct(code, "Granny Smith Apples", new BigDecimal(1.35)));
-            code = new PriceLookUpCode(new Numeral[] {Numeral.eight, Numeral.two, Numeral.five, Numeral.four});
-            DatabaseController.addPLUdProduct(code, new PLUCodedProduct(code, "Honey Crisp Apples", new BigDecimal(1.99)));
-            Barcode bcode = CodeUtils.stringBarcodeToBarcode("349896");
-            DatabaseController.addBarcodedProduct(bcode, new BarcodedProduct(bcode, "Ham", new BigDecimal(15.00), 4.00));
-            bcode = CodeUtils.stringBarcodeToBarcode("127634");
-            DatabaseController.addBarcodedProduct(bcode, new BarcodedProduct(bcode, "Herbal Essance Shampoo", new BigDecimal(8.59), 2.09));
-            code = CodeUtils.stringPLUToPLU("0001");
-            DatabaseController.addPLUdProduct(code, new PLUCodedProduct(code, "Plastic bag", new BigDecimal(0.05)));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    	
         Currency c = Currency.getInstance("CAD");
         int[] noteDenom = {5, 10, 20, 50, 100};
         BigDecimal[] coinDenom = {new BigDecimal("0.05"), new BigDecimal("0.1"), new BigDecimal("0.25"), new BigDecimal("0.5"), new BigDecimal("1"), new BigDecimal("2")};
@@ -226,7 +200,7 @@ public class GuiController {
         GuiController gc = new GuiController(s, ss);
         // change below to gc.attendantLoginScreen to see the Attendant Station
         // change below to gc.startScreen to see the Customer Station
-        gc.attendantLoginScreen();
-//        gc.startScreen();
+//        gc.attendantLoginScreen();
+        gc.startScreen();
     }
 }

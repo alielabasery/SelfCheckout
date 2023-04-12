@@ -210,7 +210,7 @@ public class AttendantPanel extends JPanel {
             			updateScreen();
         			}
         			else if (bttn.getText().equals("Reboot " + name)) {
-        				NetworkController.removeCheckoutStation(name);
+//        				NetworkController.removeCheckoutStation(name);
         				CheckoutController newController = startupController.runsStartUpRoutine(checkoutController.getStation(), true);
         				NetworkController.registerCheckoutStation(name, newController);
         				shutdownStations.remove(name);
