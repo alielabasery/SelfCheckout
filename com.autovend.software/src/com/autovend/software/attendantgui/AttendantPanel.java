@@ -26,6 +26,7 @@ import com.autovend.software.controllers.AttendentController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.GuiController;
 import com.autovend.software.controllers.StartUpRoutineController;
+import com.autovend.software.gui.dlgSearchProduct;
 
 import Networking.NetworkController;
 
@@ -38,6 +39,7 @@ public class AttendantPanel extends JPanel {
 	StartUpRoutineController startupController;
 	
 	private ArrayList<String> unsupervisedStations = new ArrayList<String>();
+	private static ArrayList<String> shutdownStations = new ArrayList<String>();
 	
 	Box stationsBox;
 	
@@ -200,6 +202,7 @@ public class AttendantPanel extends JPanel {
         		if (checkoutController != null) {
         			if (bttn.getText().equals("Shutdown " + name)) {
         				shutdownController.shutdownStation(checkoutController.getStation(), false);
+        				shutdownStations.add(name);
             			bttn.setText("Reboot " + name);
             			bttn2.setEnabled(false);
             			bttn3.setEnabled(false);
@@ -210,6 +213,7 @@ public class AttendantPanel extends JPanel {
         				NetworkController.removeCheckoutStation(name);
         				CheckoutController newController = startupController.runsStartUpRoutine(checkoutController.getStation(), true);
         				NetworkController.registerCheckoutStation(name, newController);
+        				shutdownStations.remove(name);
             			bttn.setText("Shutdown " + name);
             			bttn2.setEnabled(true);
             			bttn3.setEnabled(true);
@@ -239,18 +243,33 @@ public class AttendantPanel extends JPanel {
             }
         });
 		
+		bttn3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+        		dlgSearchProduct test = new dlgSearchProduct(null, null);
+        		test.setVisible(true);
+        		if (test.selectedItemCode != null) {
+        			
+        		}
+            }
+        });
+		
 		bttn5.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
             	CheckoutController checkoutController = NetworkController.getCheckoutStationController(name);
         		if (checkoutController != null) {
         			unsupervisedStations.add(name);
+        			attendantStation.remove(checkoutController.getStation());
         			removeStation(panel, separator);
         		}
             }
         });
 				
-		stationCounter++;
+		if (shutdownStations.contains(name)) {
+			bttn.doClick();
+		}
+		
 		Component temp[] = {panel, separator};
 		return temp;
 	}
