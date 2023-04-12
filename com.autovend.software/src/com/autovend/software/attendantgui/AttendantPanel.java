@@ -268,11 +268,40 @@ public class AttendantPanel extends JPanel {
 		bttn4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-        		dlgSearchProduct test = new dlgSearchProduct(null, null);
-        		test.setVisible(true);
-        		if (test.selectedItemCode != null) {
-        			
-        		}
+            	CheckoutController checkoutController = NetworkController.getCheckoutStationController(name);
+            	ArrayList<CartLineItem> order = checkoutController.getCart().getCartLineItems();
+            	String[] choices = new String[order.size()];
+            	for (int i = 0; i < order.size(); i++) {
+            		choices[i] = order.get(i).getProductCode() + " :" + order.get(i).getDescription();
+            	}
+            	
+            	String input = (String) JOptionPane.showInputDialog(null, "Choose an item from customer cart below: ",
+            			"Remove Item", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
+            	
+            	if (input != null) {
+            		
+            		int indexOfItem = 0;
+                	for (int i = 0; i < order.size(); i++) {
+                		if (order.get(i).getDescription().equals(input.split(":")[1])) {
+                			indexOfItem = i;
+                			break;
+                		}
+                	}
+            		
+            		if (checkoutController != null) {
+            			if (order.get(indexOfItem).getCodeType() == CODETYPE.PLU) {
+            				PriceLookUpCode code = CodeUtils.stringPLUToPLU(order.get(indexOfItem).getProductCode());
+            				PLUCodedProduct product = (PLUCodedProduct) DatabaseController.getProduct(code, 'P');
+//            				checkoutController.removeItem(checkoutController.getItemRemover(), product, order.get(indexOfItem).getWeight());
+            			} else if (order.get(indexOfItem).getCodeType() == CODETYPE.BARCODE) {
+            				Barcode code = CodeUtils.stringBarcodeToBarcode(order.get(indexOfItem).getProductCode());
+            				BarcodedProduct product = (BarcodedProduct) DatabaseController.getProduct(code, 'B');
+//            				checkoutController.removeItem(checkoutController.getItemRemover(), product, order.get(indexOfItem).getWeight());
+            			}
+            			
+            		}
+            	}
+            	
             }
         });
 		
@@ -295,7 +324,7 @@ public class AttendantPanel extends JPanel {
             	HashMap<Product, Number[]> order = checkoutController.getOrder();
             	System.out.println("Here");
             	for (Product product : order.keySet()) {
-            		System.out.println(product + " : " + order.get(product));
+            		System.out.println(product.toString() + " : " + order.get(product).toString());
             	}
             }
         });
