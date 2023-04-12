@@ -30,7 +30,6 @@
 */
 package com.autovend.software.gui;
 
-//df
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,6 +38,9 @@ import java.util.Currency;
 import java.util.Enumeration;
 
 import javax.swing.*;
+import com.autovend.GiftCard;
+import com.autovend.CreditCard;
+import com.autovend.DebitCard;
 
 public class CheckoutPanel extends JPanel {
     private JFrame frame;
@@ -49,6 +51,9 @@ public class CheckoutPanel extends JPanel {
     private final ButtonGroup chipValue = new ButtonGroup();
     private final ButtonGroup cardUsed = new ButtonGroup();
     private boolean alreadyDisplay = false;
+    private CreditCard creditCard;
+    private DebitCard debitCard;
+    private GiftCard giftCard;
 
     /**
      * Launch the application.
