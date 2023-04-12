@@ -320,6 +320,7 @@ public class CheckoutPanel extends JPanel {
                     String pin = pinNumber.getText();
                     Currency currencyValue = Currency.getInstance(currency.getText());
                     BigDecimal amountValue = new BigDecimal(amount.getText());
+                    giftCard = new GiftCard(type, number, pin, currencyValue, amountValue);
                 }
             }
         });
@@ -506,13 +507,13 @@ public class CheckoutPanel extends JPanel {
                 } else if (pinNumber.getText().equals("")) {
                     pinNumber.setText("Enter pin number!");
                 } else {
-                    String type;
+                    String type = null;
                     String number = cardNumber.getText();
                     String cardHolder = cardholderName.getText();
                     String cvvValue = cvv.getText();
                     String pinValue = pinNumber.getText();
-                    boolean isTapEnabled;
-                    boolean hasChip;
+                    boolean isTapEnabled = false;
+                    boolean hasChip = false;
 
                     Enumeration<AbstractButton> allCardRadioButtons = cardUsed.getElements();
                     while(allCardRadioButtons.hasMoreElements()) {
@@ -544,6 +545,12 @@ public class CheckoutPanel extends JPanel {
                                 hasChip = false;
                             }
                         }
+                    }
+
+                    if (type.equals("Credit")) {
+                        creditCard = new CreditCard(type, number, cardHolder, cvvValue, pinValue, isTapEnabled, hasChip);
+                    } else {
+                        debitCard = new DebitCard(type, number, cardHolder, cvvValue, pinValue, isTapEnabled, hasChip);
                     }
                 }
             }
