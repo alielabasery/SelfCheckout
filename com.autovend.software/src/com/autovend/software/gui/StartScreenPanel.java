@@ -79,7 +79,7 @@ public class StartScreenPanel extends JPanel {
         membershipButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                gc.membershipScreen();
+                gc.membershipScreen(checkoutController);
             }
         });
 

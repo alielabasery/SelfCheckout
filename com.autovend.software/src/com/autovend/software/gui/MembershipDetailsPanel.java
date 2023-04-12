@@ -30,16 +30,23 @@
 */
 package com.autovend.software.gui;
 
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import com.autovend.IllegalDigitException;
+import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.GuiController;
 import com.autovend.software.controllers.MembershipCardController;
-
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MembershipDetailsPanel extends JPanel{
     MembershipCardController mcc;
@@ -53,7 +60,7 @@ public class MembershipDetailsPanel extends JPanel{
     String userID;
 
     
-    public MembershipDetailsPanel(GuiController gc, MembershipCardController mcc) {
+    public MembershipDetailsPanel(GuiController gc, MembershipCardController mcc, CheckoutController controller) {
         this.gc = gc;
         this.mcc = mcc;
 
@@ -89,7 +96,7 @@ public class MembershipDetailsPanel extends JPanel{
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                gc.membershipScreen();
+                gc.membershipScreen(controller);
             }
         });
 

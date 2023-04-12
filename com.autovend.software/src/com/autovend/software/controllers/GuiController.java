@@ -75,13 +75,13 @@ public class GuiController {
         station.screen.setVisible(true);
     }
 
-    public void membershipScreen() {
+    public void membershipScreen(CheckoutController controller) {
         JFrame screen = station.screen.getFrame();
         screen.setExtendedState(JFrame.NORMAL);
         screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
-        MembershipPanel hvp = new MembershipPanel(this);
+        MembershipPanel hvp = new MembershipPanel(this, controller);
         JPanel panel = new JPanel();
         panel.add(hvp);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
@@ -95,13 +95,13 @@ public class GuiController {
         station.screen.setVisible(true);
     }
 
-    public void membershipDetailsScreen() {
+    public void membershipDetailsScreen(CheckoutController controller) {
         JFrame screen = station.screen.getFrame();
         screen.setExtendedState(JFrame.NORMAL);
         screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
-        MembershipDetailsPanel mdp = new MembershipDetailsPanel(this, new MembershipCardController());
+        MembershipDetailsPanel mdp = new MembershipDetailsPanel(this, new MembershipCardController(), controller);
         JPanel panel = new JPanel();
         panel.add(mdp);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
