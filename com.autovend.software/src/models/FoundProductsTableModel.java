@@ -12,6 +12,13 @@ public class FoundProductsTableModel extends AbstractTableModel {
     List<ProductDescriptionEntry> foundProducts;
     String[] columnNames;
 
+    /**
+     * Constructor for FoundProductsTableModel
+     * @param foundProducts
+     * 		The found products
+     * @param columnNames
+     * 		The column names
+     */
     public FoundProductsTableModel(ArrayList<ProductDescriptionEntry> foundProducts, String[] columnNames) {
         this.foundProducts = foundProducts;
         this.columnNames = columnNames;

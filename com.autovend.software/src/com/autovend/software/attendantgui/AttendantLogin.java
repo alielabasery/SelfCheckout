@@ -26,6 +26,11 @@ public class AttendantLogin extends JPanel {
 
     AttendantLoginLogoutController a = new AttendantLoginLogoutController();
 
+    /**
+     * Constructor for Attendant Login
+     * @param gc
+     * 		The GuiController to set as the default GuiController
+     */
     public AttendantLogin(GuiController gc) {
         this.gc = gc;
 

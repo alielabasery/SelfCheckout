@@ -31,12 +31,17 @@ public class AddItemByPLUController extends ItemAdderController<TouchScreen, Tou
     String newItemDescription;  // used for testing
 
 
+    /**
+     * Constructor for the AddItemByPLUController 
+     * @param touchScreen
+     * 		The touch screen being used
+     */
     public AddItemByPLUController(TouchScreen touchScreen) {
         super(touchScreen);
     }
 
 
-    /*
+    /**
      * Add products in database to catalog
      */
     public void addProducts() {
@@ -44,8 +49,12 @@ public class AddItemByPLUController extends ItemAdderController<TouchScreen, Tou
     }
 
 
-    /*
+    /**
      * Gets the selected Item's PLUCodedProduct, price and weight based on quantity
+     * @param pluCode
+     * 		The pluCode of the item
+     * @param quantity
+     * 		The quantity of items
      */
     public void handleInputPLU(PriceLookUpCode pluCode, String quantity) {
         BigDecimal productQuantity = new BigDecimal(quantity);
@@ -56,8 +65,10 @@ public class AddItemByPLUController extends ItemAdderController<TouchScreen, Tou
     }
 
 
-    /*
+    /**
      * Reaction event when item is added by PLU
+     * @param touchScreen
+     * 		The touch screen being used
      */
     public void reactToAddByPLUEvent(TouchScreen touchScreen) {
         if(isDeviceDisabled())
@@ -90,29 +101,37 @@ public class AddItemByPLUController extends ItemAdderController<TouchScreen, Tou
     }
 
 
-    /*
+    /**
      * Getter for Catalog List
+     * @return
+     * 		The list of PLU codes in the catalog
      */
     public List<PLUCodedProduct> getCatalog(){
         return catalog;
     }
 
-    /*
+    /**
      * Getter for selected Product
+     * @return
+     * 		The selected PLU product
      */
     public PLUCodedProduct getPluProduct() {
         return pluProduct;
     }
 
-    /*
+    /**
      * Getter for selected Item's price
+     * @return
+     * 		The price of the selected item
      */
     public BigDecimal getPrice() {
         return price;
     }
 
-    /*
+    /**
      * Getter for the new Item's description
+     * @return
+     * 		The description of the selected item
      */
     public String getNewItemDescription() {
         return newItemDescription;

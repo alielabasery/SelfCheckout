@@ -95,6 +95,11 @@ public class CheckoutController {
 		clearOrder();
 	}
 
+	/**
+	 * The constructor for the checkout controller
+	 * @param checkout
+	 * 		The SelfCheckoutStation to connect
+	 */
 	public CheckoutController(SelfCheckoutStation checkout) {
 		BarcodeScannerController mainScannerController = new BarcodeScannerController(checkout.mainScanner);
 		BarcodeScannerController handheldScannerController = new BarcodeScannerController(checkout.handheldScanner);
@@ -150,6 +155,11 @@ public class CheckoutController {
 		
 	}
 
+	/**
+	 * Gets the connected stations ID
+	 * @return
+	 * 		The connected stations ID
+	 */
 	public int getID() {
 		return stationID;
 	}
