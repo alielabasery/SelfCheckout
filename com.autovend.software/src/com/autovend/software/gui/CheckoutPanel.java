@@ -38,9 +38,8 @@ import java.util.Currency;
 import java.util.Enumeration;
 
 import javax.swing.*;
-import com.autovend.GiftCard;
-import com.autovend.CreditCard;
-import com.autovend.DebitCard;
+import com.autovend.GiftCard.*;
+import com.autovend.*;
 
 public class CheckoutPanel extends JPanel {
     private JFrame frame;
