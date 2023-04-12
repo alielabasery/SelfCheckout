@@ -27,6 +27,10 @@ public class CheckoutGUIController {
 		this.frame = screen.getFrame();
 	}
 	
+	public CheckoutController getCheckout() {
+		return checkout;
+	}
+	
 	private void resetScreen() {
         frame.setExtendedState(JFrame.NORMAL);
         frame.setPreferredSize(new Dimension(1280, 720));

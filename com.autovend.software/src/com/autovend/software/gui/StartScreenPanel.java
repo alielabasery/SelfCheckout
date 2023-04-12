@@ -43,8 +43,8 @@ public class StartScreenPanel extends JPanel {
 	CheckoutGUIController gc;
     JButton button;
     JButton membershipButton;
-    JLabel welcomeLabel;
-    JLabel startLabel;
+    JLabel welcomeLabel, startLabel, stationNameLabel;
+    
     public StartScreenPanel(CheckoutGUIController gc) {
         this.gc = gc;
 
@@ -93,5 +93,10 @@ public class StartScreenPanel extends JPanel {
         startLabel.setBounds(480, 280, 500, 150);
         startLabel.setFont(new Font(Font.MONOSPACED, Font.ITALIC, 26));
         add(startLabel);
+        
+        stationNameLabel = new JLabel(gc.getCheckout().getStationName());
+        stationNameLabel.setBounds(20, 650, 300, 50);
+        stationNameLabel.setFont(new Font(Font.SERIF, Font.PLAIN, 20));
+        add(stationNameLabel);
     }
 }
