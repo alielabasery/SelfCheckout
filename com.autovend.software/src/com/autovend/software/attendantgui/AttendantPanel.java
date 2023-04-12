@@ -1,6 +1,7 @@
 package com.autovend.software.attendantgui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Panel;
@@ -18,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
 import com.autovend.devices.SupervisionStation;
+import com.autovend.software.PreventStation;
 import com.autovend.software.controllers.AttendantLoginLogoutController;
 import com.autovend.software.controllers.AttendantShutdownStationController;
 import com.autovend.software.controllers.AttendentController;
@@ -146,8 +148,15 @@ public class AttendantPanel extends JPanel {
 	}
 	
 	public void addStation(String name) {
-		stationsBox.add(getStationPanels(name));
-		stationsBox.add(new JSeparator());
+		Component[] temp = getStationPanels(name);
+		stationsBox.add(temp[0]);
+		stationsBox.add(temp[1]);
+		updateScreen();
+	}
+	
+	public void removeStation(JPanel panel, JSeparator separator) {
+		stationsBox.remove(panel);
+		stationsBox.remove(separator);
 		updateScreen();
 	}
 	
@@ -156,8 +165,9 @@ public class AttendantPanel extends JPanel {
 		repaint();
 	}
 	
-	public JPanel getStationPanels(String name) {
+	public Component[] getStationPanels(String name) {
 		JPanel panel = new JPanel();
+		JSeparator separator = new JSeparator();
 		
 		JLabel label = new JLabel(name);
 		panel.add(label);
@@ -171,20 +181,16 @@ public class AttendantPanel extends JPanel {
 		panel.add(bttn2);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
-		JButton bttn3 = new JButton("Permit " + name);
+		JButton bttn3 = new JButton("Add Item - " + name);
 		panel.add(bttn3);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
-		JButton bttn4 = new JButton("Add Item - " + name);
+		JButton bttn4 = new JButton("Remove Item - " + name);
 		panel.add(bttn4);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
-		JButton bttn5 = new JButton("Remove Item - " + name);
+		JButton bttn5 = new JButton("Unsupervise " + name);
 		panel.add(bttn5);
-		panel.add(Box.createRigidArea(new Dimension(25, 0)));
-		
-		JButton bttn6 = new JButton("Unsupervise " + name);
-		panel.add(bttn6);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
 		bttn.addActionListener(new ActionListener() {
@@ -198,7 +204,6 @@ public class AttendantPanel extends JPanel {
             			bttn2.setEnabled(false);
             			bttn3.setEnabled(false);
             			bttn4.setEnabled(false);
-            			bttn5.setEnabled(false);
             			updateScreen();
         			}
         			else if (bttn.getText().equals("Reboot " + name)) {
@@ -209,45 +214,45 @@ public class AttendantPanel extends JPanel {
             			bttn2.setEnabled(true);
             			bttn3.setEnabled(true);
             			bttn4.setEnabled(true);
-            			bttn5.setEnabled(true);
             			updateScreen();
         			}
         		}
             }
         });
 		
+		//Permit Station and Prevent Station Implementation doesn't do anything
 		bttn2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
             	CheckoutController checkoutController = NetworkController.getCheckoutStationController(name);
+            	PreventStation prevent = new PreventStation();
         		if (checkoutController != null) {
-        			if (bttn.getText().equals("Shutdown " + name)) {
-        				shutdownController.shutdownStation(checkoutController.getStation(), false);
-            			bttn.setText("Reboot " + name);
-            			bttn2.setEnabled(false);
-            			bttn3.setEnabled(false);
-            			bttn4.setEnabled(false);
-            			bttn5.setEnabled(false);
+        			if (bttn2.getText().equals("Prevent " + name)) {
+        				prevent.suspend();
+        				bttn2.setText("Permit " + name);
+        			}
+        			else if (bttn2.getText().equals("Permit " + name)) {
+        				bttn2.setText("Prevent " + name);
             			updateScreen();
         			}
-        			else if (bttn.getText().equals("Reboot " + name)) {
-        				NetworkController.removeCheckoutStation(name);
-        				CheckoutController newController = startupController.runsStartUpRoutine(checkoutController.getStation(), true);
-        				NetworkController.registerCheckoutStation(name, newController);
-            			bttn.setText("Shutdown " + name);
-            			bttn2.setEnabled(true);
-            			bttn3.setEnabled(true);
-            			bttn4.setEnabled(true);
-            			bttn5.setEnabled(true);
-            			updateScreen();
-        			}
+        		}
+            }
+        });
+		
+		bttn5.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	CheckoutController checkoutController = NetworkController.getCheckoutStationController(name);
+        		if (checkoutController != null) {
+        			unsupervisedStations.add(name);
+        			removeStation(panel, separator);
         		}
             }
         });
 				
 		stationCounter++;
-		
-		return panel;
+		Component temp[] = {panel, separator};
+		return temp;
 	}
 	
 	public JPanel getNotificationPanels() {
