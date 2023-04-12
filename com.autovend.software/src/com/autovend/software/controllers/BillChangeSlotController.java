@@ -7,6 +7,12 @@ import com.autovend.devices.observers.BillSlotObserver;
 
 public class BillChangeSlotController extends ChangeSlotController<BillSlot, BillSlotObserver>
 		implements BillSlotObserver {
+	
+	/**
+	 * The constructor for the BillChangeSlotController
+	 * @param newDevice
+	 * 		The BillSlot to connect
+	 */
 	public BillChangeSlotController(BillSlot newDevice) {
 		super(newDevice);
 	}

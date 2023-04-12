@@ -8,7 +8,11 @@ public class PermitStation {
     public PermitStation() {
     }
 
-    // Display the status of all stations
+    /**
+     * Display the status of all stations
+     * @param stations
+     * 		The list of stations
+     */
     public void displayStations(List<PreventStation> stations) {
         System.out.println("Stations status:");
         for (PreventStation station : stations) {
@@ -17,7 +21,11 @@ public class PermitStation {
         System.out.println();
     }
 
-    // Display the list of suspended stations
+    /**
+     * Display the list of suspended stations
+     * @param stations
+     * 		The list of stations
+     */
     public void displaySuspendedStations(List<PreventStation> stations) {
         System.out.println("Suspended stations:");
         for (PreventStation station : stations) {
@@ -27,7 +35,13 @@ public class PermitStation {
         }
     }
 
-    // Un-suspend a station
+    /**
+     *  Un-suspend a station
+     * @param stationId
+     * 		The ID of the station to unsuspend
+     * @param stations
+     * 		The list of stations
+     */
     public void unsuspendStation(int stationId, List<PreventStation> stations) {
         for (PreventStation station : stations) {
             if (station.hashCode() == stationId && station.isSuspended()) {

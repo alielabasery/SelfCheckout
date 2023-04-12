@@ -12,6 +12,14 @@ import java.math.BigDecimal;
 
 public class BillDispenserController extends ChangeDispenserController<BillDispenser, BillDispenserObserver>
 		implements BillDispenserObserver {
+	
+	/**
+	 * Constructor for the BillDispenserController
+	 * @param newDevice
+	 * 		The BillDispenser to connect
+	 * @param denom
+	 * 		The denomination
+	 */
 	public BillDispenserController(BillDispenser newDevice, BigDecimal denom) {
 		super(newDevice, denom);
 	}

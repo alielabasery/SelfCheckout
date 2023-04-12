@@ -14,10 +14,16 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 
 	private boolean AttendantApproval;
 
+	/**
+	 * The constructor for ElectronicScaleController
+	 * @param newDevice
+	 * 		The Electronic Scale being used
+	 */
 	public ElectronicScaleController(ElectronicScale newDevice) {
 		super(newDevice);
 	}
 
+	// ******* I think that there has to be a maximum weight that a item is allowed ot be in order for it to go on the for electronic scale 
 	/**
 	 * Method used to update the expected weight for validation of orders.
 	 * 
@@ -25,7 +31,7 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 	 * @param weightInGrams
 	 */
 	@Override
-	void updateExpectedBaggingArea(Product nextProduct, double weightInGrams) {
+	void updateExpectedBaggingArea(double weightInGrams) {
 		this.expectedWeight += weightInGrams;
 		this.setBaggingValid(false);
 		// TODO: Figure out how changes smaller than sensitivity would be handled
@@ -45,6 +51,8 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 		return;
 	}
 
+	
+	
 	@Override
 	public void reactToWeightChangedEvent(ElectronicScale scale, double weightInGrams) {
 		if (scale != this.getDevice()) {
@@ -89,7 +97,7 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 
 		}
 	}
-
+ 
 	@Override
 	public void reactToOverloadEvent(ElectronicScale scale) {
 		if (scale != this.getDevice()) {
@@ -129,4 +137,7 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 		return this.addingBags;
 	}
 
+
+	
 }
+
