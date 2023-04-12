@@ -108,6 +108,35 @@ public class CardPaymentTest {
         assertEquals(controllerStub.getRemainingAmount(), BigDecimal.valueOf(-1));
         assertTrue(cardReaderStub.isDisabled());
     }
+    
+    @Test
+    public void testRepeatedBadPIN() {
+    	assertTrue(cardReaderStub.isDisabled());
+        readerControllerStub.enablePayment(bankStub, BigDecimal.ONE);
+        assertFalse(cardReaderStub.isDisabled());
+        bankStub.canPostTransaction = true;
+        bankStub.holdAuthorized = true;
+        try {
+            cardReaderStub.insert(cardStub, "1336");
+        } catch (Exception ex){
+        	cardReaderStub.remove();
+           try {
+			cardReaderStub.insert(cardStub, "1336");
+		} catch (Exception e) {
+			cardReaderStub.remove();
+			try {
+				cardReaderStub.insert(cardStub, "1336");
+			} catch (Exception e1) {
+				cardReaderStub.remove();
+			}
+			
+			}
+        }
+        assertFalse(bankStub.held);
+        assertTrue(bankStub.noPostCall);
+        assertEquals(controllerStub.getRemainingAmount(), BigDecimal.valueOf(0));
+        assertFalse(cardReaderStub.isDisabled());
+    }
 
     @Test
     public void testPostFailed(){
