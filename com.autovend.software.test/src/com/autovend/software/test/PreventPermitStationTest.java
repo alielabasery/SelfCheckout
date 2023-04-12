@@ -31,73 +31,95 @@
 
 package com.autovend.software.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.math.BigDecimal;
+import java.util.Currency;
+
+import org.junit.Before;
 import org.junit.Test;
-import com.autovend.software.PreventStation;
 
-public class preventStationTest {
+import com.autovend.devices.SelfCheckoutStation;
+import com.autovend.software.PreventPermitStation;
+import com.autovend.software.controllers.CheckoutController;
 
+public class PreventPermitStationTest {
+	
+	private Currency currency;
+	private int[] billDenominations;
+	private BigDecimal[] coinDenominations;
+	private SelfCheckoutStation station;
+	private CheckoutController controller;
+	
+	PreventPermitStation preventPermitStation;
+	
+	@Before
+	public void setup() {
+		currency = Currency.getInstance("CAD");
+		billDenominations = new int[] { 5, 10, 20, 50, 100 };
+		coinDenominations = new BigDecimal[] { new BigDecimal(25), new BigDecimal(100), new BigDecimal(5) };
+    	station = new SelfCheckoutStation(currency, billDenominations, coinDenominations, 1000, 1);
+    	controller = new CheckoutController("Station 1", station);
+    	preventPermitStation = new PreventPermitStation();
+	}
 	
 	@Test
-    public void testConstructor() {
-        PreventStation station = new PreventStation();
-        assertFalse(station.isSuspended());
-        assertFalse(station.isSessionInProgress());
+    public void testIsSuspended() {
+        controller.systemAvailableForCustomerUse = true;
+        assertFalse(preventPermitStation.isSuspended(controller));
     }
-
-	  @Test
-	    public void testSuspend() {
-	        PreventStation station = new PreventStation();
-	        assertFalse(station.isSuspended());
-	        station.suspend();
-	        assertTrue(station.isSuspended());
-	        station.setSessionInProgress(true);
-	        station.suspend();
-	        assertTrue(station.isSuspended());
-	        station.setSessionInProgress(false);
-	        station.suspend();
-	        assertTrue(station.isSuspended());
-	    }
 	
-    @Test
-    public void testSetSessionInProgress() {
-        PreventStation station = new PreventStation();
-        assertFalse(station.isSessionInProgress());
-        station.setSessionInProgress(true);
-        assertTrue(station.isSessionInProgress());
-        station.setSessionInProgress(false);
-        assertFalse(station.isSessionInProgress());
+	@Test
+    public void testIsSuspendedFalse() {
+        controller.systemAvailableForCustomerUse = false;
+        assertTrue(preventPermitStation.isSuspended(controller));
     }
 
-    @Test
-    public void testForceSuspend() {
-        PreventStation station = new PreventStation();
-        assertFalse(station.isSuspended());
-        station.forceSuspend();
-        assertTrue(station.isSuspended());
+	@Test
+    public void testisSessionInProgress() {
+		controller.sessionInProgress = true;
+        assertTrue(preventPermitStation.isSessionInProgress(controller));
     }
-
-    @Test
+	
+	@Test
+    public void testisSessionInProgressFalse() {
+		controller.sessionInProgress = false;
+        assertFalse(preventPermitStation.isSessionInProgress(controller));
+    }
+	
+	@Test
+    public void testSuspend() {
+		controller.sessionInProgress = false;
+        assertTrue(preventPermitStation.suspend(controller));
+        assertTrue(preventPermitStation.isSuspended(controller));
+    }
+	
+	@Test
+    public void testSuspendInUse() {
+		controller.sessionInProgress = true;
+        assertFalse(preventPermitStation.suspend(controller));
+        assertFalse(preventPermitStation.isSuspended(controller));
+    }
+	
+	@Test
+    public void testSuspendForced() {
+		controller.sessionInProgress = true;
+        preventPermitStation.forceSuspend(controller);
+        assertTrue(preventPermitStation.isSuspended(controller));
+    }
+	
+	@Test
     public void testUnsuspend() {
-        PreventStation station = new PreventStation();
-        assertFalse(station.isSuspended());
-        station.forceSuspend();
-        assertTrue(station.isSuspended());
-        station.unsuspend();
-        assertFalse(station.isSuspended());
+		controller.systemAvailableForCustomerUse = false;
+        preventPermitStation.unsuspend(controller);
+        assertTrue(controller.systemAvailableForCustomerUse);
     }
-
-    @Test
-    public void testCannotSuspendWithSessionInProgress() {
-        PreventStation station = new PreventStation();
-        assertFalse(station.isSuspended());
-        station.setSessionInProgress(true);
-        station.suspend();
-        assertTrue(station.isSessionInProgress());
-        assertFalse(station.isSuspended());
-        station.setSessionInProgress(false);
-        station.suspend();
-        assertTrue(station.isSuspended());
+	
+	@Test
+    public void testUnsuspendAlready() {
+		controller.systemAvailableForCustomerUse = true;
+        preventPermitStation.unsuspend(controller);
+        assertTrue(controller.systemAvailableForCustomerUse);
     }
-
 }
