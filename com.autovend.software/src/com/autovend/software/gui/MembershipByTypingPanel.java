@@ -66,6 +66,10 @@ public class MembershipByTypingPanel extends JPanel{
                 String m = "123456789012";
                 try {
                     MembershipCardController.isValid(userID);
+                    MembershipCardController.getValidMembershipNumberByTyping(userID);
+                    remove(failLabel);
+                    revalidate();
+                    repaint();
                 }
                 catch(IllegalDigitException s) {
                     IDField.setText("");
