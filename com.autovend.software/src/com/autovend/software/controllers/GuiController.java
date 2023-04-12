@@ -35,13 +35,13 @@ public class GuiController {
         attendantLogin = new AttendantLoginLogoutController();
     }
 
-    public void startScreen() {
+    public void startScreen(CheckoutController controller) {
         JFrame screen = station.screen.getFrame();
         screen.setExtendedState(JFrame.NORMAL);
         screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
-        StartScreenPanel scp = new StartScreenPanel(this);
+        StartScreenPanel scp = new StartScreenPanel(this, controller);
         JPanel panel = new JPanel();
         panel.add(scp);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
@@ -227,6 +227,6 @@ public class GuiController {
         // change below to gc.attendantLoginScreen to see the Attendant Station
         // change below to gc.startScreen to see the Customer Station
         gc.attendantLoginScreen();
-//        gc.startScreen();
+        gc.startScreen(cc);
     }
 }
