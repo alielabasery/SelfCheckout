@@ -43,6 +43,8 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 import com.autovend.devices.SelfCheckoutStation;
+import com.autovend.Barcode;
+import com.autovend.PriceLookUpCode;
 import com.autovend.devices.ElectronicScale;
 import com.autovend.devices.EmptyException;
 import com.autovend.devices.ReusableBagDispenser;
@@ -53,14 +55,20 @@ import com.autovend.products.Product;
 import com.autovend.software.PreventStation;
 import com.autovend.software.pojo.Cart;
 import com.autovend.software.pojo.CartLineItem;
+import com.autovend.software.pojo.CartLineItem.CODETYPE;
+import com.autovend.software.utils.CodeUtils;
 
 import Networking.NetworkController;
+import data.DatabaseController;
 
 @SuppressWarnings("rawtypes")
 
 public class CheckoutController {
+	private String stationName;
 	private static int IDcounter = 1;
 	private int stationID = IDcounter++;
+
+	private SelfCheckoutStation selfCheckoutStation;
 	private List<PreventStation> suspendedStations;
 	private LinkedHashMap<Product, Number[]> order;
 	public Map<Product, Double> PLUProd;
@@ -147,7 +155,9 @@ public class CheckoutController {
 	 * @param checkout
 	 * 		The SelfCheckoutStation to connect
 	 */
-	public CheckoutController(SelfCheckoutStation checkout) {
+	public CheckoutController(String stationName, SelfCheckoutStation checkout) {
+		this.selfCheckoutStation = checkout;
+		this.stationName = stationName;
 		BarcodeScannerController mainScannerController = new BarcodeScannerController(checkout.mainScanner);
 		BarcodeScannerController handheldScannerController = new BarcodeScannerController(checkout.handheldScanner);
 		PurchaseBagController bagController = new PurchaseBagController(checkout.screen);
@@ -198,7 +208,7 @@ public class CheckoutController {
 		clearOrder();
 		
 		cart = new Cart("GST", 0.05, null, 0.0, false);
-		NetworkController.registerCheckoutStation("Checkout Station 1", this);
+		NetworkController.registerCheckoutStation(stationName, this);
 		
 	}
 
@@ -209,6 +219,14 @@ public class CheckoutController {
 	 */
 	public int getID() {
 		return stationID;
+	}
+	
+	public String getStationName() {
+		return this.stationName;
+	}
+	
+	public SelfCheckoutStation getSelfCheckoutStation() {
+		return this.selfCheckoutStation;
 	}
 
 	/**
@@ -234,6 +252,10 @@ public class CheckoutController {
 	// Getters for the order and cost for this checkout controller's current order.
 	public HashMap<Product, Number[]> getOrder() {
 		return this.order;
+	}
+	
+	public Cart getCart() {
+		return this.cart;
 	}
 
 	public BigDecimal getCost() {
@@ -526,9 +548,66 @@ public class CheckoutController {
 		controller.bagsLoaded(dispenser,bagCount);
 	}
 	
-	public void addItem(CartLineItem item) {
-		cart.addCartItem(item);
-	}
+    public void addItem(CartLineItem item) {
+        if (item.getCodeType() == CODETYPE.PLU) {
+           PriceLookUpCode code = CodeUtils.stringPLUToPLU(item.getProductCode());
+           PLUCodedProduct product = (PLUCodedProduct)DatabaseController.getProduct(code, 'P');
+           Number[] currentItemInfo = new Number[] { BigDecimal.ZERO, BigDecimal.ZERO };
+
+           // Add item to order
+           if (this.order.containsKey(product)) {
+              currentItemInfo = this.order.get(product);
+           }
+
+           // Add the cost of the new item to the current cost.
+           if (product.isPerUnit()) {
+              this.cost = this.cost.add(product.getPrice().multiply(new BigDecimal(item.getQuantity())));
+           } else {
+              this.cost = this.cost.add(product.getPrice().multiply(new BigDecimal(item.getWeight())));
+           }
+
+           currentItemInfo[0] = (currentItemInfo[0].intValue()) + 1;
+           currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(item.getPrice());
+
+           this.order.put(product, currentItemInfo);
+
+           for (BaggingAreaController baggingController : this.validBaggingControllers) {
+              baggingController.updateExpectedBaggingArea(item.getWeight());
+           }
+
+           baggingItemLock = true;
+           
+        } else {
+           Barcode code = CodeUtils.stringBarcodeToBarcode(item.getProductCode());
+           BarcodedProduct product = (BarcodedProduct)DatabaseController.getProduct(code, 'B');
+           Number[] currentItemInfo = new Number[] { BigDecimal.ZERO, BigDecimal.ZERO };
+
+           // Add item to order
+           if (this.order.containsKey(product)) {
+              currentItemInfo = this.order.get(product);
+           }
+
+           // Add the cost of the new item to the current cost.
+           if (product.isPerUnit()) {
+              this.cost = this.cost.add(product.getPrice().multiply(new BigDecimal(item.getQuantity())));
+           } else {
+              this.cost = this.cost.add(product.getPrice().multiply(new BigDecimal(item.getWeight())));
+           }
+
+           currentItemInfo[0] = (currentItemInfo[0].intValue()) + item.getQuantity();
+           currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(item.getPrice());
+
+           this.order.put(product, currentItemInfo);
+
+           for (BaggingAreaController baggingController : this.validBaggingControllers) {
+              baggingController.updateExpectedBaggingArea(item.getWeight());
+           }
+
+           baggingItemLock = true;
+           
+        }
+        this.cart.addCartItem(item);
+     }
 
 	/*
 	 * Methods used by ItemAdderControllers

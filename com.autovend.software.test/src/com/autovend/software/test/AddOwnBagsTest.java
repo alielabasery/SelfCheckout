@@ -58,7 +58,7 @@ public class AddOwnBagsTest {
 
 		stubScanner = stubStation.mainScanner;
 		stubScale = stubStation.baggingArea;
-		checkoutController = new CheckoutController(stubStation);
+		checkoutController = new CheckoutController("1", stubStation);
 
 		scannerController = new BarcodeScannerController(stubScanner);
 		scannerController.setMainController(checkoutController);
