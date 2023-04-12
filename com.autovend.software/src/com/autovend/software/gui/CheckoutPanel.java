@@ -562,8 +562,21 @@ public class CheckoutPanel extends JPanel {
                     }
 
                     CardIssuer cardIssuer = new CardIssuer("Bank");
+                    Date date = new Date();
                     Calendar expiry = Calendar.getInstance();
-                    cardIssuer.addCardData(number, cardHolder, null, cvvValue, null);
+                    expiry.setTime(date);
+                    expiry.add(Calendar.MONTH, 6);
+                    BigDecimal amount = BigDecimal.valueOf(1000);
+                    BigDecimal amountDue = new BigDecimal(totalAmount.getText());
+
+                    cardIssuer.addCardData(number, cardHolder, expiry, cvvValue, amount);
+                    int hold = cardIssuer.authorizeHold(number, amountDue);
+
+                    if(cardIssuer.postTransaction(number, hold, amountDue)) {
+                        //went through
+                    } else {
+                        //didnt go through
+                    }
                     if (type.equals("Credit")) {
                         creditCard = new CreditCard(type, number, cardHolder, cvvValue, pinValue, isTapEnabled, hasChip);
                     } else {
