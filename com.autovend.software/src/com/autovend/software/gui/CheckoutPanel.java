@@ -124,7 +124,7 @@ public class CheckoutPanel extends JPanel {
         JLabel lblNewLabel_1 = new JLabel("Choose one of the following payment options: ");
         lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, 32));
         lblNewLabel_1.setBackground(SystemColor.activeCaption);
-        lblNewLabel_1.setBounds(170, 90, 939, 58);
+        lblNewLabel_1.setBounds(185, 90, 939, 58);
         frame.getContentPane().add(lblNewLabel_1);
 
         JSeparator separator_1 = new JSeparator();
