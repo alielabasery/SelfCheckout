@@ -1,68 +1,58 @@
-/** 
-* Group Members: 
-* 
-* Ella Tomlinson (30140549)
-* Kofi Frempong (30054189) 
-* Adam Beauferris (30056865) 
-* Niran Malla (30086877)
-* Owen Tinning (30102041)
-* Victor Campos Goitia (30106934)
-* Zoe Kirsman (30113704) 
-* Youssef Abdelrhafour (30085837) 
-* James Rettie (30123362) 
-* Rezwan Ahmed (30134609)
-* Angeline Tran (30139846) 
-* Saad Elkadri (30089084) 
-* Dante Kirsman (30120778) 
-* Riyad Abdullayev (30140509)
-* Saksham Puri (30140617) 
-* Faisal Islam (30140826)
-* Naheen Kabir (30142101) 
-* Jose Perales Rivera (30143354) 
-* Aditi Yadav (30143652)
-* Sahaj Malhotra () 
-* Ali Elabasery (30148424)
-* Fabiha Fairuzz Subha (30148674) 
-* Umesh Oad (30152293)
-* Daniel Boettcher (30153811) 
-* Nam Nguyen Vu (30154892)
-* 
-*/
 package com.autovend.software.attendantgui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
-import com.autovend.devices.SimulationException;
 import com.autovend.devices.SupervisionStation;
+import com.autovend.software.PreventStation;
+import com.autovend.software.controllers.AttendantLoginLogoutController;
+import com.autovend.software.controllers.AttendantShutdownStationController;
+import com.autovend.software.controllers.AttendentController;
+import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.GuiController;
+import com.autovend.software.controllers.StartUpRoutineController;
+import com.autovend.software.gui.dlgSearchProduct;
+
+import Networking.NetworkController;
 
 public class AttendantPanel extends JPanel {
 	GuiController gc;
 	SupervisionStation attendantStation;
+	AttendentController attendantController;
+	AttendantLoginLogoutController loginController;
+	AttendantShutdownStationController shutdownController;
+	StartUpRoutineController startupController;
+	
+	private ArrayList<String> unsupervisedStations = new ArrayList<String>();
+	private static ArrayList<String> shutdownStations = new ArrayList<String>();
+	
+	Box stationsBox;
+	
     int stationCounter = 0;
-    
-    /**
-     * Constructor for the AttendantPanel
-     * @param gc
-     * 		The GuiController to set as the default GUI Controller
-     * @param attendantStation
-     * 		The station where the attendant resides
-     */
-	public AttendantPanel(GuiController gc, SupervisionStation attendantStation) {
+        
+	public AttendantPanel(GuiController gc, SupervisionStation attendantStation, 
+			AttendentController attendantController, AttendantLoginLogoutController a) {
 		this.gc = gc;
 		this.attendantStation = attendantStation;
+		this.attendantController = attendantController;
+		this.loginController = a;
+		this.shutdownController = new AttendantShutdownStationController(attendantStation, a);
+		this.startupController = new StartUpRoutineController(attendantStation, a);
 		
 		setPreferredSize(new Dimension(1280, 720));
 		setLayout(null);
@@ -72,18 +62,12 @@ public class AttendantPanel extends JPanel {
 		stationsPanel.setLayout(new BorderLayout(0, 0));
 		add(stationsPanel);
 		
-		Box stationsBox = Box.createVerticalBox();
+		stationsBox = Box.createVerticalBox();
 		JScrollPane stationsScrollPane = new JScrollPane(stationsBox);
 		stationsScrollPane.setPreferredSize(new Dimension(801, 587));
 		stationsPanel.add(stationsScrollPane, BorderLayout.NORTH);
 		
-		stationsBox.add(getStationPanels());
-		stationsBox.add(new JSeparator());
-
-		for (int i = 0; i < attendantStation.supervisedStationCount(); i++) {
-			stationsBox.add(getStationPanels());
-			stationsBox.add(new JSeparator());
-		}
+		updateStationsOnScreen(null);
 		
 		JLabel stationsLabel = new JLabel("Supervised Stations");
 		stationsLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -108,6 +92,19 @@ public class AttendantPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
             	
+            	Object[] choices = unsupervisedStations.toArray();
+            	
+            	String input = (String) JOptionPane.showInputDialog(null, "Choose an unsupervised Station from below: ",
+            			"Add Station", JOptionPane.QUESTION_MESSAGE, null, choices, unsupervisedStations.get(0));
+            	
+            	if (input != null) {
+            		CheckoutController checkoutController = NetworkController.getCheckoutStationController(input);
+            		if (checkoutController != null) {
+            			attendantStation.add(checkoutController.getSelfCheckoutStation());
+            			unsupervisedStations.remove(input);
+            			updateStationsOnScreen(input);
+            		}
+            	}
             }
         });
 		add(addStationButton);
@@ -133,39 +130,150 @@ public class AttendantPanel extends JPanel {
 		}
 	}
 	
-	/**
-	 * Gets the JFrame panels of the stations
-	 * @return
-	 * 		The JPanel of the station
-	 */
-	public JPanel getStationPanels() {
+	public void updateStationsOnScreen(String stationName) {
+		if (stationName == null) {
+			List<String> stationNames = NetworkController.getCheckoutStationName();
+	
+			for (int i = 0; i < stationNames.size(); i++) {
+				CheckoutController checkoutController = NetworkController.getCheckoutStationController(stationNames.get(i));
+				if (checkoutController != null) {
+					if (attendantStation.supervisedStations().contains(checkoutController.getSelfCheckoutStation())) {
+						addStation(stationNames.get(i));
+					} else {
+						unsupervisedStations.add(stationNames.get(i));
+					}
+				}
+			}
+		} else {
+			addStation(stationName);
+		}
+	}
+	
+	public void addStation(String name) {
+		Component[] temp = getStationPanels(name);
+		stationsBox.add(temp[0]);
+		stationsBox.add(temp[1]);
+		updateScreen();
+	}
+	
+	public void removeStation(JPanel panel, JSeparator separator) {
+		stationsBox.remove(panel);
+		stationsBox.remove(separator);
+		updateScreen();
+	}
+	
+	private void updateScreen() {
+		gc.validateAttendantScreen();
+		repaint();
+	}
+	
+	public Component[] getStationPanels(String name) {
 		JPanel panel = new JPanel();
+		JSeparator separator = new JSeparator();
 		
-		JLabel label = new JLabel("Station: " + stationCounter);
+		JLabel label = new JLabel(name);
 		panel.add(label);
 		panel.add(Box.createRigidArea(new Dimension(100, 0)));
 		
-		JButton bttn = new JButton("Button 1");
+		JButton bttn = new JButton("Shutdown " + name);
 		panel.add(bttn);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
-		JButton bttn2 = new JButton("Button 2");
+		JButton bttn2 = new JButton("Prevent " + name);
 		panel.add(bttn2);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
-		JButton bttn3 = new JButton("Button 3");
+		JButton bttn3 = new JButton("Add Item - " + name);
 		panel.add(bttn3);
-				
-		stationCounter++;
+		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
-		return panel;
+		JButton bttn4 = new JButton("Remove Item - " + name);
+		panel.add(bttn4);
+		panel.add(Box.createRigidArea(new Dimension(25, 0)));
+		
+		JButton bttn5 = new JButton("Unsupervise " + name);
+		panel.add(bttn5);
+		panel.add(Box.createRigidArea(new Dimension(25, 0)));
+		
+		bttn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	CheckoutController checkoutController = NetworkController.getCheckoutStationController(name);
+        		if (checkoutController != null) {
+        			if (bttn.getText().equals("Shutdown " + name)) {
+        				shutdownController.shutdownStation(checkoutController.getSelfCheckoutStation(), false);
+        				shutdownStations.add(name);
+            			bttn.setText("Reboot " + name);
+            			bttn2.setEnabled(false);
+            			bttn3.setEnabled(false);
+            			bttn4.setEnabled(false);
+            			updateScreen();
+        			}
+        			else if (bttn.getText().equals("Reboot " + name)) {
+//        				NetworkController.removeCheckoutStation(name);
+        				CheckoutController newController = startupController.runsStartUpRoutine(checkoutController.getSelfCheckoutStation(), true);
+        				NetworkController.registerCheckoutStation(name, newController);
+        				shutdownStations.remove(name);
+            			bttn.setText("Shutdown " + name);
+            			bttn2.setEnabled(true);
+            			bttn3.setEnabled(true);
+            			bttn4.setEnabled(true);
+            			updateScreen();
+        			}
+        		}
+            }
+        });
+		
+		//Permit Station and Prevent Station Implementation doesn't do anything
+		bttn2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	CheckoutController checkoutController = NetworkController.getCheckoutStationController(name);
+            	PreventStation prevent = new PreventStation();
+        		if (checkoutController != null) {
+        			if (bttn2.getText().equals("Prevent " + name)) {
+        				prevent.suspend();
+        				bttn2.setText("Permit " + name);
+        			}
+        			else if (bttn2.getText().equals("Permit " + name)) {
+        				bttn2.setText("Prevent " + name);
+            			updateScreen();
+        			}
+        		}
+            }
+        });
+		
+		bttn3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+        		dlgSearchProduct test = new dlgSearchProduct(null, null);
+        		test.setVisible(true);
+        		if (test.selectedItemCode != null) {
+        			
+        		}
+            }
+        });
+		
+		bttn5.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	CheckoutController checkoutController = NetworkController.getCheckoutStationController(name);
+        		if (checkoutController != null) {
+        			unsupervisedStations.add(name);
+        			attendantStation.remove(checkoutController.getSelfCheckoutStation());
+        			removeStation(panel, separator);
+        		}
+            }
+        });
+				
+		if (shutdownStations.contains(name)) {
+			bttn.doClick();
+		}
+		
+		Component temp[] = {panel, separator};
+		return temp;
 	}
 	
-	/**
-	 * Gets the JFrame panels of the notifications
-	 * @return
-	 * 		The JPanel of the notification
-	 */
 	public JPanel getNotificationPanels() {
 		JPanel panel = new JPanel();
 		
