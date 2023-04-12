@@ -75,14 +75,76 @@ public class GuiController {
         station.screen.setVisible(true);
     }
 
+    public void membershipScreen() {
+        JFrame screen = station.screen.getFrame();
+        screen.setExtendedState(JFrame.NORMAL);
+        screen.setPreferredSize(new Dimension(1280, 720));
+        screen.getContentPane().removeAll();
+        screen.setLayout(new BorderLayout());
+        MembershipPanel hvp = new MembershipPanel(this);
+        JPanel panel = new JPanel();
+        panel.add(hvp);
+        screen.getContentPane().add(panel, BorderLayout.CENTER);
+        screen.pack();
+        // Make the JFrame display in the middle of the screen
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) (screenSize.getWidth() - screen.getWidth()) / 2;
+        int y = (int) (screenSize.getHeight() - screen.getHeight()) / 2;
+        screen.setLocation(x, y);
+        screen.validate();
+        station.screen.setVisible(true);
+    }
+
+    public void membershipDetailsScreen() {
+        JFrame screen = station.screen.getFrame();
+        screen.setExtendedState(JFrame.NORMAL);
+        screen.setPreferredSize(new Dimension(1280, 720));
+        screen.getContentPane().removeAll();
+        screen.setLayout(new BorderLayout());
+        MembershipDetailsPanel mdp = new MembershipDetailsPanel(this, new MembershipCardController());
+        JPanel panel = new JPanel();
+        panel.add(mdp);
+        screen.getContentPane().add(panel, BorderLayout.CENTER);
+        screen.pack();
+        panel.add(al);
+        attendantScreen.getContentPane().add(panel, BorderLayout.CENTER);
+        attendantScreen.pack();
+        // Make the JFrame display in the middle of the screen
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) (screenSize.getWidth() - attendantScreen.getWidth()) / 2;
+        int y = (int) (screenSize.getHeight() - attendantScreen.getHeight()) / 2;
+        attendantScreen.setLocation(x, y);
+        attendantScreen.validate();
+        attendantStation.screen.setVisible(true);
+    }
+
+    public void checkoutScreen() {
+        JFrame screen = station.screen.getFrame();
+        screen.setExtendedState(JFrame.NORMAL);
+        screen.setPreferredSize(new Dimension(1280, 720));
+        screen.getContentPane().removeAll();
+        screen.setLayout(new BorderLayout());
+        CheckoutPanel cp = new CheckoutPanel();
+        JPanel panel = new JPanel();
+        panel.add(cp);
+        screen.getContentPane().add(panel, BorderLayout.CENTER);
+        screen.pack();
+        // Make the JFrame display in the middle of the screen
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) (screenSize.getWidth() - screen.getWidth()) / 2;
+        int y = (int) (screenSize.getHeight() - screen.getHeight()) / 2;
+        screen.setLocation(x, y);
+        screen.validate();
+        station.screen.setVisible(true);
+    }
+
     // Attendant Station
     public void attendantLoginScreen() {
-        attendantScreen = attendantStation.screen.getFrame();
-        attendantScreen.setExtendedState(JFrame.NORMAL);
-        attendantScreen.setPreferredSize(new Dimension(1280, 720));
-        attendantScreen.getContentPane().removeAll();
-        attendantScreen.setLayout(new BorderLayout());
-        AttendantLogin al = new AttendantLogin(this);
+    	attendantScreen.setExtendedState(JFrame.NORMAL);
+    	attendantScreen.setPreferredSize(new Dimension(1280, 720));
+    	attendantScreen.getContentPane().removeAll();
+    	attendantScreen.setLayout(new BorderLayout());
+        AttendantLogin al = new AttendantLogin(this, attendantLogin);
         JPanel panel = new JPanel();
         panel.add(al);
         attendantScreen.getContentPane().add(panel, BorderLayout.CENTER);
@@ -96,24 +158,27 @@ public class GuiController {
         attendantStation.screen.setVisible(true);
     }
 
-    public void attendantLoginToAttendantScreen() {
-        JFrame attendantScreen = attendantStation.screen.getFrame();
-        attendantScreen.setExtendedState(JFrame.NORMAL);
-        attendantScreen.setPreferredSize(new Dimension(1280, 720));
-        attendantScreen.getContentPane().removeAll();
-        attendantScreen.setLayout(new BorderLayout());
-        AttendantPanel ap = new AttendantPanel(this, attendantStation, attendantController, a);
+    public void attendantScreen() {
+    	attendantScreen.setExtendedState(JFrame.NORMAL);
+    	attendantScreen.setPreferredSize(new Dimension(1280, 720));
+    	attendantScreen.getContentPane().removeAll();
+    	attendantScreen.setLayout(new BorderLayout());
+        AttendantPanel ap = new AttendantPanel(this, attendantStation, attendantController, attendantLogin);
         JPanel panel = new JPanel();
         panel.add(ap);
         attendantScreen.getContentPane().add(panel, BorderLayout.CENTER);
         attendantScreen.pack();
-        // Make the JFrame display in the middle of the attendantScreen
+        // Make the JFrame display in the middle of the screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (int) (screenSize.getWidth() - attendantScreen.getWidth()) / 2;
         int y = (int) (screenSize.getHeight() - attendantScreen.getHeight()) / 2;
         attendantScreen.setLocation(x, y);
         attendantScreen.validate();
         attendantStation.screen.setVisible(true);
+    }
+    
+    public void validateAttendantScreen() {
+    	attendantScreen.validate();
     }
     
     public void validateAttendantScreen() {
