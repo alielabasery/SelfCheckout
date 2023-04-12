@@ -34,9 +34,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
-import java.util.Currency;
-import java.util.Enumeration;
-
+import java.util.*;
 import javax.swing.*;
 import com.autovend.GiftCard.*;
 import com.autovend.*;
@@ -563,7 +561,9 @@ public class CheckoutPanel extends JPanel {
                         }
                     }
 
-                    CardIssuer cardIssuer;
+                    CardIssuer cardIssuer = new CardIssuer("Bank");
+                    Calendar expiry = Calendar.getInstance();
+                    cardIssuer.addCardData(number, cardHolder, null, cvvValue, null);
                     if (type.equals("Credit")) {
                         creditCard = new CreditCard(type, number, cardHolder, cvvValue, pinValue, isTapEnabled, hasChip);
                     } else {
