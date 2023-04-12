@@ -125,7 +125,7 @@ public class GuiController {
         CheckoutController cc3 = new CheckoutController(s3);
         
         NetworkController.registerCheckoutStation("Station 1", cc);
-        NetworkController.registerCheckoutStation("Station 2", cc2);	
+        NetworkController.registerCheckoutStation("Station 2", cc2);
         NetworkController.registerCheckoutStation("Station 3", cc3);
         
         SupervisionStation ss = new SupervisionStation();

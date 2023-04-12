@@ -137,9 +137,7 @@ public class CheckoutController {
 		registerAll();
 		clearOrder();
 		
-		cart = new Cart("GST", 0.05, null, 0.0, false);
-		NetworkController.registerCheckoutStation("Checkout Station 1", this);
-		
+		cart = new Cart("GST", 0.05, null, 0.0, false);		
 	}
 	
 	public SelfCheckoutStation getStation() {

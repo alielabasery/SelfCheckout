@@ -33,12 +33,6 @@ public class AttendantPanel extends JPanel {
 	SupervisionStation attendantStation;
 	AttendentController attendantController;
 	
-	private Currency currency;
-	private int[] billDenominations;
-	private BigDecimal[] coinDenominations;
-	
-	private int scaleMaximumWeight = 10000;
-	private int scaleSensitivity = 1;
 	
 	private ArrayList<String> unsupervisedStations = new ArrayList<String>();
 	
@@ -51,9 +45,6 @@ public class AttendantPanel extends JPanel {
 		this.attendantStation = attendantStation;
 		this.attendantController = attendantController;
 		
-    	currency = Currency.getInstance("CAD");
-		billDenominations = new int[] {5, 10, 20, 50, 100};
-		coinDenominations = new BigDecimal[] {new BigDecimal("0.05"), new BigDecimal("0.1"), new BigDecimal("0.25"), new BigDecimal("0.5"), new BigDecimal("1"), new BigDecimal("2")};
 		setPreferredSize(new Dimension(1280, 720));
 		setLayout(null);
 		
@@ -67,18 +58,7 @@ public class AttendantPanel extends JPanel {
 		stationsScrollPane.setPreferredSize(new Dimension(801, 587));
 		stationsPanel.add(stationsScrollPane, BorderLayout.NORTH);
 		
-		List<String> stationNames = NetworkController.getCheckoutStationName();
-
-		for (int i = 0; i < stationNames.size(); i++) {
-			CheckoutController checkoutController = NetworkController.getCheckoutStationController(stationNames.get(i));
-			if (checkoutController != null) {
-				if (attendantStation.supervisedStations().contains(checkoutController.getStation())) {
-					addStation(stationNames.get(i));
-				} else {
-					unsupervisedStations.add(stationNames.get(i));
-				}
-			}
-		}
+		updateStationsOnScreen(null);
 		
 		JLabel stationsLabel = new JLabel("Supervised Stations");
 		stationsLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -108,12 +88,14 @@ public class AttendantPanel extends JPanel {
             	String input = (String) JOptionPane.showInputDialog(null, "Choose an unsupervised Station from below: ",
             			"Add Station", JOptionPane.QUESTION_MESSAGE, null, choices, unsupervisedStations.get(0));
             	
-            	
-//            	String newName = getNextStationName();
-//            	CheckoutController checkoutController = new CheckoutController(newStation);
-//            	NetworkController.registerCheckoutStation(getNextStationName(), checkoutController);
-//            	attendantStation.add(newStation);
-//            	addStation(newName);
+            	if (input != null) {
+            		CheckoutController checkoutController = NetworkController.getCheckoutStationController(input);
+            		if (checkoutController != null) {
+            			attendantStation.add(checkoutController.getStation());
+            			unsupervisedStations.remove(input);
+            			updateStationsOnScreen(input);
+            		}
+            	}
             }
         });
 		add(addStationButton);
@@ -139,9 +121,31 @@ public class AttendantPanel extends JPanel {
 		}
 	}
 	
+	public void updateStationsOnScreen(String stationName) {
+		if (stationName == null) {
+			List<String> stationNames = NetworkController.getCheckoutStationName();
+	
+			for (int i = 0; i < stationNames.size(); i++) {
+				CheckoutController checkoutController = NetworkController.getCheckoutStationController(stationNames.get(i));
+				if (checkoutController != null) {
+					if (attendantStation.supervisedStations().contains(checkoutController.getStation())) {
+						addStation(stationNames.get(i));
+					} else {
+						unsupervisedStations.add(stationNames.get(i));
+					}
+				}
+			}
+		} else {
+			System.out.println("Adding");
+			addStation(stationName);
+		}
+	}
+	
 	public void addStation(String name) {
 		stationsBox.add(getStationPanels(name));
 		stationsBox.add(new JSeparator());
+		gc.validateAttendantScreen();
+		repaint();
 	}
 	
 	public JPanel getStationPanels(String name) {
@@ -151,16 +155,25 @@ public class AttendantPanel extends JPanel {
 		panel.add(label);
 		panel.add(Box.createRigidArea(new Dimension(100, 0)));
 		
-		JButton bttn = new JButton("Button 1");
+		JButton bttn = new JButton("Shutdown Station");
 		panel.add(bttn);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
-		JButton bttn2 = new JButton("Button 2");
+		JButton bttn2 = new JButton("Prevent Station");
 		panel.add(bttn2);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
-		JButton bttn3 = new JButton("Button 3");
+		JButton bttn3 = new JButton("Permit Station");
 		panel.add(bttn3);
+		panel.add(Box.createRigidArea(new Dimension(25, 0)));
+		
+		JButton bttn4 = new JButton("Add Item for Customer");
+		panel.add(bttn4);
+		panel.add(Box.createRigidArea(new Dimension(25, 0)));
+		
+		JButton bttn5 = new JButton("Remove Item for Customer");
+		panel.add(bttn5);
+		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 				
 		stationCounter++;
 		
@@ -182,9 +195,5 @@ public class AttendantPanel extends JPanel {
 		panel.add(btnNewButton_2);
 		
 		return panel;
-	}
-	
-	private String getNextStationName() {
-		return "Station: " + ++stationCounter;
 	}
 }
