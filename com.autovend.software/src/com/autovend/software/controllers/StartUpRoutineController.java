@@ -75,7 +75,7 @@ public class StartUpRoutineController {
 			}
 			
 			// Create new instance of Self Checkout Station Driver 
-			CheckoutController selfCheckoutStationController = new CheckoutController(selfCheckoutStationHardware); 
+			CheckoutController selfCheckoutStationController = new CheckoutController("1", selfCheckoutStationHardware); 
 			
 			// Set station not available for customer usage
 			selfCheckoutStationController.systemAvailableForCustomerUse = false; 

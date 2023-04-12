@@ -41,7 +41,7 @@ import com.autovend.software.pojo.CheckoutStation;
 
 public class NetworkController {
 	private static AttendentController attendentController = null;
-	private static HashMap<String, CheckoutStation> checkoutStations = new HashMap<>();
+	private static HashMap<String, CheckoutController> checkoutControllers = new HashMap<>();
 	
 	/**
 	 * Registers an attendant controller
@@ -60,7 +60,15 @@ public class NetworkController {
 	 * 		The controller of the named checkout station
 	 */
 	public static void registerCheckoutStation(String checkoutStationName, CheckoutController checkoutController) {
-		checkoutStations.put(checkoutStationName.toLowerCase(), new CheckoutStation(checkoutStationName, checkoutController));
+		checkoutControllers.put(checkoutStationName.toLowerCase(), checkoutController);
+		if (attendentController != null) {
+			attendentController.getSupervisionStation().add(checkoutController.getSelfCheckoutStation());
+		}
+	}
+	
+	public static void deregisterCheckoutStation(String checkoutStationName) {
+		System.out.println("NetworkController: Deregistering station " + checkoutStationName);
+		checkoutControllers.remove(checkoutStationName.toLowerCase());
 	}
 	
 	/**
@@ -80,8 +88,7 @@ public class NetworkController {
 	 * 		The controller of the named checkout station
 	 */
 	public static CheckoutController getCheckoutStationController(String checkoutStationName) {		
-		CheckoutStation checkoutStation = checkoutStations.get(checkoutStationName.toLowerCase());
-		return checkoutStation.getCheckoutController();
+		return checkoutControllers.get(checkoutStationName.toLowerCase());
 	}
 	
 	/**
@@ -89,10 +96,10 @@ public class NetworkController {
 	 * @return
 	 * 		The list of checkout station names
 	 */
-	public static List<String> getCheckoutStationName() {
+	public static List<String> getCheckoutStationNames() {
 		List<String> stationNames = new ArrayList<>();
-		for (CheckoutStation checkoutStation : checkoutStations.values()) {
-			stationNames.add(checkoutStation.getCheckoutStationName());
+		for (CheckoutController station : checkoutControllers.values()) {
+			stationNames.add(station.getStationName());
 		}
 		return stationNames;
 	}

@@ -90,35 +90,34 @@ public class AddItemByBrowsingController extends ItemAdderController<TouchScreen
 	 * @param touchscreen
 	 * 		The Touch Screen which is being pressed
 	 */
-
-	public void reactToAddByBrowseEvent(TouchScreen touchscreen) {
-		disableDevice();
-		
-		String entryName = displayCatalog(); //provided by GUI team, passes in string of item's name
-		String entryQuantity = selectQuantity(); //provided by GUI team, passes in string of item's quantity
-		boolean exit = cancelBrowse(); //provided by GUI team, passes in true if "Cancel/Back" is selected
-		
-		if(exit) {
-			enableDevice();
-			resetGUI();
-			return;
-		}
-		
-		//runs getProduct method above to get item information
-		getProduct(entryName, entryQuantity);
-		
-		//Signals weight change
-		if(barcodedProduct != null) {
-			this.getMainController().addItem(this, barcodedProduct, weight);
-		}
-		else {
-			throw new SimulationException("Null product!");
-		}
-		
-		signalToAddToBaggingArea(); //provided by GUI team
-		enableDevice();
-		resetGUI(); //provided by GUI team
-	}
+//	public void reactToAddByBrowseEvent(TouchScreen touchscreen) {
+//		disableDevice();
+//
+//		String entryName = displayCatalog(); //provided by GUI team, passes in string of item's name
+//		String entryQuantity = selectQuantity(); //provided by GUI team, passes in string of item's quantity
+//		boolean exit = cancelBrowse(); //provided by GUI team, passes in true if "Cancel/Back" is selected
+//
+//		if(exit) {
+//			enableDevice();
+//			resetGUI();
+//			return;
+//		}
+//
+//		//runs getProduct method above to get item information
+//		getProduct(entryName, entryQuantity);
+//
+//		//Signals weight change
+//		if(barcodedProduct != null) {
+//			this.getMainController().addItem(this, barcodedProduct, weight);
+//		}
+//		else {
+//			throw new SimulationException("Null product!");
+//		}
+//
+//		signalToAddToBaggingArea(); //provided by GUI team
+//		enableDevice();
+//		resetGUI(); //provided by GUI team
+//	}
 	
 	/**
 	 * Getter for Catalog List
