@@ -1,6 +1,7 @@
 package com.autovend.software.attendantgui;
 
 import com.autovend.devices.SimulationException;
+import com.autovend.software.controllers.AttendantGUIController;
 import com.autovend.software.controllers.AttendantLoginLogoutController;
 import com.autovend.software.controllers.GuiController;
 
@@ -12,7 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class AttendantLogin extends JPanel {
-    GuiController gc;
+	AttendantGUIController gc;
     JLabel loginLabel;
     JTextField IDField;
     JPasswordField passField;
@@ -25,9 +26,9 @@ public class AttendantLogin extends JPanel {
 
     AttendantLoginLogoutController a;
 
-    public AttendantLogin(GuiController gc, AttendantLoginLogoutController a) {
+    public AttendantLogin(AttendantGUIController gc) {
         this.gc = gc;
-        this.a = a;
+        this.a = gc.getLoginController();
 
         AttendantLoginLogoutController.idAndPasswords.put(attendant1Id, attendant1Password);
 

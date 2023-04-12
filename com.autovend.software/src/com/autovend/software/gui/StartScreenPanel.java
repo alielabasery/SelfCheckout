@@ -30,6 +30,7 @@
 */
 package com.autovend.software.gui;
 
+import com.autovend.software.controllers.CheckoutGUIController;
 import com.autovend.software.controllers.GuiController;
 
 import javax.swing.*;
@@ -39,12 +40,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class StartScreenPanel extends JPanel {
-    GuiController gc;
+	CheckoutGUIController gc;
     JButton button;
     JButton membershipButton;
     JLabel welcomeLabel;
     JLabel startLabel;
-    public StartScreenPanel(GuiController gc) {
+    public StartScreenPanel(CheckoutGUIController gc) {
         this.gc = gc;
 
         setPreferredSize(new Dimension(1280, 720));

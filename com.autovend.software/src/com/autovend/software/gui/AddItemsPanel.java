@@ -48,13 +48,14 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
 import com.autovend.devices.SimulationException;
+import com.autovend.software.controllers.CheckoutGUIController;
 import com.autovend.software.controllers.GuiController;
 import com.autovend.software.controllers.MembershipCardController;
 
 import models.FoundProductsTableModel;
 
 public class AddItemsPanel extends JPanel {
-    GuiController gc;
+    CheckoutGUIController gc;
     JLabel itemlabel;
     JPanel plupanel;
     JLabel plulabel;
@@ -67,7 +68,8 @@ public class AddItemsPanel extends JPanel {
 	JButton paybutton;
 	List<Object> cart;
 	List<Integer> cartcount;
-    public AddItemsPanel(GuiController gc) {
+	
+    public AddItemsPanel(CheckoutGUIController gc) {
         this.gc = gc;
 
         setPreferredSize(new Dimension(1280, 720));

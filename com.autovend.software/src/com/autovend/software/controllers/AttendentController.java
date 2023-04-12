@@ -38,8 +38,7 @@ import com.autovend.software.pojo.CartLineItem;
 import Networking.NetworkController;
 
 public class AttendentController {
-	
-	SupervisionStation supervisionStation;
+	private SupervisionStation supervisionStation;
 	
 	/**
 	 * Constructor for the AttendantController

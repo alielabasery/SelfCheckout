@@ -5,6 +5,7 @@ import com.autovend.Numeral;
 import com.autovend.PriceLookUpCode;
 import com.autovend.devices.SelfCheckoutStation;
 import com.autovend.devices.SupervisionStation;
+import com.autovend.devices.TouchScreen;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.software.attendantgui.AttendantLogin;
@@ -21,22 +22,27 @@ import java.math.BigDecimal;
 import java.util.Currency;
 
 public class GuiController {
-    SelfCheckoutStation station;
-    SupervisionStation attendantStation;
-    JFrame attendantScreen;
-    AttendentController attendantController;
     AttendantLoginLogoutController attendantLogin;
-
-    public GuiController(SelfCheckoutStation station, SupervisionStation attendantStation) {
-        this.station = station;
-        this.attendantStation = attendantStation;
-        attendantScreen = attendantStation.screen.getFrame();
-        attendantController = new AttendentController();
-        attendantLogin = new AttendantLoginLogoutController();
+    CheckoutController checkout;
+    AttendentController attendant;
+    TouchScreen checkoutScreen, attendantScreen;
+    
+    public GuiController(CheckoutController checkout, AttendentController attendant) {
+    	this.checkout = checkout;
+    	this.attendant = attendant;
+    	attendantLogin = new AttendantLoginLogoutController();
     }
-
+    
+    private void resetScreen(TouchScreen screen) {
+    	
+    }
+    
+    private void centreAndShowScreen(TouchScreen screen) {
+    	
+    }
+    
     public void startScreen() {
-        JFrame screen = station.screen.getFrame();
+        JFrame screen = checkout.screen.getFrame();
         screen.setExtendedState(JFrame.NORMAL);
         screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();

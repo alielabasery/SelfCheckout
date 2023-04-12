@@ -35,9 +35,10 @@ import java.util.Locale;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
+import com.autovend.software.controllers.AttendantGUIController;
 import com.autovend.software.controllers.AttendentController;
 import com.autovend.software.controllers.CheckoutController;
-
+import com.autovend.software.controllers.CheckoutGUIController;
 import com.autovend.software.gui.frmApplication;
 import com.autovend.software.pojo.CartLineItem;
 import com.autovend.software.pojo.CartLineItem.CODETYPE;
@@ -63,14 +64,20 @@ public class Main {
 	        initializeDatabase();
 
 	        System.out.println("Main: Creating AttendantController");
-	        new AttendentController();
+	        AttendentController attendant = new AttendentController();
 
 	        //** initialize Checkout Stations
 	        for (String workstationId : GlobalConfigurations.WORKSTATIONIDS) {
 	            System.out.println("Main: Creating CheckoutController " + workstationId);
-	            new CheckoutController(workstationId, new SelfCheckoutStation(Currency.getInstance(Locale.CANADA), GlobalConfigurations.BILLDENOMINATIONS, GlobalConfigurations.COINDENOMINATIONS, 1000, 1));
+	            CheckoutController controller = 
+	            		new CheckoutController(workstationId, new SelfCheckoutStation(Currency.getInstance(Locale.CANADA), GlobalConfigurations.BILLDENOMINATIONS, GlobalConfigurations.COINDENOMINATIONS, 1000, 1));
+	            CheckoutGUIController gui = new CheckoutGUIController(controller, attendant);
+	            gui.startScreen();
 	            System.out.println("Main: Created CheckoutController " + workstationId);
-	      }
+	        }
+	        
+	        AttendantGUIController gui = new AttendantGUIController(attendant);
+	        gui.attendantLoginScreen();
 
 
 	        //** test that cart management for each station is working
@@ -102,15 +109,6 @@ public class Main {
 //	        System.out.println(String.format("Total for station %d Cart = %f", 1,  NetworkController.getCheckoutStationController("1").getCart().getSubtotal()));
 //	        System.out.println(String.format("Total for station %d Cart = %f", 1,  NetworkController.getCheckoutStationController("3").getCart().getSubtotal()));
 //	        System.out.println(String.format("Total for station %d Cart = %f", 1,  NetworkController.getCheckoutStationController("6").getCart().getSubtotal()));
-
-	        //** show main UI **
-	        JFrame frame = new JFrame("Self Checkout System");
-	        frame.setSize(1200, 800);
-	        frame.setContentPane(new frmApplication().contentPane);
-	        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-	        frame.setSize(400, 300);
-	        frame.pack();
-	        frame.setVisible(true);
 	}
 	   
 	   private static void initializeDatabase() {

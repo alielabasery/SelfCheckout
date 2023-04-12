@@ -1,5 +1,6 @@
 package com.autovend.software.gui;
 
+import com.autovend.software.controllers.CheckoutGUIController;
 import com.autovend.software.controllers.GuiController;
 
 import javax.swing.*;
@@ -9,14 +10,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MembershipPanel extends JPanel {
-    GuiController gc;
+    CheckoutGUIController gc;
 
     JButton scanningButton;
     JButton swipingButton;
     JButton typingButton;
     JButton goToHomeButton;
     JLabel membershipText;
-    public MembershipPanel(GuiController gc) {
+    public MembershipPanel(CheckoutGUIController gc) {
         this.gc = gc;
 
         setPreferredSize(new Dimension(1280, 720));

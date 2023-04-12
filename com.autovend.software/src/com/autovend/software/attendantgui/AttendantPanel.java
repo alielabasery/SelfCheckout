@@ -20,6 +20,7 @@ import javax.swing.JSeparator;
 
 import com.autovend.devices.SupervisionStation;
 import com.autovend.software.PreventStation;
+import com.autovend.software.controllers.AttendantGUIController;
 import com.autovend.software.controllers.AttendantLoginLogoutController;
 import com.autovend.software.controllers.AttendantShutdownStationController;
 import com.autovend.software.controllers.AttendentController;
@@ -31,7 +32,7 @@ import com.autovend.software.gui.dlgSearchProduct;
 import Networking.NetworkController;
 
 public class AttendantPanel extends JPanel {
-	GuiController gc;
+	AttendantGUIController gc;
 	SupervisionStation attendantStation;
 	AttendentController attendantController;
 	AttendantLoginLogoutController loginController;
@@ -45,12 +46,11 @@ public class AttendantPanel extends JPanel {
 	
     int stationCounter = 0;
         
-	public AttendantPanel(GuiController gc, SupervisionStation attendantStation, 
-			AttendentController attendantController, AttendantLoginLogoutController a) {
+	public AttendantPanel(AttendantGUIController gc) {
 		this.gc = gc;
-		this.attendantStation = attendantStation;
-		this.attendantController = attendantController;
-		this.loginController = a;
+		this.attendantController = gc.getAttendant();
+		this.attendantStation = attendantController.getSupervisionStation();
+		this.loginController = gc.getLoginController();
 		this.shutdownController = new AttendantShutdownStationController(attendantStation, a);
 		this.startupController = new StartUpRoutineController(attendantStation, a);
 		
@@ -163,7 +163,7 @@ public class AttendantPanel extends JPanel {
 	}
 	
 	private void updateScreen() {
-		gc.validateAttendantScreen();
+		getParent().validate();
 		repaint();
 	}
 	

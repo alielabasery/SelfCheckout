@@ -34,6 +34,7 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 
 import com.autovend.IllegalDigitException;
+import com.autovend.software.controllers.CheckoutGUIController;
 import com.autovend.software.controllers.GuiController;
 import com.autovend.software.controllers.MembershipCardController;
 
@@ -43,7 +44,7 @@ import java.awt.event.ActionListener;
 
 public class MembershipDetailsPanel extends JPanel{
     MembershipCardController mcc;
-    GuiController gc;
+    CheckoutGUIController gc;
     JLabel membershipByTypingLabel;
     JTextField IDField;
     JLabel IDLabel;
@@ -53,7 +54,7 @@ public class MembershipDetailsPanel extends JPanel{
     String userID;
 
     
-    public MembershipDetailsPanel(GuiController gc, MembershipCardController mcc) {
+    public MembershipDetailsPanel(CheckoutGUIController gc, MembershipCardController mcc) {
         this.gc = gc;
         this.mcc = mcc;
 
