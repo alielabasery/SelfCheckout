@@ -35,6 +35,9 @@ public class MembershipByScanningPanel extends JPanel {
 
 	public MembershipByScanningPanel(GuiController gc, MembershipCardController mcc) {
 		this.gc = gc;
+        this.mcc = mcc;
+
+
 		setPreferredSize(new Dimension(1280, 720));
 		setLayout(null);
 
@@ -59,7 +62,7 @@ public class MembershipByScanningPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				String m = "123456789012";
 				try {
-					Boolean success = MembershipCardController.isValid(userID);
+					Boolean success = mcc.isValid(userID);
 					if (success) {
 						gc.addItemsScreen();
 					}
@@ -75,8 +78,8 @@ public class MembershipByScanningPanel extends JPanel {
 			}
 		});
 		add(MembershipByScanningLabel);
-        add(IDField);
-        add(IDLabel);
+//        add(IDField);
+//        add(IDLabel);
         add(button);
 
 	}
