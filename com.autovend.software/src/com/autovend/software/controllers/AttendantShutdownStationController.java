@@ -25,7 +25,13 @@ public class AttendantShutdownStationController {
 	private AttendantLoginLogoutController attendantlog;
 	private boolean sessionInProgress;
 	
-	
+	/**
+	 * The Constructor for AttendantShutdownStationController
+	 * @param superStation
+	 * 		The station of the attendant
+	 * @param attlog
+	 * 		the attendant login/logout controller
+	 */
 	public AttendantShutdownStationController(SupervisionStation superStation, AttendantLoginLogoutController attlog) {
 		this.attendantStation = superStation;
 		this.attendantlog = attlog;
@@ -33,10 +39,15 @@ public class AttendantShutdownStationController {
 		this.sessionInProgress = false;
 	}
 	
-	/*
-	 *Shuts down a given station. Checks whether an attendant is logged in and whether the station is
-	 *being supervised. Also check whether a station is in use.
+	/**
+	 * Shuts down a given station. Checks whether an attendant is logged in and whether the station is
+	 * being supervised. Also check whether a station is in use.
+	 * @param station
+	 * 		The station to shutdown
+	 * @param confirm
+	 * 		Boolean to confirm shutdown
 	 */
+
 	public void shutdownStation(SelfCheckoutStation station, boolean confirm) {
 		// check if an attendant is logged in
 		if(!attendantlog.getLoggedIn()) {
@@ -82,20 +93,40 @@ public class AttendantShutdownStationController {
 		
 	}
 	
-	// Implemented in gui. Attendant is asked if they want to confirm shutdown when
-	// a customer session is in progress
+	/**
+	 * Implemented in gui. Attendant is asked if they want to confirm shutdown whena customer session is in progress
+	 * @param confirm
+	 * 		Confirmation to shutdown
+	 * @return
+	 * 		Returns the confirmation
+	 */
 	public boolean confirmShutdown(boolean confirm) {
 		return confirm;
 	}
 	
+	/**
+	 * Returns if the station is shutdown
+	 * @return
+	 * 		Boolean value true if the station is shutdown
+	 */
 	public boolean isShutdown() {
 		return shutdown;
 	}
 	
+	/**
+	 * Sets a session in progress
+	 * @param session
+	 * 		Boolean if a session is in progress
+	 */
 	public void setSessionInProgress(boolean session) {
         this.sessionInProgress = session;
     }
 	
+	/**
+	 * returns if a session is in progress
+	 * @return
+	 * 		Boolean value, True if a session is in progress
+	 */
 	public boolean isSessionInProgress() {
 		return sessionInProgress;
 	}

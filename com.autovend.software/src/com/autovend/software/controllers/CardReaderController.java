@@ -45,6 +45,11 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 		implements CardReaderObserver {
 	public boolean isPaying;
 
+	/**
+	 * The constructor for the CardReaderController
+	 * @param newDevice
+	 * 		The CardReader device to connect
+	 */
 	public CardReaderController(CardReader newDevice) {
 		super(newDevice);
 	}
@@ -109,7 +114,13 @@ public class CardReaderController extends PaymentController<CardReader, CardRead
 		this.bank = null;
 	}
 
-	
+	/**
+	 * Enables payment
+	 * @param issuer
+	 * 		The CardIssuer
+	 * @param amount
+	 * 		The amount to pay
+	 */
 	public void enablePayment(CardIssuer issuer, BigDecimal amount) {
 		this.enableDevice();
 		this.bank = issuer;

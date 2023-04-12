@@ -14,6 +14,11 @@ public class ElectronicScaleController extends BaggingAreaController<ElectronicS
 
 	private boolean AttendantApproval;
 
+	/**
+	 * The constructor for ElectronicScaleController
+	 * @param newDevice
+	 * 		The Electronic Scale being used
+	 */
 	public ElectronicScaleController(ElectronicScale newDevice) {
 		super(newDevice);
 	}

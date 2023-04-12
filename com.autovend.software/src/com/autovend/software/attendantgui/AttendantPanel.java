@@ -22,7 +22,14 @@ public class AttendantPanel extends JPanel {
 	GuiController gc;
 	SupervisionStation attendantStation;
     int stationCounter = 0;
-        
+    
+    /**
+     * Constructor for the AttendantPanel
+     * @param gc
+     * 		The GuiController to set as the default GUI Controller
+     * @param attendantStation
+     * 		The station where the attendant resides
+     */
 	public AttendantPanel(GuiController gc, SupervisionStation attendantStation) {
 		this.gc = gc;
 		this.attendantStation = attendantStation;
@@ -96,6 +103,11 @@ public class AttendantPanel extends JPanel {
 		}
 	}
 	
+	/**
+	 * Gets the JFrame panels of the stations
+	 * @return
+	 * 		The JPanel of the station
+	 */
 	public JPanel getStationPanels() {
 		JPanel panel = new JPanel();
 		
@@ -119,6 +131,11 @@ public class AttendantPanel extends JPanel {
 		return panel;
 	}
 	
+	/**
+	 * Gets the JFrame panels of the notifications
+	 * @return
+	 * 		The JPanel of the notification
+	 */
 	public JPanel getNotificationPanels() {
 		JPanel panel = new JPanel();
 		

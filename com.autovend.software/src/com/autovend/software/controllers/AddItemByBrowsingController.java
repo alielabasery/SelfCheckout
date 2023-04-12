@@ -23,7 +23,7 @@ public class AddItemByBrowsingController extends ItemAdderController<TouchScreen
 		super(touchscreen);
 	}
 	
-	/*
+	/**
 	 * Add products in database to catalog
 	 */
 	public void addProducts() {
@@ -32,9 +32,14 @@ public class AddItemByBrowsingController extends ItemAdderController<TouchScreen
 		}
 	}
 	
-	/*
+	/**
 	 * Gets the selected Item's BarcodedUnit and price based on quantity
+	 * @param name
+	 * 		The name of the product
+	 * @param quantity
+	 * 		The quantity of products
 	 */
+	
 	public void getProduct(String name, String quantity) {
 		BigDecimal productQuantity = new BigDecimal(quantity);
 		for(BarcodedProduct product : ProductDatabases.BARCODED_PRODUCT_DATABASE.values()) {
@@ -50,9 +55,12 @@ public class AddItemByBrowsingController extends ItemAdderController<TouchScreen
 		}
 	}
 	
-	/*
+	/**
 	 * Reaction event when item is added by browsing
+	 * @param touchscreen
+	 * 		The Touch Screen which is being pressed
 	 */
+
 	public void reactToAddByBrowseEvent(TouchScreen touchscreen) {
 		disableDevice();
 		
@@ -82,35 +90,46 @@ public class AddItemByBrowsingController extends ItemAdderController<TouchScreen
 		resetGUI(); //provided by GUI team
 	}
 	
-	/*
+	/**
 	 * Getter for Catalog List
+	 * @return
+	 * 		Returns the Catalog as a list of BarcodedProducts
 	 */
 	public List<BarcodedProduct> getCatalog(){
 		return catalog;
 	}
-	/*
+	/**
 	 * Getter for selected Item
+	 * @return
+	 * 		Returns the BarcodedUnit which is selected
 	 */
 	public BarcodedUnit getItem() {
 		return item;
 	}
 	
-	/*
+	/**
 	 * Getter for selected Product
+	 * @return
+	 * 		Returns the BarcodedProduct which is selected
 	 */
 	public BarcodedProduct getBarcodedProduct() {
 		return barcodedProduct;
 	}
 	
-	/*
+	/**
 	 * Getter for selected Item's price
+	 * @return
+	 * 		The BigDecimal value of the selected items price
 	 */
+
 	public BigDecimal getPrice() {
 		return price;
 	}
 	
-	/*
+	/**
 	 * Getter for selected Item's weight
+	 * @return
+	 * 		The double value of the selected items weight
 	 */
 	public double getWeight() {
 		return weight;

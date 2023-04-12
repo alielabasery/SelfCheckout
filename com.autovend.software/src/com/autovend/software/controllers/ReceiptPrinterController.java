@@ -24,15 +24,29 @@ public class ReceiptPrinterController extends DeviceController<ReceiptPrinter, R
 	public int estimatedPaper = 0;
 
 	// How do we update the estimated ink and paper on refills? - Arie
-
+	/**
+	 * Constructor for the ReceiptPrinterController
+	 * @param newDevice
+	 * 		The Recipt Printer device
+	 */
 	public ReceiptPrinterController(ReceiptPrinter newDevice) {
 		super(newDevice);
 	}
 
+	/**
+	 * Gets the main controller
+	 * @return
+	 * 		The CheckoutController main controller
+	 */
 	public final CheckoutController getMainController() {
 		return this.mainController;
 	}
 
+	/**
+	 * Sets the main controller
+	 * @param newMainController
+	 * 		The CheckoutController to set as the main controller
+	 */
 	public final void setMainController(CheckoutController newMainController) {
 		if (this.mainController != null) {
 			this.mainController.deregisterReceiptPrinter(this);

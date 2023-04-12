@@ -22,10 +22,20 @@ public abstract class BaggingAreaController<D extends AbstractDevice<O>, O exten
 	private boolean attendantApproval;
 
 
+	/**
+	 * The constructor for the BaggingAreaController
+	 * @param newDevice
+	 * 		The new device
+	 */
 	public BaggingAreaController(D newDevice) {
 		super(newDevice);
 	}
 
+	/**
+	 * Gets the main controller
+	 * @return
+	 * 		The main controller
+	 */
 	public final CheckoutController getMainController() {
 		return this.mainController;
 	};
@@ -43,11 +53,20 @@ public abstract class BaggingAreaController<D extends AbstractDevice<O>, O exten
 	}
 	
 	
-
+	/**
+	 * Sets the attendant approval boolean value
+	 * @param approval
+	 * 		Boolean value of attendant approval
+	 */
 	public void setAttendantApproval(boolean approval) {
 	    this.attendantApproval = approval;
 	}
-
+	
+	/**
+	 * Gets the attendants approval
+	 * @return
+	 * 		gets the attendants approval
+	 */
 	public boolean getAttendantApproval() {
 	    return this.attendantApproval;
 	}
@@ -82,6 +101,15 @@ public abstract class BaggingAreaController<D extends AbstractDevice<O>, O exten
 	// needs to be called from electronic scale in the react to WEIGHTDISCREP event 
 	// method basically locks the system and calls for an attendant once attendant removes item just added after it is approved
 	// station will not continue until approval is had 
+	/**
+	 * Errors for the bagging area
+	 * @param currentWeight
+	 * 		The current weight of the scale
+	 * @param expectedWeight
+	 * 		What the weight should be
+	 * @return
+	 * 		Expected weight
+	 */
 
 	public double baggingAreaError(double currentWeight, double expectedWeight) {
         // 1. Block the self-checkout station from further customer input.
