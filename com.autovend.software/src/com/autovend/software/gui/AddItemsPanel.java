@@ -17,8 +17,13 @@ public class AddItemsPanel extends JPanel {
     JFrame itemframe;
     JPanel itempanel;
     JLabel itemlabel;
+    JPanel plupanel;
+    JLabel plulabel;
+    JPanel browsepanel;
+    JLabel browselabel;
     JButton plubutton;
     JButton browsebutton;
+	JTextField PLUField;
     public AddItemsPanel() {
         itemframe = new JFrame();
         itempanel = new JPanel();
@@ -29,7 +34,7 @@ public class AddItemsPanel extends JPanel {
         itemlabel.setBounds(450, 150, 750, 150);
         itemlabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 18));
         
-        plubutton = new JButton("By PLU Scanning");
+        plubutton = new JButton("By PLU Code");
         plubutton.setBackground(Color.decode("#ade89b"));
         plubutton.setForeground(Color.BLACK);
         plubutton.setBorder(new LineBorder(Color.BLACK, 1, true));
@@ -45,17 +50,20 @@ public class AddItemsPanel extends JPanel {
         browsebutton.setOpaque(true);
         browsebutton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
+        
         plubutton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("it works");  
+            	dlgPLUProduct dlg = new dlgPLUProduct(itemframe, "Add By PLU Code.");
+            	dlg.setVisible(true);
             }
         });
         
         browsebutton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("it also works");  
+            	dlgSearchProduct dlg = new dlgSearchProduct(itemframe, "Add By Browsing.");
+            	dlg.setVisible(true);
             }
         });
         
