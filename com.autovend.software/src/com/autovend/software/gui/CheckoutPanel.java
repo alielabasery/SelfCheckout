@@ -323,8 +323,18 @@ public class CheckoutPanel extends JPanel {
                     GiftCardInsertData giftCardInsertData;
                     try {
                         giftCardInsertData = giftCard.createCardInsertData(pin);
+                        BigDecimal balance = giftCardInsertData.getRemainingBalance();
+                        BigDecimal total = new BigDecimal(totalAmount.getText());
+                        int compare = balance.compareTo(total);
+                        if (compare >= 0) {
+                            giftCardInsertData.deduct(total);
+                        } else {
+                            //insufficient funds
+                        }
                     } catch (InvalidPINException e1) {
                         pinNumber.setText("Incorrect Pin Number!");
+                    } catch (ChipFailureException e1) {
+                        cardNumber.setText("Chip failure!");
                     }
                 }
             }
