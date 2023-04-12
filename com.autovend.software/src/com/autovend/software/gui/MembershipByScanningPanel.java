@@ -6,6 +6,7 @@ import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
 import com.autovend.IllegalDigitException;
+import com.autovend.MembershipCard;
 import com.autovend.devices.BarcodeScanner;
 import com.autovend.devices.SimulationException;
 import com.autovend.software.controllers.GuiController;
@@ -26,8 +27,10 @@ public class MembershipByScanningPanel extends JPanel {
 	JLabel failLabel;
 	String userID;
 	Scanner sc;
-	BarcodeScanner barcodeScanner = new BarcodeScanner();
-	
+	BarcodeScanner scanner  = new BarcodeScanner();
+	MembershipCard card = new MembershipCard("Test", "123456789012", "Test", true);
+	MembershipCardController controller = new MembershipCardController();
+	String validMembershipNumber = controller.getValidMembershipNumberByScanning(scanner, card);
 
 	// Scan your membership
 	// Button that allows you to scan
@@ -35,6 +38,8 @@ public class MembershipByScanningPanel extends JPanel {
 
 	public MembershipByScanningPanel(GuiController gc, MembershipCardController mcc) {
 		this.gc = gc;
+		this.mcc = mcc;
+
 		setPreferredSize(new Dimension(1280, 720));
 		setLayout(null);
 
@@ -59,15 +64,15 @@ public class MembershipByScanningPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				String m = "123456789012";
 				try {
-					Boolean success = MembershipCardController.isValid(userID);
-					if (success) {
+					String success = MembershipCardController.getValidMembershipNumberByScanning(scanner,card);
+					Boolean check = MembershipCardController.isValid(success); 
+					if (check) {
 						gc.addItemsScreen();
 					}
 					remove(failLabel);
 					revalidate();
 					repaint();
 				} catch (IllegalDigitException s) {
-					IDField.setText("");
 					add(failLabel);
 					revalidate();
 					repaint();
@@ -75,9 +80,9 @@ public class MembershipByScanningPanel extends JPanel {
 			}
 		});
 		add(MembershipByScanningLabel);
-        add(IDField);
-        add(IDLabel);
-        add(button);
+//        add(IDField);
+//        add(IDLabel);
+		add(button);
 
 	}
 
