@@ -7,6 +7,8 @@ import java.awt.Font;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -326,11 +328,12 @@ public class AttendantPanel extends JPanel {
             	for (int i = 0; i < order.size(); i++) {
             		rows[i][0] = order.get(i).getProductCode();
             		rows[i][1] = order.get(i).getDescription();
-            		rows[i][2] = order.get(i).getPrice().toString();
-            		rows[i][3] = order.get(i).getQuantity();
+            		rows[i][2] = order.get(i).getPrice().setScale(2, RoundingMode.HALF_EVEN);
+            		rows[i][3] = (int)order.get(i).getQuantity();
             	}
         		String[] cols = {"ID", "Description", "Price", "Quantity"};
         		JTable table = new JTable(rows, cols);
+        		table.setDefaultEditor(Object.class, null);
         		JOptionPane.showMessageDialog(null, new JScrollPane(table));
             }
         });
