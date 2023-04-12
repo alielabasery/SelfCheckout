@@ -324,7 +324,7 @@ public class CheckoutPanel extends JPanel {
                     try {
                         giftCardInsertData = giftCard.createCardInsertData(pin);
                     } catch (InvalidPINException e1) {
-                        e1.printStackTrace();
+                        pinNumber.setText("Incorrect Pin Number!");
                     }
                 }
             }
