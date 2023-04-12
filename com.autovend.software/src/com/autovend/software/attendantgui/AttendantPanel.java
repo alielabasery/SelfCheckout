@@ -300,10 +300,8 @@ public class AttendantPanel extends JPanel {
             				BarcodedProduct product = (BarcodedProduct) DatabaseController.getProduct(code, 'B');
 //            				checkoutController.removeItem(checkoutController.getItemRemover(), product, order.get(indexOfItem).getWeight());
             			}
-            			
             		}
             	}
-            	
             }
         });
 		

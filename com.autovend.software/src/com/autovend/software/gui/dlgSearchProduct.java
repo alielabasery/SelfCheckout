@@ -137,7 +137,7 @@ public class dlgSearchProduct extends JDialog {
 				        if (selectedRow < 0) return;
 				        selectedItemCode = table1.getModel().getValueAt(table1.getSelectedRow(), 0).toString();
 				        selectedItemType = (char)table1.getModel().getValueAt(table1.getSelectedRow(), 2);
-				        AttendantPanel.addItemToStation(selfInstance, tempStationName);
+				        if (selfInstance != null && tempStationName != null) AttendantPanel.addItemToStation(selfInstance, tempStationName);
 				        dlgSearchProduct.this.setVisible(false);
 				        dispose();
 					}
