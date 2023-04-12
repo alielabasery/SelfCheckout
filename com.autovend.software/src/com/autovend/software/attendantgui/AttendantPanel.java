@@ -132,7 +132,7 @@ public class AttendantPanel extends JPanel {
 	
 	public void updateStationsOnScreen(String stationName) {
 		if (stationName == null) {
-			List<String> stationNames = NetworkController.getCheckoutStationName();
+			List<String> stationNames = NetworkController.getCheckoutStationNames();
 	
 			for (int i = 0; i < stationNames.size(); i++) {
 				CheckoutController checkoutController = NetworkController.getCheckoutStationController(stationNames.get(i));
@@ -232,7 +232,7 @@ public class AttendantPanel extends JPanel {
             	PreventStation prevent = new PreventStation();
         		if (checkoutController != null) {
         			if (bttn2.getText().equals("Prevent " + name)) {
-        				prevent.suspend();
+//        				prevent.suspend();
         				bttn2.setText("Permit " + name);
         			}
         			else if (bttn2.getText().equals("Permit " + name)) {

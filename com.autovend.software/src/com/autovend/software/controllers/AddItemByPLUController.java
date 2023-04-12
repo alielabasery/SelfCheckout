@@ -41,7 +41,7 @@ import com.autovend.devices.observers.TouchScreenObserver;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
-import com.autovend.software.utils.BarcodeUtils;
+//import com.autovend.software.utils.BarcodeUtils;
 import com.autovend.devices.observers.AbstractDeviceObserver;
 
 import java.math.BigDecimal;
@@ -100,35 +100,35 @@ public class AddItemByPLUController extends ItemAdderController<TouchScreen, Tou
      * @param touchScreen
      * 		The touch screen being used
      */
-    public void reactToAddByPLUEvent(TouchScreen touchScreen) {
-        if(isDeviceDisabled())
-            throw new DisabledException();
-
-        if (touchScreen == null)
-            throw new SimulationException(new NullPointerException("touch screen cannot be null"));
-
-        disableDevice();
-
-        String pluString = displayNumericKeyboard();  // provided by GUI team, passes in string of product's plu code
-        String entryQuantity = selectQuantity(); //provided by GUI team, passes in string of item's quantity
-
-        PriceLookUpCode pluCode = BarcodeUtils.stringPLUToPLU(pluString);
-
-        handleInputPLU(pluCode, entryQuantity);
-
-        if (pluProduct != null) {
-            // 1.0 is a placeholder, addItem() gets the weight of the product from the electronic scale
-            this.getMainController().addItem(this, pluProduct, 1.0);
-        }
-        else {
-            enableDevice();
-            throw new SimulationException(new NullPointerException("the entered product does not exist"));
-        }
-
-        signalToAddToBaggingArea();  // provided by GUI team
-        enableDevice();
-        resetGUI();  // provided by GUi team
-    }
+//    public void reactToAddByPLUEvent(TouchScreen touchScreen) {
+//        if(isDeviceDisabled())
+//            throw new DisabledException();
+//
+//        if (touchScreen == null)
+//            throw new SimulationException(new NullPointerException("touch screen cannot be null"));
+//
+//        disableDevice();
+//
+//        String pluString = displayNumericKeyboard();  // provided by GUI team, passes in string of product's plu code
+//        String entryQuantity = selectQuantity(); //provided by GUI team, passes in string of item's quantity
+//
+//        PriceLookUpCode pluCode = BarcodeUtils.stringPLUToPLU(pluString);
+//
+//        handleInputPLU(pluCode, entryQuantity);
+//
+//        if (pluProduct != null) {
+//            // 1.0 is a placeholder, addItem() gets the weight of the product from the electronic scale
+//            this.getMainController().addItem(this, pluProduct, 1.0);
+//        }
+//        else {
+//            enableDevice();
+//            throw new SimulationException(new NullPointerException("the entered product does not exist"));
+//        }
+//
+//        signalToAddToBaggingArea();  // provided by GUI team
+//        enableDevice();
+//        resetGUI();  // provided by GUi team
+//    }
 
 
     /**
