@@ -100,7 +100,7 @@ public class AttendantPanel extends JPanel {
             	if (input != null) {
             		CheckoutController checkoutController = NetworkController.getCheckoutStationController(input);
             		if (checkoutController != null) {
-            			attendantStation.add(checkoutController.getStation());
+            			attendantStation.add(checkoutController.getSelfCheckoutStation());
             			unsupervisedStations.remove(input);
             			updateStationsOnScreen(input);
             		}
@@ -137,7 +137,7 @@ public class AttendantPanel extends JPanel {
 			for (int i = 0; i < stationNames.size(); i++) {
 				CheckoutController checkoutController = NetworkController.getCheckoutStationController(stationNames.get(i));
 				if (checkoutController != null) {
-					if (attendantStation.supervisedStations().contains(checkoutController.getStation())) {
+					if (attendantStation.supervisedStations().contains(checkoutController.getSelfCheckoutStation())) {
 						addStation(stationNames.get(i));
 					} else {
 						unsupervisedStations.add(stationNames.get(i));
@@ -201,7 +201,7 @@ public class AttendantPanel extends JPanel {
             	CheckoutController checkoutController = NetworkController.getCheckoutStationController(name);
         		if (checkoutController != null) {
         			if (bttn.getText().equals("Shutdown " + name)) {
-        				shutdownController.shutdownStation(checkoutController.getStation(), false);
+        				shutdownController.shutdownStation(checkoutController.getSelfCheckoutStation(), false);
         				shutdownStations.add(name);
             			bttn.setText("Reboot " + name);
             			bttn2.setEnabled(false);
@@ -211,7 +211,7 @@ public class AttendantPanel extends JPanel {
         			}
         			else if (bttn.getText().equals("Reboot " + name)) {
 //        				NetworkController.removeCheckoutStation(name);
-        				CheckoutController newController = startupController.runsStartUpRoutine(checkoutController.getStation(), true);
+        				CheckoutController newController = startupController.runsStartUpRoutine(checkoutController.getSelfCheckoutStation(), true);
         				NetworkController.registerCheckoutStation(name, newController);
         				shutdownStations.remove(name);
             			bttn.setText("Shutdown " + name);
@@ -260,7 +260,7 @@ public class AttendantPanel extends JPanel {
             	CheckoutController checkoutController = NetworkController.getCheckoutStationController(name);
         		if (checkoutController != null) {
         			unsupervisedStations.add(name);
-        			attendantStation.remove(checkoutController.getStation());
+        			attendantStation.remove(checkoutController.getSelfCheckoutStation());
         			removeStation(panel, separator);
         		}
             }

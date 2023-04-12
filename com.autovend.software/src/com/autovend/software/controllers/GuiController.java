@@ -23,16 +23,16 @@ import java.util.Currency;
 public class GuiController {
     SelfCheckoutStation station;
     SupervisionStation attendantStation;
-    AttendentController attendantController;
-    AttendantLoginLogoutController attendantLogin = new AttendantLoginLogoutController();
-    
     JFrame attendantScreen;
+    AttendentController attendantController;
+    AttendantLoginLogoutController a;
 
     public GuiController(SelfCheckoutStation station, SupervisionStation attendantStation) {
         this.station = station;
         this.attendantStation = attendantStation;
-        attendantScreen = this.attendantStation.screen.getFrame();
+        attendantScreen = attendantStation.screen.getFrame();
         this.attendantController = new AttendentController();
+        this.a = new AttendantLoginLogoutController();
     }
 
     public void startScreen() {
@@ -106,13 +106,16 @@ public class GuiController {
         panel.add(mdp);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
         screen.pack();
+        panel.add(al);
+        attendantScreen.getContentPane().add(panel, BorderLayout.CENTER);
+        attendantScreen.pack();
         // Make the JFrame display in the middle of the screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (int) (screenSize.getWidth() - screen.getWidth()) / 2;
-        int y = (int) (screenSize.getHeight() - screen.getHeight()) / 2;
-        screen.setLocation(x, y);
-        screen.validate();
-        station.screen.setVisible(true);
+        int x = (int) (screenSize.getWidth() - attendantScreen.getWidth()) / 2;
+        int y = (int) (screenSize.getHeight() - attendantScreen.getHeight()) / 2;
+        attendantScreen.setLocation(x, y);
+        attendantScreen.validate();
+        attendantStation.screen.setVisible(true);
     }
 
     public void checkoutScreen() {
@@ -172,6 +175,10 @@ public class GuiController {
         attendantScreen.setLocation(x, y);
         attendantScreen.validate();
         attendantStation.screen.setVisible(true);
+    }
+    
+    public void validateAttendantScreen() {
+    	attendantScreen.validate();
     }
     
     public void validateAttendantScreen() {

@@ -32,45 +32,51 @@ package com.autovend.software.controllers;
 
 import com.autovend.Barcode;
 import com.autovend.devices.BarcodeScanner;
-import com.autovend.devices.observers.BarcodeScannerObserver;
+import com.autovend.devices.EmptyException;
+import com.autovend.devices.TouchScreen;
+import com.autovend.devices.observers.TouchScreenObserver;
 import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 
-/**
- * Controller for the barcode scanner, communicates with main checkout
- * controller to add items to order.
- */
-public class BarcodeScannerController extends ItemAdderController<BarcodeScanner, BarcodeScannerObserver>
-		implements BarcodeScannerObserver {
+public class PurchaseBagController extends ItemAdderController<TouchScreen, TouchScreenObserver> implements TouchScreenObserver {
+
+	BagDispenserController dispenserController;
 	
 	/**
-	 * Constructor for the BarcodeScannerController
-	 * @param scanner
-	 * 		The BarcodeScanner to connect
+	 * Constructor for the PurchaseBagController
+	 * @param screen
+	 * 		The touch screen being used
 	 */
-	public BarcodeScannerController(BarcodeScanner scanner) {
-		super(scanner);
+	public PurchaseBagController(TouchScreen screen) {
+		super(screen);
+		// TODO Auto-generated constructor stub
 	}
-
+	
 	/**
-	 * Reacts to a barcode scanned event
-	 * 
-	 * @param barcodeScanner
-	 * 		The scanner used
+	 * Reacts to the bag added event
+	 * @param screen
+	 * 		The touch screen being used
 	 * @param barcode
-	 * 		The barcode being scanned
+	 * 		The barcode
+	 * @throws EmptyException
+	 * 		If the bags are empty
 	 */
-	public void reactToBarcodeScannedEvent(BarcodeScanner barcodeScanner, Barcode barcode) {
+	public void reactToBagAddedEvent(TouchScreen screen, Barcode barcode) throws EmptyException {
 		// if barcode is for a valid object, then add the product found to the order on
 		// the main controller.
 		// otherwise ignore the item.
-		if (barcodeScanner != this.getDevice()) {
+		if (screen != this.getDevice()) {
 			return;
 		}
 
-		BarcodedProduct scannedItem = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
-		if (scannedItem != null) {
-			this.getMainController().addItem(this, scannedItem, scannedItem.getExpectedWeight());
+		BarcodedProduct newBag = ProductDatabases.BARCODED_PRODUCT_DATABASE.get(barcode);
+		if (newBag != null) {
+			int numBag = this.getMainController().getBagNumber();
+			this.getMainController().purchaseBags(this, newBag, newBag.getExpectedWeight(), numBag);
+			dispenserController.dispenseBags();
 		}
 	}
+
+
+
 }

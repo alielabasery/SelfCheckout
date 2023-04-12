@@ -1,8 +1,37 @@
-// Placeholder for Group 6: Names + UCID
-
+/** 
+* Group Members: 
+* 
+* Ella Tomlinson (30140549)
+* Kofi Frempong (30054189) 
+* Adam Beauferris (30056865) 
+* Niran Malla (30086877)
+* Owen Tinning (30102041)
+* Victor Campos Goitia (30106934)
+* Zoe Kirsman (30113704) 
+* Youssef Abdelrhafour (30085837) 
+* James Rettie (30123362) 
+* Rezwan Ahmed (30134609)
+* Angeline Tran (30139846) 
+* Saad Elkadri (30089084) 
+* Dante Kirsman (30120778) 
+* Riyad Abdullayev (30140509)
+* Saksham Puri (30140617) 
+* Faisal Islam (30140826)
+* Naheen Kabir (30142101) 
+* Jose Perales Rivera (30143354) 
+* Aditi Yadav (30143652)
+* Sahaj Malhotra () 
+* Ali Elabasery (30148424)
+* Fabiha Fairuzz Subha (30148674) 
+* Umesh Oad (30152293)
+* Daniel Boettcher (30153811) 
+* Nam Nguyen Vu (30154892)
+* 
+*/
 package com.autovend.software.controllers;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,29 +43,39 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 import com.autovend.devices.SelfCheckoutStation;
+import com.autovend.Barcode;
+import com.autovend.PriceLookUpCode;
 import com.autovend.devices.ElectronicScale;
+import com.autovend.devices.EmptyException;
+import com.autovend.devices.ReusableBagDispenser;
 import com.autovend.external.CardIssuer;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
+import com.autovend.software.PreventStation;
 import com.autovend.software.pojo.Cart;
 import com.autovend.software.pojo.CartLineItem;
+import com.autovend.software.pojo.CartLineItem.CODETYPE;
+import com.autovend.software.utils.CodeUtils;
 
 import Networking.NetworkController;
+import data.DatabaseController;
 
 @SuppressWarnings("rawtypes")
 
 public class CheckoutController {
+	private String stationName;
 	private static int IDcounter = 1;
 	private int stationID = IDcounter++;
-	
-	private SelfCheckoutStation checkout;
-
+	private SelfCheckoutStation selfCheckoutStation;
+	private List<PreventStation> suspendedStations;
 	private LinkedHashMap<Product, Number[]> order;
 	public Map<Product, Double> PLUProd;
 	public BigDecimal cost;
 	protected BigDecimal amountPaid;
-	public ElectronicScale electronicScale;
+	public ReusableBagDispenser dispenser;
+	public int bagCount;
+	private List<PreventStation> preventedStations;
 
 	// sets of valid sources of information to the main controller.
 	private final HashSet<BaggingAreaController> validBaggingControllers;
@@ -45,6 +84,7 @@ public class CheckoutController {
 	private ReceiptPrinterController receiptPrinter;
 	private ElectronicScaleController electronicScaleController;
 	private ItemRemoverController itemRemoverController;
+	private BagDispenserController bagDispenserController;
 	private final LinkedHashSet<ChangeSlotController> changeSlotControllers;
 	private TreeMap<BigDecimal, ChangeDispenserController> changeDispenserControllers;
 	private Cart cart;
@@ -87,16 +127,48 @@ public class CheckoutController {
 		validPaymentControllers = new HashSet<>();
 		receiptPrinter = null;
 		itemRemoverController = null;
+		bagDispenserController = null;
 		this.changeDispenserControllers = new TreeMap<>();
 		this.changeSlotControllers = new LinkedHashSet<>();
+		suspendedStations = new ArrayList<>();
+		this.preventedStations = preventedStations;
 		clearOrder();
 	}
 
-	public CheckoutController(SelfCheckoutStation checkout) {
-		this.checkout = checkout;
+	/**
+	 * Method called when a station is suspended
+	 * 
+	 * @param station
+	 *                The instance of the PreventStation that has been suspended
+	 */
+	public void onStationSuspended(PreventStation station) {
+		// Add the station to the list of suspended stations
+		suspendedStations.add(station);
+		System.out.println("CheckoutController notified: Station ID " + station.hashCode() + " has been suspended.");
+	}
+
+	public void onStationUnsuspended(PreventStation station) {
+		preventedStations.remove(station);
+		System.out.println("Station ID: " + station.hashCode() + " is now unsuspended.");
+	}
+
+	/**
+	 * The constructor for the checkout controller
+	 * 
+	 * @param checkout
+	 *                 The SelfCheckoutStation to connect
+	 */
+	public CheckoutController(String stationName, SelfCheckoutStation checkout) {
+		this.selfCheckoutStation = checkout;
+		this.stationName = stationName;
 		BarcodeScannerController mainScannerController = new BarcodeScannerController(checkout.mainScanner);
 		BarcodeScannerController handheldScannerController = new BarcodeScannerController(checkout.handheldScanner);
-		this.validItemAdderControllers = new HashSet<>(Arrays.asList(mainScannerController, handheldScannerController));
+		PurchaseBagController bagController = new PurchaseBagController(checkout.screen);
+		AddItemByPLUController pluController = new AddItemByPLUController(checkout.screen);
+		AddItemByBrowsingController browsingController = new AddItemByBrowsingController(checkout.screen);
+		this.validItemAdderControllers = new HashSet<>(
+				Arrays.asList(mainScannerController, handheldScannerController, bagController,
+						pluController, browsingController));
 
 		ElectronicScaleController scaleController = new ElectronicScaleController(checkout.baggingArea);
 		this.validBaggingControllers = new HashSet<>(List.of(scaleController));
@@ -106,6 +178,8 @@ public class CheckoutController {
 		this.electronicScaleController = new ElectronicScaleController(checkout.scale);
 
 		this.itemRemoverController = new ItemRemoverController(checkout.screen);
+
+		this.bagDispenserController = new BagDispenserController(checkout.bagDispenser);
 
 		BillPaymentController billPayController = new BillPaymentController(checkout.billValidator);
 		CoinPaymentController coinPaymentController = new CoinPaymentController(checkout.coinValidator);
@@ -136,16 +210,28 @@ public class CheckoutController {
 		// Add additional device peripherals for Customer I/O and Attendant I/O here
 		registerAll();
 		clearOrder();
-		
-		cart = new Cart("GST", 0.05, null, 0.0, false);		
-	}
-	
-	public SelfCheckoutStation getStation() {
-		return checkout;
+
+		cart = new Cart("GST", 0.05, null, 0.0, false);
+		NetworkController.registerCheckoutStation(stationName, this);
+
 	}
 
+	/**
+	 * Gets the connected stations ID
+	 * 
+	 * @return
+	 *         The connected stations ID
+	 */
 	public int getID() {
 		return stationID;
+	}
+
+	public String getStationName() {
+		return this.stationName;
+	}
+
+	public SelfCheckoutStation getSelfCheckoutStation() {
+		return this.selfCheckoutStation;
 	}
 
 	/**
@@ -171,6 +257,10 @@ public class CheckoutController {
 	// Getters for the order and cost for this checkout controller's current order.
 	public HashMap<Product, Number[]> getOrder() {
 		return this.order;
+	}
+
+	public Cart getCart() {
+		return this.cart;
 	}
 
 	public BigDecimal getCost() {
@@ -290,6 +380,18 @@ public class CheckoutController {
 		}
 	}
 
+	public void registerBagDispenserController(BagDispenserController controller) {
+		if (bagDispenserController == null) {
+			this.bagDispenserController = controller;
+		}
+	}
+
+	void deregisterBagDispenserController(BagDispenserController controller) {
+		if (bagDispenserController.equals(controller)) {
+			this.bagDispenserController = null;
+		}
+	}
+
 	void registerAll() {
 		for (ItemAdderController controller : validItemAdderControllers) {
 			controller.setMainController(this);
@@ -305,6 +407,7 @@ public class CheckoutController {
 		for (ChangeSlotController controller : changeSlotControllers) {
 			controller.setMainController(this);
 		}
+		bagDispenserController.setMainController(this);
 		for (BigDecimal denom : changeDispenserControllers.keySet()) {
 			changeDispenserControllers.get(denom).setMainController(this);
 		}
@@ -326,6 +429,10 @@ public class CheckoutController {
 		return this.itemRemoverController;
 	}
 
+	BagDispenserController getBagController() {
+		return this.bagDispenserController;
+	}
+
 	HashSet<PaymentController> getAllPaymentControllers() {
 		return this.validPaymentControllers;
 	}
@@ -343,6 +450,8 @@ public class CheckoutController {
 		newSet.addAll(this.validBaggingControllers);
 		newSet.addAll(this.validPaymentControllers);
 		newSet.add(this.receiptPrinter);
+		newSet.add(this.bagDispenserController);
+		newSet.add(itemRemoverController);
 		newSet.addAll(this.changeSlotControllers);
 		newSet.addAll(this.changeDispenserControllers.values());
 		newSet.remove(null);
@@ -415,7 +524,7 @@ public class CheckoutController {
 		this.order.put(newBag, currentBagInfo);
 
 		for (BaggingAreaController baggingController : this.validBaggingControllers) {
-			baggingController.updateExpectedBaggingArea(newBag, weight);
+			baggingController.updateExpectedBaggingArea(weight);
 		}
 
 		baggingItemLock = true;
@@ -423,9 +532,86 @@ public class CheckoutController {
 		System.out.println("Reusable bag has been added, you may continue.");
 
 	}
-	
+
+	public void bagDispense(BagDispenserController controller) throws EmptyException {
+
+		if (!bagDispenserController.equals(controller)) {
+			return;
+		}
+
+		int bags = getBagNumber();
+		while (bags != 0) {
+			controller.dispenseBags();
+		}
+	}
+
+	public void bagDispenseFailed(BagDispenserController controller) {
+
+		if (!bagDispenserController.equals(controller)) {
+			return;
+		}
+		controller.bagsLoaded(dispenser, bagCount);
+	}
+
 	public void addItem(CartLineItem item) {
-		cart.addCartItem(item);
+		if (item.getCodeType() == CODETYPE.PLU) {
+			PriceLookUpCode code = CodeUtils.stringPLUToPLU(item.getProductCode());
+			PLUCodedProduct product = (PLUCodedProduct) DatabaseController.getProduct(code, 'P');
+			Number[] currentItemInfo = new Number[] { BigDecimal.ZERO, BigDecimal.ZERO };
+
+			// Add item to order
+			if (this.order.containsKey(product)) {
+				currentItemInfo = this.order.get(product);
+			}
+
+			// Add the cost of the new item to the current cost.
+			if (product.isPerUnit()) {
+				this.cost = this.cost.add(product.getPrice().multiply(new BigDecimal(item.getQuantity())));
+			} else {
+				this.cost = this.cost.add(product.getPrice().multiply(new BigDecimal(item.getWeight())));
+			}
+
+			currentItemInfo[0] = (currentItemInfo[0].intValue()) + 1;
+			currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(item.getPrice());
+
+			this.order.put(product, currentItemInfo);
+
+			for (BaggingAreaController baggingController : this.validBaggingControllers) {
+				baggingController.updateExpectedBaggingArea(item.getWeight());
+			}
+
+			baggingItemLock = true;
+
+		} else {
+			Barcode code = CodeUtils.stringBarcodeToBarcode(item.getProductCode());
+			BarcodedProduct product = (BarcodedProduct) DatabaseController.getProduct(code, 'B');
+			Number[] currentItemInfo = new Number[] { BigDecimal.ZERO, BigDecimal.ZERO };
+
+			// Add item to order
+			if (this.order.containsKey(product)) {
+				currentItemInfo = this.order.get(product);
+			}
+
+			// Add the cost of the new item to the current cost.
+			if (product.isPerUnit()) {
+				this.cost = this.cost.add(product.getPrice().multiply(new BigDecimal(item.getQuantity())));
+			} else {
+				this.cost = this.cost.add(product.getPrice().multiply(new BigDecimal(item.getWeight())));
+			}
+
+			currentItemInfo[0] = (currentItemInfo[0].intValue()) + item.getQuantity();
+			currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).add(item.getPrice());
+
+			this.order.put(product, currentItemInfo);
+
+			for (BaggingAreaController baggingController : this.validBaggingControllers) {
+				baggingController.updateExpectedBaggingArea(item.getWeight());
+			}
+
+			baggingItemLock = true;
+
+		}
+		this.cart.addCartItem(item);
 	}
 
 	/*
@@ -470,7 +656,7 @@ public class CheckoutController {
 
 		for (BaggingAreaController baggingController : this.validBaggingControllers) {
 
-			baggingController.updateExpectedBaggingArea(newItem, weight);
+			baggingController.updateExpectedBaggingArea(weight);
 		}
 
 		baggingItemLock = true;
@@ -483,7 +669,7 @@ public class CheckoutController {
 		if (remover != this.itemRemoverController) {
 			return;
 		}
-		
+
 		if (!this.order.containsKey(itemToRemove)) {
 			return;
 		}
@@ -507,9 +693,9 @@ public class CheckoutController {
 			this.order.remove(itemToRemove);
 		}
 		for (BaggingAreaController baggingController : this.validBaggingControllers) {
-			
+
 			ElectronicScaleController scale = (ElectronicScaleController) baggingController;
-			scale.updateExpectedBaggingArea(itemToRemove, -weight);
+			scale.updateExpectedBaggingArea(-weight);
 		}
 	}
 
@@ -714,7 +900,7 @@ public class CheckoutController {
 		}
 		// TODO: If this fails then do stuff idk
 	}
-	
+
 	public void payByGiftCard(BigDecimal amount) {
 		if (baggingItemLock || systemProtectionLock || payingChangeLock) {
 			return;
