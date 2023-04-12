@@ -626,13 +626,6 @@ public class CheckoutPanel extends JPanel {
     }
 
     private void proceedToCashPaymentMethod(){
-
-        frame = new JFrame();
-        frame.getContentPane().setBackground(SystemColor.activeCaption);
-        frame.setBounds(100, 100, 1280, 720);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().setLayout(null);
-
         JLabel lblNewLabel = new JLabel("Payment");
         lblNewLabel.setFont(new Font("Arial", Font.BOLD, 35));
         lblNewLabel.setBackground(SystemColor.desktop);
