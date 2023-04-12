@@ -25,14 +25,14 @@ public class GuiController {
     SupervisionStation attendantStation;
     JFrame attendantScreen;
     AttendentController attendantController;
-    AttendantLoginLogoutController a;
+    AttendantLoginLogoutController attendantLogin;
 
     public GuiController(SelfCheckoutStation station, SupervisionStation attendantStation) {
         this.station = station;
         this.attendantStation = attendantStation;
         attendantScreen = attendantStation.screen.getFrame();
-        this.attendantController = new AttendentController();
-        this.a = new AttendantLoginLogoutController();
+        attendantController = new AttendentController();
+        attendantLogin = new AttendantLoginLogoutController();
     }
 
     public void startScreen() {
@@ -106,16 +106,16 @@ public class GuiController {
         panel.add(mdp);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
         screen.pack();
-        panel.add(al);
-        attendantScreen.getContentPane().add(panel, BorderLayout.CENTER);
-        attendantScreen.pack();
+        panel.add(mdp);
+        screen.getContentPane().add(panel, BorderLayout.CENTER);
+        screen.pack();
         // Make the JFrame display in the middle of the screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (int) (screenSize.getWidth() - attendantScreen.getWidth()) / 2;
-        int y = (int) (screenSize.getHeight() - attendantScreen.getHeight()) / 2;
-        attendantScreen.setLocation(x, y);
-        attendantScreen.validate();
-        attendantStation.screen.setVisible(true);
+        int x = (int) (screenSize.getWidth() - screen.getWidth()) / 2;
+        int y = (int) (screenSize.getHeight() - screen.getHeight()) / 2;
+        screen.setLocation(x, y);
+        screen.validate();
+        screen.setVisible(true);
     }
 
     public void checkoutScreen() {
@@ -176,13 +176,9 @@ public class GuiController {
         attendantScreen.validate();
         attendantStation.screen.setVisible(true);
     }
-    
+
     public void validateAttendantScreen() {
-    	attendantScreen.validate();
-    }
-    
-    public void validateAttendantScreen() {
-    	attendantScreen.validate();
+        attendantScreen.validate();
     }
 
     // Delete later
@@ -217,13 +213,13 @@ public class GuiController {
         SelfCheckoutStation s2 = new SelfCheckoutStation(c, noteDenom, coinDenom, 10000, 1);
         SelfCheckoutStation s3 = new SelfCheckoutStation(c, noteDenom, coinDenom, 10000, 1);
         
-        CheckoutController cc = new CheckoutController(s);
-        CheckoutController cc2 = new CheckoutController(s2);
-        CheckoutController cc3 = new CheckoutController(s3);
+//        CheckoutController cc = new CheckoutController(s);
+//        CheckoutController cc2 = new CheckoutController(s2);
+//        CheckoutController cc3 = new CheckoutController(s3);
         
-        NetworkController.registerCheckoutStation("Station 1", cc);
-        NetworkController.registerCheckoutStation("Station 2", cc2);
-        NetworkController.registerCheckoutStation("Station 3", cc3);
+//        NetworkController.registerCheckoutStation("Station 1", cc);
+//        NetworkController.registerCheckoutStation("Station 2", cc2);
+//        NetworkController.registerCheckoutStation("Station 3", cc3);
         
         SupervisionStation ss = new SupervisionStation();
         
