@@ -38,9 +38,8 @@ import java.util.Currency;
 import java.util.Enumeration;
 
 import javax.swing.*;
-import com.autovend.GiftCard;
-import com.autovend.CreditCard;
-import com.autovend.DebitCard;
+import com.autovend.GiftCard.*;
+import com.autovend.*;
 
 public class CheckoutPanel extends JPanel {
     private JFrame frame;
@@ -321,6 +320,12 @@ public class CheckoutPanel extends JPanel {
                     Currency currencyValue = Currency.getInstance(currency.getText());
                     BigDecimal amountValue = new BigDecimal(amount.getText());
                     giftCard = new GiftCard(type, number, pin, currencyValue, amountValue);
+                    GiftCardInsertData giftCardInsertData;
+                    try {
+                        giftCardInsertData = giftCard.createCardInsertData(pin);
+                    } catch (InvalidPINException e1) {
+                        pinNumber.setText("Incorrect Pin Number!");
+                    }
                 }
             }
         });
