@@ -31,6 +31,7 @@
 
 package com.autovend.software;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
@@ -47,6 +48,7 @@ public class AdjustBanknotesForChange {
 	private static final Currency CURRENCY = Currency.getInstance("CAD"); // currency for banknotes
 	public String message = " ";
 	public int[] coinValues = {25, 10, 5, 1};
+	List<Coin> coinSet = new ArrayList<>();
 
 
 	private BillStorage billStorage = new BillStorage(100);
@@ -98,24 +100,20 @@ public class AdjustBanknotesForChange {
 	 * @throws OverloadException
 	 * 		if the bill is too large
 	 */
-	public List<List<Integer>> adjustBillToCoin (Bill bill) throws OverloadException {
+	public List<Coin> adjustBillToCoin (Bill bill) throws OverloadException {
 		if (billValueCheck(bill)) {
 			billStorage.load(bill);
-			List<List<Integer>> coins = new ArrayList<>();
+
 			int billInCents = bill.getValue() * 100;
 
 			for (int i = 0; i < coinValues.length; i++) {
 				int coinValue = coinValues[i];
-				List<Integer> coinSet = new ArrayList<>();
 				while (billInCents >= coinValue) {
-					coinSet.add(coinValue);
+					coinSet.add(new Coin(BigDecimal.valueOf(coinValue), Currency.getInstance("CAD")));
 					billInCents -= coinValue;
 				}
-				if (!coinSet.isEmpty()) {
-					coins.add(coinSet);
-				}
 			}
-			return coins;
+			return coinSet;
 		} 
 		throw new OverloadException("Bill too large");
 	}
