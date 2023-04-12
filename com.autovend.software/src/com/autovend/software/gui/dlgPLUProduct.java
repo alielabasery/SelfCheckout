@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import com.autovend.PriceLookUpCode;
+import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
@@ -35,8 +36,10 @@ public class dlgPLUProduct extends JDialog {
 	public char selectedItemType;
 	private JTextField txKeyword;
 	private JTable table1;
+	AddItemsPanel itempanel;
 	
-	public dlgPLUProduct(JFrame owner, String title) {
+	public dlgPLUProduct(JFrame owner, String title, AddItemsPanel itempanel) {
+		this.itempanel = itempanel;
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -67,7 +70,7 @@ public class dlgPLUProduct extends JDialog {
 					PriceLookUpCode PLUcode = CodeUtils.stringPLUToPLU(keyword);
 					Product search = DatabaseController.getProduct(PLUcode, 'P');
 					if (search == null) {
-						System.out.println("really, nothing?");
+						System.out.println("No item of this PLU could be found.");
 				        ArrayList<ProductDescriptionEntry> foundProducts = new ArrayList<>();
 				        if (search instanceof PLUCodedProduct) {
 				        	foundProducts.add(new ProductDescriptionEntry(((PLUCodedProduct)search).getDescription(), 'P', ((PLUCodedProduct)search).getPLUCode()));
@@ -76,10 +79,29 @@ public class dlgPLUProduct extends JDialog {
 				        table1.setModel(model);
 				        table1.clearSelection();
 					}
+					if (search instanceof PLUCodedProduct) {
+						System.out.println("Found item"+".");
+						PLUCodedProduct item = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUcode);
+						if (!itempanel.cart.contains(item)) {
+							itempanel.cart.add(item);
+							int countindex = itempanel.cart.indexOf(item);
+							itempanel.cartcount.add(countindex, 1);
+						}
+						else {
+							int countindex = itempanel.cart.indexOf(item);
+							int count = itempanel.cartcount.get(countindex);
+							count++;
+							itempanel.cartcount.remove(countindex);
+							itempanel.cartcount.add(countindex, count);
+						}
+			        }
 					}
 					catch (Exception ex){
-						System.out.println("that is not a valid PLU.");
+						Product search = null;
+						System.out.println(itempanel.cart.contains(search));
+						System.out.println("Invalid PLU.");
 					}
+					
 					/**
 			        List<Object> products = DatabaseController.findProductByDescription(keyword);
 
@@ -134,7 +156,10 @@ public class dlgPLUProduct extends JDialog {
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						selectedItemCode = null;
-
+						for (int i = 0; i < itempanel.cart.size(); i++) {
+							PLUCodedProduct plu = (PLUCodedProduct) itempanel.cart.get(i);
+							System.out.println(plu.getDescription() + " " + itempanel.cartcount.get(i));
+						}
 				        dlgPLUProduct.this.setVisible(false);
 				        dispose();
 					}
