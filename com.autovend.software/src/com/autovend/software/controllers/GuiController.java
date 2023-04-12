@@ -18,6 +18,7 @@ public class GuiController {
     SelfCheckoutStation station;
     SupervisionStation attendantStation;
     AttendentController attendantController;
+    AttendantLoginLogoutController attendantLogin = new AttendantLoginLogoutController();
     
     JFrame attendantScreen;
 
@@ -74,7 +75,7 @@ public class GuiController {
     	attendantScreen.setPreferredSize(new Dimension(1280, 720));
     	attendantScreen.getContentPane().removeAll();
     	attendantScreen.setLayout(new BorderLayout());
-        AttendantLogin al = new AttendantLogin(this);
+        AttendantLogin al = new AttendantLogin(this, attendantLogin);
         JPanel panel = new JPanel();
         panel.add(al);
         attendantScreen.getContentPane().add(panel, BorderLayout.CENTER);
@@ -93,7 +94,7 @@ public class GuiController {
     	attendantScreen.setPreferredSize(new Dimension(1280, 720));
     	attendantScreen.getContentPane().removeAll();
     	attendantScreen.setLayout(new BorderLayout());
-        AttendantPanel ap = new AttendantPanel(this, attendantStation, attendantController);
+        AttendantPanel ap = new AttendantPanel(this, attendantStation, attendantController, attendantLogin);
         JPanel panel = new JPanel();
         panel.add(ap);
         attendantScreen.getContentPane().add(panel, BorderLayout.CENTER);

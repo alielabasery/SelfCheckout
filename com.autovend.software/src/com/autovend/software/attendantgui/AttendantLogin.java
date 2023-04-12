@@ -23,10 +23,11 @@ public class AttendantLogin extends JPanel {
     private static final String attendant1Id = "001";
     private static final String attendant1Password = "Attendant1!";
 
-    AttendantLoginLogoutController a = new AttendantLoginLogoutController();
+    AttendantLoginLogoutController a;
 
-    public AttendantLogin(GuiController gc) {
+    public AttendantLogin(GuiController gc, AttendantLoginLogoutController a) {
         this.gc = gc;
+        this.a = a;
 
         AttendantLoginLogoutController.idAndPasswords.put(attendant1Id, attendant1Password);
 

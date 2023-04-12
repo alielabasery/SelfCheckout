@@ -6,10 +6,8 @@ import java.awt.Font;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.math.BigDecimal;
-import java.util.Currency;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -19,12 +17,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
-import com.autovend.devices.SimulationException;
 import com.autovend.devices.SupervisionStation;
-import com.autovend.devices.SelfCheckoutStation;
+import com.autovend.software.controllers.AttendantLoginLogoutController;
+import com.autovend.software.controllers.AttendantShutdownStationController;
 import com.autovend.software.controllers.AttendentController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.GuiController;
+import com.autovend.software.controllers.StartUpRoutineController;
 
 import Networking.NetworkController;
 
@@ -32,7 +31,9 @@ public class AttendantPanel extends JPanel {
 	GuiController gc;
 	SupervisionStation attendantStation;
 	AttendentController attendantController;
-	
+	AttendantLoginLogoutController loginController;
+	AttendantShutdownStationController shutdownController;
+	StartUpRoutineController startupController;
 	
 	private ArrayList<String> unsupervisedStations = new ArrayList<String>();
 	
@@ -40,10 +41,14 @@ public class AttendantPanel extends JPanel {
 	
     int stationCounter = 0;
         
-	public AttendantPanel(GuiController gc, SupervisionStation attendantStation, AttendentController attendantController) {
+	public AttendantPanel(GuiController gc, SupervisionStation attendantStation, 
+			AttendentController attendantController, AttendantLoginLogoutController a) {
 		this.gc = gc;
 		this.attendantStation = attendantStation;
 		this.attendantController = attendantController;
+		this.loginController = a;
+		this.shutdownController = new AttendantShutdownStationController(attendantStation, a);
+		this.startupController = new StartUpRoutineController(attendantStation, a);
 		
 		setPreferredSize(new Dimension(1280, 720));
 		setLayout(null);
@@ -136,7 +141,6 @@ public class AttendantPanel extends JPanel {
 				}
 			}
 		} else {
-			System.out.println("Adding");
 			addStation(stationName);
 		}
 	}
@@ -144,6 +148,10 @@ public class AttendantPanel extends JPanel {
 	public void addStation(String name) {
 		stationsBox.add(getStationPanels(name));
 		stationsBox.add(new JSeparator());
+		updateScreen();
+	}
+	
+	private void updateScreen() {
 		gc.validateAttendantScreen();
 		repaint();
 	}
@@ -155,25 +163,87 @@ public class AttendantPanel extends JPanel {
 		panel.add(label);
 		panel.add(Box.createRigidArea(new Dimension(100, 0)));
 		
-		JButton bttn = new JButton("Shutdown Station");
+		JButton bttn = new JButton("Shutdown " + name);
 		panel.add(bttn);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
-		JButton bttn2 = new JButton("Prevent Station");
+		JButton bttn2 = new JButton("Prevent " + name);
 		panel.add(bttn2);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
-		JButton bttn3 = new JButton("Permit Station");
+		JButton bttn3 = new JButton("Permit " + name);
 		panel.add(bttn3);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
-		JButton bttn4 = new JButton("Add Item for Customer");
+		JButton bttn4 = new JButton("Add Item - " + name);
 		panel.add(bttn4);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
-		JButton bttn5 = new JButton("Remove Item for Customer");
+		JButton bttn5 = new JButton("Remove Item - " + name);
 		panel.add(bttn5);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
+		
+		JButton bttn6 = new JButton("Unsupervise " + name);
+		panel.add(bttn6);
+		panel.add(Box.createRigidArea(new Dimension(25, 0)));
+		
+		bttn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	CheckoutController checkoutController = NetworkController.getCheckoutStationController(name);
+        		if (checkoutController != null) {
+        			if (bttn.getText().equals("Shutdown " + name)) {
+        				shutdownController.shutdownStation(checkoutController.getStation(), false);
+            			bttn.setText("Reboot " + name);
+            			bttn2.setEnabled(false);
+            			bttn3.setEnabled(false);
+            			bttn4.setEnabled(false);
+            			bttn5.setEnabled(false);
+            			updateScreen();
+        			}
+        			else if (bttn.getText().equals("Reboot " + name)) {
+        				NetworkController.removeCheckoutStation(name);
+        				CheckoutController newController = startupController.runsStartUpRoutine(checkoutController.getStation(), true);
+        				NetworkController.registerCheckoutStation(name, newController);
+            			bttn.setText("Shutdown " + name);
+            			bttn2.setEnabled(true);
+            			bttn3.setEnabled(true);
+            			bttn4.setEnabled(true);
+            			bttn5.setEnabled(true);
+            			updateScreen();
+        			}
+        		}
+            }
+        });
+		
+		bttn2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	CheckoutController checkoutController = NetworkController.getCheckoutStationController(name);
+        		if (checkoutController != null) {
+        			if (bttn.getText().equals("Shutdown " + name)) {
+        				shutdownController.shutdownStation(checkoutController.getStation(), false);
+            			bttn.setText("Reboot " + name);
+            			bttn2.setEnabled(false);
+            			bttn3.setEnabled(false);
+            			bttn4.setEnabled(false);
+            			bttn5.setEnabled(false);
+            			updateScreen();
+        			}
+        			else if (bttn.getText().equals("Reboot " + name)) {
+        				NetworkController.removeCheckoutStation(name);
+        				CheckoutController newController = startupController.runsStartUpRoutine(checkoutController.getStation(), true);
+        				NetworkController.registerCheckoutStation(name, newController);
+            			bttn.setText("Shutdown " + name);
+            			bttn2.setEnabled(true);
+            			bttn3.setEnabled(true);
+            			bttn4.setEnabled(true);
+            			bttn5.setEnabled(true);
+            			updateScreen();
+        			}
+        		}
+            }
+        });
 				
 		stationCounter++;
 		
