@@ -871,6 +871,7 @@ public class CheckoutPanel extends JPanel {
                     quantityCoins10.setVisible(false);
                     quantityCoins5.setVisible(false);
                     quantityCoins1.setVisible(false);
+                    initialize();
                 }
             });
             btnReturn.setFont(new Font("Arial", Font.BOLD, 35));
