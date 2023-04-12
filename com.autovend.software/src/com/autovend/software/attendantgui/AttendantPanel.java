@@ -8,6 +8,7 @@ import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.Box;
@@ -19,6 +20,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
 import com.autovend.devices.SupervisionStation;
+import com.autovend.products.BarcodedProduct;
+import com.autovend.products.PLUCodedProduct;
+import com.autovend.products.Product;
 import com.autovend.software.PreventStation;
 import com.autovend.software.controllers.AttendantLoginLogoutController;
 import com.autovend.software.controllers.AttendantShutdownStationController;
@@ -27,8 +31,11 @@ import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.GuiController;
 import com.autovend.software.controllers.StartUpRoutineController;
 import com.autovend.software.gui.dlgSearchProduct;
+import com.autovend.software.pojo.CartLineItem;
+import com.autovend.software.pojo.CartLineItem.CODETYPE;
 
 import Networking.NetworkController;
+import data.DatabaseController;
 
 public class AttendantPanel extends JPanel {
 	GuiController gc;
@@ -195,6 +202,10 @@ public class AttendantPanel extends JPanel {
 		panel.add(bttn5);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
+		JButton bttn6 = new JButton("Check Order - " + name);
+		panel.add(bttn6);
+		panel.add(Box.createRigidArea(new Dimension(25, 0)));
+		
 		bttn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -250,6 +261,17 @@ public class AttendantPanel extends JPanel {
         		test.setVisible(true);
         		if (test.selectedItemCode != null) {
         			
+        			CheckoutController checkoutController = NetworkController.getCheckoutStationController(name);
+        			
+        			if (test.selectedItemType == 'P') {
+        				PLUCodedProduct product = (PLUCodedProduct) DatabaseController.getProduct(test.selectedItemCode, test.selectedItemType);
+        				checkoutController.addItem(new CartLineItem(product.getPLUCode().toString(), CODETYPE.PLU,
+            					product.getPrice(), product.isPerUnit(), product.getDescription(), 0.0, 1.50, 1));
+        			} else if (test.selectedItemType == 'B') {
+        				BarcodedProduct product = (BarcodedProduct) DatabaseController.getProduct(test.selectedItemCode, test.selectedItemType);
+        				checkoutController.addItem(new CartLineItem(product.getBarcode().toString(), CODETYPE.PLU,
+            					product.getPrice(), product.isPerUnit(), product.getDescription(), product.getExpectedWeight(), 1.50, 1));
+        			}
         		}
             }
         });
@@ -274,6 +296,18 @@ public class AttendantPanel extends JPanel {
         			attendantStation.remove(checkoutController.getSelfCheckoutStation());
         			removeStation(panel, separator);
         		}
+            }
+        });
+		
+		bttn6.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	CheckoutController checkoutController = NetworkController.getCheckoutStationController(name);
+            	HashMap<Product, Number[]> order = checkoutController.getOrder();
+            	System.out.println("Here");
+            	for (Product product : order.keySet()) {
+            		System.out.println(product + " : " + order.get(product));
+            	}
             }
         });
 				
