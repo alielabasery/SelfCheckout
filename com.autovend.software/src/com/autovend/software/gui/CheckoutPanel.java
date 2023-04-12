@@ -626,6 +626,7 @@ public class CheckoutPanel extends JPanel {
     }
 
     private void proceedToCashPaymentMethod(){
+
         frame = new JFrame();
         frame.getContentPane().setBackground(SystemColor.activeCaption);
         frame.setBounds(100, 100, 1280, 720);
