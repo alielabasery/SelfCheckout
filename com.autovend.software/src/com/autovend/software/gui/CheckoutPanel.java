@@ -40,6 +40,7 @@ import java.util.Enumeration;
 import javax.swing.*;
 import com.autovend.GiftCard.*;
 import com.autovend.*;
+import com.autovend.external.CardIssuer;
 
 public class CheckoutPanel extends JPanel {
     private JFrame frame;
@@ -562,6 +563,7 @@ public class CheckoutPanel extends JPanel {
                         }
                     }
 
+                    CardIssuer cardIssuer;
                     if (type.equals("Credit")) {
                         creditCard = new CreditCard(type, number, cardHolder, cvvValue, pinValue, isTapEnabled, hasChip);
                     } else {
