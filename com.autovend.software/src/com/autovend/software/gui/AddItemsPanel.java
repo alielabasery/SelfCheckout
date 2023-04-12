@@ -40,6 +40,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
@@ -48,6 +49,9 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
 import com.autovend.devices.SimulationException;
+import com.autovend.devices.TouchScreen;
+import com.autovend.software.controllers.AddItemByPLUController;
+import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.GuiController;
 import com.autovend.software.controllers.MembershipCardController;
 
@@ -65,10 +69,21 @@ public class AddItemsPanel extends JPanel {
 	JTextField PLUField;
 	JButton cartbutton;
 	JButton paybutton;
-	List<Object> cart;
-	List<Integer> cartcount;
+	ArrayList<Object> cart;
+	ArrayList<Integer> cartcount;
+	AddItemsPanel itempanel;
+	public TouchScreen touchScreen;
+	public AddItemByPLUController addItemByPLUController;
     public AddItemsPanel(GuiController gc) {
+    	cart = new ArrayList<Object>();
+    	cartcount = new ArrayList<Integer>();
         this.gc = gc;
+        //CheckoutController cc = new CheckoutController("Station 1", this.gc.station);
+        //touchScreen = new TouchScreen();
+        //addItemByPLUController = new AddItemByPLUController(touchScreen);
+        //addItemByPLUController.setMainController(cc);
+        //addItemByPLUController.addProducts();
+        //touchScreen.register(addItemByPLUController);
 
         setPreferredSize(new Dimension(1280, 720));
         setLayout(null);
@@ -108,11 +123,13 @@ public class AddItemsPanel extends JPanel {
         paybutton.setBounds(590, 500, 150, 20);
         paybutton.setOpaque(true);
         paybutton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+    	itempanel = this;
 
         plubutton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dlgPLUProduct dlg = new dlgPLUProduct(new JFrame(), "Add By PLU Code.");
+                dlgPLUProduct dlg = new dlgPLUProduct(new JFrame(), "Add By PLU Code.", itempanel);
                 dlg.setVisible(true);
             }
         });
