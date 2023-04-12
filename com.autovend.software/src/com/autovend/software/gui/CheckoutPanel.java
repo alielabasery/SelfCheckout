@@ -184,7 +184,7 @@ public class CheckoutPanel extends JPanel {
                 } else if (selectedButton == "Gift Card") {
                     proceedToGiftCardPaymentMethod();
                 } else {
-                    //Cash selected
+                    proceedToCashPaymentMethod();
                 }
             }
         });
