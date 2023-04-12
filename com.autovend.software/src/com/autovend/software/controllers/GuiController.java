@@ -227,6 +227,6 @@ public class GuiController {
         // change below to gc.attendantLoginScreen to see the Attendant Station
         // change below to gc.startScreen to see the Customer Station
         gc.attendantLoginScreen();
-        gc.startScreen(cc);
+//        gc.startScreen(cc);
     }
 }

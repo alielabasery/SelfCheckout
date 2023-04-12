@@ -52,7 +52,7 @@ import com.autovend.external.CardIssuer;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
-import com.autovend.software.PreventStation;
+import com.autovend.software.PreventPermitStation;
 import com.autovend.software.pojo.Cart;
 import com.autovend.software.pojo.CartLineItem;
 import com.autovend.software.pojo.CartLineItem.CODETYPE;
@@ -68,14 +68,12 @@ public class CheckoutController {
 	private static int IDcounter = 1;
 	private int stationID = IDcounter++;
 	private SelfCheckoutStation selfCheckoutStation;
-	private List<PreventStation> suspendedStations;
 	private LinkedHashMap<Product, Number[]> order;
 	public Map<Product, Double> PLUProd;
 	public BigDecimal cost;
 	protected BigDecimal amountPaid;
 	public ReusableBagDispenser dispenser;
 	public int bagCount;
-	private List<PreventStation> preventedStations;
 
 	// sets of valid sources of information to the main controller.
 	private final HashSet<BaggingAreaController> validBaggingControllers;
@@ -105,7 +103,9 @@ public class CheckoutController {
 	 * use. This flag is set false upon start up and must be cleared by the
 	 * attendant to allow for usage by customers.
 	 */
-	public boolean systemAvailableForCustomerUse;
+	public boolean systemAvailableForCustomerUse = true;
+	
+	public boolean sessionInProgress = false;
 
 	/*
 	 * Boolean that indicates if an attendant has approved a certain action
@@ -130,26 +130,7 @@ public class CheckoutController {
 		bagDispenserController = null;
 		this.changeDispenserControllers = new TreeMap<>();
 		this.changeSlotControllers = new LinkedHashSet<>();
-		suspendedStations = new ArrayList<>();
-		this.preventedStations = preventedStations;
 		clearOrder();
-	}
-
-	/**
-	 * Method called when a station is suspended
-	 * 
-	 * @param station
-	 *                The instance of the PreventStation that has been suspended
-	 */
-	public void onStationSuspended(PreventStation station) {
-		// Add the station to the list of suspended stations
-		suspendedStations.add(station);
-		System.out.println("CheckoutController notified: Station ID " + station.hashCode() + " has been suspended.");
-	}
-
-	public void onStationUnsuspended(PreventStation station) {
-		preventedStations.remove(station);
-		System.out.println("Station ID: " + station.hashCode() + " is now unsuspended.");
 	}
 
 	/**
@@ -688,6 +669,7 @@ public class CheckoutController {
 			currentItemInfo[0] = currentItemInfo[0].intValue() - 1;
 			currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).subtract(itemToRemove.getPrice());
 			this.order.put(itemToRemove, currentItemInfo);
+			
 		} else {
 			// Remove the item from the order if there is only one left
 			this.order.remove(itemToRemove);
