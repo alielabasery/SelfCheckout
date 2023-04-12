@@ -5,6 +5,8 @@ import com.autovend.devices.SupervisionStation;
 import com.autovend.software.attendantgui.AttendantLogin;
 import com.autovend.software.attendantgui.AttendantPanel;
 import com.autovend.software.gui.AddItemsPanel;
+import com.autovend.software.gui.MembershipByTypingPanel;
+import com.autovend.software.gui.MembershipPanel;
 import com.autovend.software.gui.StartScreenPanel;
 
 import Networking.NetworkController;
@@ -57,6 +59,46 @@ public class GuiController {
         AddItemsPanel aip = new AddItemsPanel();
         JPanel panel = new JPanel();
         panel.add(aip);
+        screen.getContentPane().add(panel, BorderLayout.CENTER);
+        screen.pack();
+        // Make the JFrame display in the middle of the screen
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) (screenSize.getWidth() - screen.getWidth()) / 2;
+        int y = (int) (screenSize.getHeight() - screen.getHeight()) / 2;
+        screen.setLocation(x, y);
+        screen.validate();
+        station.screen.setVisible(true);
+    }
+
+    public void membershipScreen() {
+        JFrame screen = station.screen.getFrame();
+        screen.setExtendedState(JFrame.NORMAL);
+        screen.setPreferredSize(new Dimension(1280, 720));
+        screen.getContentPane().removeAll();
+        screen.setLayout(new BorderLayout());
+        MembershipPanel hvp = new MembershipPanel(this);
+        JPanel panel = new JPanel();
+        panel.add(hvp);
+        screen.getContentPane().add(panel, BorderLayout.CENTER);
+        screen.pack();
+        // Make the JFrame display in the middle of the screen
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) (screenSize.getWidth() - screen.getWidth()) / 2;
+        int y = (int) (screenSize.getHeight() - screen.getHeight()) / 2;
+        screen.setLocation(x, y);
+        screen.validate();
+        station.screen.setVisible(true);
+    }
+
+    public void membershipTypingScreen() {
+        JFrame screen = station.screen.getFrame();
+        screen.setExtendedState(JFrame.NORMAL);
+        screen.setPreferredSize(new Dimension(1280, 720));
+        screen.getContentPane().removeAll();
+        screen.setLayout(new BorderLayout());
+        MembershipByTypingPanel mbtp = new MembershipByTypingPanel(this, new MembershipCardController());
+        JPanel panel = new JPanel();
+        panel.add(mbtp);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
         screen.pack();
         // Make the JFrame display in the middle of the screen
@@ -133,7 +175,7 @@ public class GuiController {
         GuiController gc = new GuiController(s, ss);
         // change below to gc.attendantLoginScreen to see the Attendant Station
         // change below to gc.startScreen to see the Customer Station
-        gc.attendantLoginScreen();
-        //gc.startScreen();
+//        gc.attendantLoginScreen();
+        gc.startScreen();
     }
 }

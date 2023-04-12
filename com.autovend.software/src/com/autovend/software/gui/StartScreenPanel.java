@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 public class StartScreenPanel extends JPanel {
     GuiController gc;
     JButton button;
+    JButton membershipButton;
     JLabel welcomeLabel;
     JLabel startLabel;
     public StartScreenPanel(GuiController gc) {
@@ -35,6 +36,22 @@ public class StartScreenPanel extends JPanel {
         button.setOpaque(true);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         add(button);
+
+        membershipButton = new JButton("Membership");
+        membershipButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gc.membershipScreen();
+            }
+        });
+
+        membershipButton.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
+        membershipButton.setForeground(Color.BLACK);
+        membershipButton.setBorder(new LineBorder(Color.BLACK, 2, true));
+        membershipButton.setBounds(470, 570, 350, 50);
+        membershipButton.setOpaque(true);
+        membershipButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        add(membershipButton);
 
         welcomeLabel = new JLabel("Welcome!");
         welcomeLabel.setBounds(470, 200, 500, 150);
