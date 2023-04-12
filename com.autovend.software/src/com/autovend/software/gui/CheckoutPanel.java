@@ -217,33 +217,23 @@ public class CheckoutPanel extends JFrame {
         lblTotal_1.setBounds(1043, 314, 34, 58);
         frame.getContentPane().add(lblTotal_1);
 
-        JButton btnFinishAndPay = new JButton("Finalize Payment");
-        btnFinishAndPay.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-        btnFinishAndPay.setFont(new Font("Arial", Font.BOLD, 35));
-        btnFinishAndPay.setBounds(430, 570, 357, 83);
-        frame.getContentPane().add(btnFinishAndPay);
-
         JTextField cardNumber = new JTextField();
         cardNumber.setFont(new Font("Arial", Font.BOLD, 30));
         cardNumber.setColumns(10);
         cardNumber.setBounds(404, 190, 400, 49);
         frame.getContentPane().add(cardNumber);
 
-        JTextField cvv = new JTextField();
-        cvv.setFont(new Font("Arial", Font.BOLD, 30));
-        cvv.setColumns(10);
-        cvv.setBounds(404, 450, 400, 49);
-        frame.getContentPane().add(cvv);
+        JTextField amount = new JTextField();
+        amount.setFont(new Font("Arial", Font.BOLD, 30));
+        amount.setColumns(10);
+        amount.setBounds(404, 450, 400, 49);
+        frame.getContentPane().add(amount);
 
-        JTextField cardholderName = new JTextField();
-        cardholderName.setFont(new Font("Arial", Font.BOLD, 30));
-        cardholderName.setColumns(10);
-        cardholderName.setBounds(404, 360, 400, 49);
-        frame.getContentPane().add(cardholderName);
+        JTextField currency = new JTextField();
+        currency.setFont(new Font("Arial", Font.BOLD, 30));
+        currency.setColumns(10);
+        currency.setBounds(404, 360, 400, 49);
+        frame.getContentPane().add(currency);
 
         JTextField pinNumber = new JTextField();
         pinNumber.setFont(new Font("Arial", Font.BOLD, 30));
@@ -284,6 +274,30 @@ public class CheckoutPanel extends JFrame {
         txtGiftCard.setColumns(10);
         txtGiftCard.setBounds(404, 100, 400, 49);
         frame.getContentPane().add(txtGiftCard);
+
+        JButton btnFinishAndPay = new JButton("Finalize Payment");
+        btnFinishAndPay.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (cardNumber.getText() == "") {
+                    cardNumber.setText("Enter Card Number!");
+                } else if (pinNumber.getText() == "") {
+                    pinNumber.setText("Enter Pin Number!");
+                } else if (currency.getText() == "") {
+                    currency.setText("Enter Currency type!");
+                } else if (amount.getText() == "") {
+                    amount.setText("Enter Amount!");
+                } else {
+                    String type = txtGiftCard.getText();
+                    String number = cardNumber.getText();
+                    String pin = pinNumber.getText();
+                    Currency currencyValue = Currency.getInstance(currency.getText());
+                    BigDecimal amountValue = new BigDecimal(amount.getText());
+                }
+            }
+        });
+        btnFinishAndPay.setFont(new Font("Arial", Font.BOLD, 35));
+        btnFinishAndPay.setBounds(430, 570, 357, 83);
+        frame.getContentPane().add(btnFinishAndPay);
     }
 
 
