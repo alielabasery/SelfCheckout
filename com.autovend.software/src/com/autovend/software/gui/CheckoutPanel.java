@@ -671,78 +671,78 @@ public class CheckoutPanel extends JPanel {
 
         JLabel lblNewLabel_2_3 = new JLabel("Cash");
         lblNewLabel_2_3.setFont(new Font("Arial", Font.BOLD, 35));
-        lblNewLabel_2_3.setBounds(278, 90, 103, 49);
+        lblNewLabel_2_3.setBounds(352, 90, 103, 49);
         frame.getContentPane().add(lblNewLabel_2_3);
 
         JLabel label_13 = new JLabel("Coins");
         label_13.setFont(new Font("Arial", Font.BOLD, 35));
-        label_13.setBounds(758, 90, 103, 49);
+        label_13.setBounds(779, 90, 103, 49);
         frame.getContentPane().add(label_13);
 
         JComboBox<Integer> quantityBills100 = new JComboBox<Integer>();
         quantityBills100.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
         quantityBills100.setFont(new Font("Arial", Font.BOLD, 35));
-        quantityBills100.setBounds(214, 150, 256, 49);
+        quantityBills100.setBounds(278, 150, 256, 49);
         frame.getContentPane().add(quantityBills100);
 
         JComboBox<Integer> quantityBills50 = new JComboBox<Integer>();
         quantityBills50.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
         quantityBills50.setFont(new Font("Arial", Font.BOLD, 35));
-        quantityBills50.setBounds(214, 210, 256, 49);
+        quantityBills50.setBounds(278, 210, 256, 49);
         frame.getContentPane().add(quantityBills50);
 
         JComboBox<Integer> quantityBills20 = new JComboBox<Integer>();
         quantityBills20.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
         quantityBills20.setFont(new Font("Arial", Font.BOLD, 35));
-        quantityBills20.setBounds(214, 270, 256, 49);
+        quantityBills20.setBounds(278, 270, 256, 49);
         frame.getContentPane().add(quantityBills20);
 
         JComboBox<Integer> quantityBills10 = new JComboBox<Integer>();
         quantityBills10.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
         quantityBills10.setFont(new Font("Arial", Font.BOLD, 35));
-        quantityBills10.setBounds(214, 330, 256, 49);
+        quantityBills10.setBounds(278, 330, 256, 49);
         frame.getContentPane().add(quantityBills10);
 
         JComboBox<Integer> quantityBills5 = new JComboBox<Integer>();
         quantityBills5.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
         quantityBills5.setFont(new Font("Arial", Font.BOLD, 35));
-        quantityBills5.setBounds(214, 390, 256, 49);
+        quantityBills5.setBounds(278, 390, 256, 49);
         frame.getContentPane().add(quantityBills5);
 
         JComboBox<Integer> quantityBills1 = new JComboBox<Integer>();
         quantityBills1.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
         quantityBills1.setFont(new Font("Arial", Font.BOLD, 35));
-        quantityBills1.setBounds(214, 450, 256, 49);
+        quantityBills1.setBounds(278, 450, 256, 49);
         frame.getContentPane().add(quantityBills1);
 
         JLabel label_7 = new JLabel("$100");
         label_7.setFont(new Font("Arial", Font.BOLD, 30));
-        label_7.setBounds(136, 152, 68, 49);
+        label_7.setBounds(200, 152, 68, 49);
         frame.getContentPane().add(label_7);
 
         JLabel label_8 = new JLabel("$50");
         label_8.setFont(new Font("Arial", Font.BOLD, 30));
-        label_8.setBounds(153, 212, 51, 49);
+        label_8.setBounds(217, 212, 51, 49);
         frame.getContentPane().add(label_8);
 
         JLabel label_9 = new JLabel("$20");
         label_9.setFont(new Font("Arial", Font.BOLD, 30));
-        label_9.setBounds(153, 272, 51, 49);
+        label_9.setBounds(217, 272, 51, 49);
         frame.getContentPane().add(label_9);
 
         JLabel label_10 = new JLabel("$5");
         label_10.setFont(new Font("Arial", Font.BOLD, 30));
-        label_10.setBounds(165, 392, 39, 49);
+        label_10.setBounds(229, 392, 39, 49);
         frame.getContentPane().add(label_10);
 
         JLabel label_11 = new JLabel("$1");
         label_11.setFont(new Font("Arial", Font.BOLD, 30));
-        label_11.setBounds(165, 452, 39, 49);
+        label_11.setBounds(229, 452, 39, 49);
         frame.getContentPane().add(label_11);
 
         JLabel label_12 = new JLabel("$10");
         label_12.setFont(new Font("Arial", Font.BOLD, 30));
-        label_12.setBounds(153, 332, 51, 49);
+        label_12.setBounds(217, 332, 51, 49);
         frame.getContentPane().add(label_12);
 
         JComboBox<Integer> quantityCoins50 = new JComboBox<Integer>();
