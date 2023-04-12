@@ -29,6 +29,8 @@ import Networking.NetworkController;
 public class CheckoutController {
 	private static int IDcounter = 1;
 	private int stationID = IDcounter++;
+	
+	private SelfCheckoutStation checkout;
 
 	private LinkedHashMap<Product, Number[]> order;
 	public Map<Product, Double> PLUProd;
@@ -91,6 +93,7 @@ public class CheckoutController {
 	}
 
 	public CheckoutController(SelfCheckoutStation checkout) {
+		this.checkout = checkout;
 		BarcodeScannerController mainScannerController = new BarcodeScannerController(checkout.mainScanner);
 		BarcodeScannerController handheldScannerController = new BarcodeScannerController(checkout.handheldScanner);
 		this.validItemAdderControllers = new HashSet<>(Arrays.asList(mainScannerController, handheldScannerController));
@@ -137,6 +140,10 @@ public class CheckoutController {
 		cart = new Cart("GST", 0.05, null, 0.0, false);
 		NetworkController.registerCheckoutStation("Checkout Station 1", this);
 		
+	}
+	
+	public SelfCheckoutStation getStation() {
+		return checkout;
 	}
 
 	public int getID() {
