@@ -9,10 +9,12 @@ import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -35,8 +37,12 @@ public class AttendantPanel extends JPanel {
 	private int[] billDenominations;
 	private BigDecimal[] coinDenominations;
 	
-	private int scaleMaximumWeight = 1000;
-	private int scaleSensitivity = 100;
+	private int scaleMaximumWeight = 10000;
+	private int scaleSensitivity = 1;
+	
+	private ArrayList<String> unsupervisedStations = new ArrayList<String>();
+	
+	Box stationsBox;
 	
     int stationCounter = 0;
         
@@ -47,8 +53,7 @@ public class AttendantPanel extends JPanel {
 		
     	currency = Currency.getInstance("CAD");
 		billDenominations = new int[] {5, 10, 20, 50, 100};
-		coinDenominations = new BigDecimal[] {new BigDecimal(5), new BigDecimal(10), new BigDecimal(25), new BigDecimal(100)};
-		
+		coinDenominations = new BigDecimal[] {new BigDecimal("0.05"), new BigDecimal("0.1"), new BigDecimal("0.25"), new BigDecimal("0.5"), new BigDecimal("1"), new BigDecimal("2")};
 		setPreferredSize(new Dimension(1280, 720));
 		setLayout(null);
 		
@@ -57,17 +62,22 @@ public class AttendantPanel extends JPanel {
 		stationsPanel.setLayout(new BorderLayout(0, 0));
 		add(stationsPanel);
 		
-		Box stationsBox = Box.createVerticalBox();
+		stationsBox = Box.createVerticalBox();
 		JScrollPane stationsScrollPane = new JScrollPane(stationsBox);
 		stationsScrollPane.setPreferredSize(new Dimension(801, 587));
 		stationsPanel.add(stationsScrollPane, BorderLayout.NORTH);
 		
-		stationsBox.add(getStationPanels());
-		stationsBox.add(new JSeparator());
+		List<String> stationNames = NetworkController.getCheckoutStationName();
 
-		for (int i = 0; i < attendantStation.supervisedStationCount(); i++) {
-			stationsBox.add(getStationPanels());
-			stationsBox.add(new JSeparator());
+		for (int i = 0; i < stationNames.size(); i++) {
+			CheckoutController checkoutController = NetworkController.getCheckoutStationController(stationNames.get(i));
+			if (checkoutController != null) {
+				if (attendantStation.supervisedStations().contains(checkoutController.getStation())) {
+					addStation(stationNames.get(i));
+				} else {
+					unsupervisedStations.add(stationNames.get(i));
+				}
+			}
 		}
 		
 		JLabel stationsLabel = new JLabel("Supervised Stations");
@@ -92,11 +102,18 @@ public class AttendantPanel extends JPanel {
 		addStationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	SelfCheckoutStation newStation = new SelfCheckoutStation(
-    					currency, billDenominations, coinDenominations, scaleMaximumWeight, scaleSensitivity);
-            	CheckoutController checkoutController = new CheckoutController(newStation);
-            	NetworkController.registerCheckoutStation(getNextStationName(), checkoutController);
-            	attendantStation.add(newStation);
+            	
+            	Object[] choices = unsupervisedStations.toArray();
+            	
+            	String input = (String) JOptionPane.showInputDialog(null, "Choose an unsupervised Station from below: ",
+            			"Add Station", JOptionPane.QUESTION_MESSAGE, null, choices, unsupervisedStations.get(0));
+            	
+            	
+//            	String newName = getNextStationName();
+//            	CheckoutController checkoutController = new CheckoutController(newStation);
+//            	NetworkController.registerCheckoutStation(getNextStationName(), checkoutController);
+//            	attendantStation.add(newStation);
+//            	addStation(newName);
             }
         });
 		add(addStationButton);
@@ -122,10 +139,15 @@ public class AttendantPanel extends JPanel {
 		}
 	}
 	
-	public JPanel getStationPanels() {
+	public void addStation(String name) {
+		stationsBox.add(getStationPanels(name));
+		stationsBox.add(new JSeparator());
+	}
+	
+	public JPanel getStationPanels(String name) {
 		JPanel panel = new JPanel();
 		
-		JLabel label = new JLabel("Station: " + stationCounter);
+		JLabel label = new JLabel(name);
 		panel.add(label);
 		panel.add(Box.createRigidArea(new Dimension(100, 0)));
 		

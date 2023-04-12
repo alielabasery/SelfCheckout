@@ -7,6 +7,8 @@ import com.autovend.software.attendantgui.AttendantPanel;
 import com.autovend.software.gui.AddItemsPanel;
 import com.autovend.software.gui.StartScreenPanel;
 
+import Networking.NetworkController;
+
 import javax.swing.*;
 import java.awt.*;
 import java.math.BigDecimal;
@@ -110,6 +112,16 @@ public class GuiController {
         int[] noteDenom = {5, 10, 20, 50, 100};
         BigDecimal[] coinDenom = {new BigDecimal("0.05"), new BigDecimal("0.1"), new BigDecimal("0.25"), new BigDecimal("0.5"), new BigDecimal("1"), new BigDecimal("2")};
         SelfCheckoutStation s = new SelfCheckoutStation(c, noteDenom, coinDenom, 10000, 1);
+        SelfCheckoutStation s2 = new SelfCheckoutStation(c, noteDenom, coinDenom, 10000, 1);
+        SelfCheckoutStation s3 = new SelfCheckoutStation(c, noteDenom, coinDenom, 10000, 1);
+        
+        CheckoutController cc = new CheckoutController(s);
+        CheckoutController cc2 = new CheckoutController(s2);
+        CheckoutController cc3 = new CheckoutController(s3);
+        
+        NetworkController.registerCheckoutStation("Station 1", cc);
+        NetworkController.registerCheckoutStation("Station 2", cc2);
+        NetworkController.registerCheckoutStation("Station 3", cc3);
         
         SupervisionStation ss = new SupervisionStation();
         
