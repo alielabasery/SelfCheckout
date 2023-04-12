@@ -300,13 +300,13 @@ public class CheckoutPanel extends JPanel {
         JButton btnFinishAndPay = new JButton("Finalize Payment");
         btnFinishAndPay.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (cardNumber.getText() == "") {
+                if (cardNumber.getText().equals("")) {
                     cardNumber.setText("Enter Card Number!");
-                } else if (pinNumber.getText() == "") {
+                } else if (pinNumber.getText().equals("")) {
                     pinNumber.setText("Enter Pin Number!");
-                } else if (currency.getText() == "") {
+                } else if (currency.getText().equals("")) {
                     currency.setText("Enter Currency type!");
-                } else if (amount.getText() == "") {
+                } else if (amount.getText().equals("")) {
                     amount.setText("Enter Amount!");
                 } else {
                     String type = txtGiftCard.getText();
@@ -389,16 +389,6 @@ public class CheckoutPanel extends JPanel {
         lblTotal_1.setBackground(Color.BLACK);
         lblTotal_1.setBounds(1043, 314, 34, 58);
         frame.getContentPane().add(lblTotal_1);
-
-//		JButton btnFinishAndPay = new JButton("Finalize Payment");
-//		btnFinishAndPay.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//
-//			}
-//		});
-//		btnFinishAndPay.setFont(new Font("Arial", Font.BOLD, 35));
-//		btnFinishAndPay.setBounds(430, 570, 357, 83);
-//		frame.getContentPane().add(btnFinishAndPay);
 
         JTextField cardNumber = new JTextField();
         cardNumber.setFont(new Font("Arial", Font.BOLD, 30));
@@ -501,21 +491,55 @@ public class CheckoutPanel extends JPanel {
         JButton btnFinishAndPay = new JButton("Finalize Payment");
         btnFinishAndPay.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-//				if (cardNumber.getText() == "") {
-//					cardNumber.setText("Enter Card Number!");
-//				} else if (pinNumber.getText() == "") {
-//					pinNumber.setText("Enter Pin Number!");
-//				} else if (currency.getText() == "") {
-//					currency.setText("Enter Currency type!");
-//				} else if (amount.getText() == "") {
-//					amount.setText("Enter Amount!");
-//				} else {
-//					String type = txtGiftCard.getText();
-//					String number = cardNumber.getText();
-//					String pin = pinNumber.getText();
-//					Currency currencyValue = Currency.getInstance(currency.getText());
-//					BigDecimal amountValue = new BigDecimal(amount.getText());
-//				}
+                if (cardNumber.getText().equals("")) {
+                    cardNumber.setText("Enter card number!");
+                } else if (cardholderName.getText().equals("")) {
+                    cardholderName.setText("Enter full name!");
+                } else if (cvv.getText().equals("")) {
+                    cvv.setText("Enter cvv number!");
+                } else if (pinNumber.getText().equals("")) {
+                    pinNumber.setText("Enter pin number!");
+                } else {
+                    String type;
+                    String number = cardNumber.getText();
+                    String cardHolder = cardholderName.getText();
+                    String cvvValue = cvv.getText();
+                    String pinValue = pinNumber.getText();
+                    boolean isTapEnabled;
+                    boolean hasChip;
+
+                    Enumeration<AbstractButton> allCardRadioButtons = cardUsed.getElements();
+                    while(allCardRadioButtons.hasMoreElements()) {
+                        JRadioButton button = (JRadioButton) allCardRadioButtons.nextElement();
+                        if (button.isSelected()) {
+                            type = button.getText();
+                        }
+                    }
+
+                    Enumeration<AbstractButton> allTapRadioButtons = tapValue.getElements();
+                    while(allTapRadioButtons.hasMoreElements()) {
+                        JRadioButton button = (JRadioButton) allTapRadioButtons.nextElement();
+                        if (button.isSelected()) {
+                            if(button.getText() == "Yes") {
+                                isTapEnabled = true;
+                            } else {
+                                isTapEnabled = false;
+                            }
+                        }
+                    }
+
+                    Enumeration<AbstractButton> allChipRadioButtons = chipValue.getElements();
+                    while(allChipRadioButtons.hasMoreElements()) {
+                        JRadioButton button = (JRadioButton) allChipRadioButtons.nextElement();
+                        if (button.isSelected()) {
+                            if(button.getText() == "Yes") {
+                                hasChip = true;
+                            } else {
+                                hasChip = false;
+                            }
+                        }
+                    }
+                }
             }
         });
         btnFinishAndPay.setFont(new Font("Arial", Font.BOLD, 35));
