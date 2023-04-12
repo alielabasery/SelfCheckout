@@ -12,11 +12,25 @@ public class PurchaseBagController extends ItemAdderController<TouchScreen, Touc
 
 	BagDispenserController dispenserController;
 	
+	/**
+	 * Constructor for the PurchaseBagController
+	 * @param screen
+	 * 		The touch screen being used
+	 */
 	public PurchaseBagController(TouchScreen screen) {
 		super(screen);
 		// TODO Auto-generated constructor stub
 	}
 	
+	/**
+	 * Reacts to the bag added event
+	 * @param screen
+	 * 		The touch screen being used
+	 * @param barcode
+	 * 		The barcode
+	 * @throws EmptyException
+	 * 		If the bags are empty
+	 */
 	public void reactToBagAddedEvent(TouchScreen screen, Barcode barcode) throws EmptyException {
 		// if barcode is for a valid object, then add the product found to the order on
 		// the main controller.

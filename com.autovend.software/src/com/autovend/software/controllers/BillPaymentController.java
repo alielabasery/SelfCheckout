@@ -14,6 +14,11 @@ import com.autovend.devices.observers.BillValidatorObserver;
 public class BillPaymentController extends PaymentController<BillValidator, BillValidatorObserver>
 		implements BillValidatorObserver {
 
+	/**
+	 * Constructor for the BillPaymentController
+	 * @param device
+	 * 		BillValidator to connect
+	 */
 	public BillPaymentController(BillValidator device) {
 		super(device);
 	}

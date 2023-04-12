@@ -9,6 +9,12 @@ import com.autovend.devices.observers.CoinValidatorObserver;
 
 public class CoinPaymentController extends PaymentController<CoinValidator, CoinValidatorObserver>
 		implements CoinValidatorObserver {
+	
+	/**
+	 * Constructor for the CoinPaymentController
+	 * @param device
+	 * 		The CoinValidator device
+	 */
 	public CoinPaymentController(CoinValidator device) {
 		super(device);
 	}

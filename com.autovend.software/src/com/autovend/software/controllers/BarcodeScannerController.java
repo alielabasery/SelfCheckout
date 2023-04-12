@@ -14,10 +14,24 @@ import com.autovend.products.BarcodedProduct;
  */
 public class BarcodeScannerController extends ItemAdderController<BarcodeScanner, BarcodeScannerObserver>
 		implements BarcodeScannerObserver {
+	
+	/**
+	 * Constructor for the BarcodeScannerController
+	 * @param scanner
+	 * 		The BarcodeScanner to connect
+	 */
 	public BarcodeScannerController(BarcodeScanner scanner) {
 		super(scanner);
 	}
 
+	/**
+	 * Reacts to a barcode scanned event
+	 * 
+	 * @param barcodeScanner
+	 * 		The scanner used
+	 * @param barcode
+	 * 		The barcode being scanned
+	 */
 	public void reactToBarcodeScannedEvent(BarcodeScanner barcodeScanner, Barcode barcode) {
 		// if barcode is for a valid object, then add the product found to the order on
 		// the main controller.

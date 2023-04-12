@@ -6,6 +6,12 @@ import com.autovend.devices.CoinTray;
 import com.autovend.devices.observers.CoinTrayObserver;
 
 public class CoinTrayController extends ChangeSlotController<CoinTray, CoinTrayObserver> implements CoinTrayObserver {
+	
+	/**
+	 * Constructor for the CoinTrayController
+	 * @param coinTray
+	 * 		The CoinTray device
+	 */
 	public CoinTrayController(CoinTray coinTray) {
 		super(coinTray);
 	}

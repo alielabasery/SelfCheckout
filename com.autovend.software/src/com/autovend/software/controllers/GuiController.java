@@ -16,11 +16,21 @@ public class GuiController {
     SelfCheckoutStation station;
     SupervisionStation attendantStation;
 
+    /**
+     * GUI controller constructor
+     * @param station
+     * 		The station being displayed
+     * @param attendantStation
+     * 		The attendant station being displayed
+     */
     public GuiController(SelfCheckoutStation station, SupervisionStation attendantStation) {
         this.station = station;
         this.attendantStation = attendantStation;
     }
 
+    /**
+     * The start screen JFrame
+     */
     public void startScreen() {
         JFrame screen = station.screen.getFrame();
         screen.setExtendedState(JFrame.NORMAL);
@@ -41,6 +51,9 @@ public class GuiController {
         station.screen.setVisible(true);
     }
 
+    /**
+     * The Add items JFrame screen
+     */
     public void startToAddItemsScreen() {
         JFrame screen = station.screen.getFrame();
         screen.setExtendedState(JFrame.NORMAL);

@@ -15,15 +15,30 @@ public class BagDispenserController extends DeviceController<ReusableBagDispense
 	ReusableBagDispenser bagDispenser;
 	ReusableBag bags;
 
+	/**
+	 * The constructor for the BagDispenserController
+	 * @param dispenser
+	 * 		The Reusable bag dispenser
+	 */
 	public BagDispenserController(ReusableBagDispenser dispenser) {
 		super(dispenser);
 		
 	}
 	
+	/**
+	 * gets the main controller
+	 * @return
+	 * 		The main controller
+	 */
 	public final CheckoutController getMainController() {
 		return this.mainController;
 	}
 
+	/**
+	 * Setter for the main controller
+	 * @param newMainController
+	 * 		The CheckoutController to set as the main controller
+	 */
 	public final void setMainController(CheckoutController newMainController) {
 		if (this.mainController != null) {
 			this.mainController.deregisterBagDispenserController(this);
@@ -34,6 +49,11 @@ public class BagDispenserController extends DeviceController<ReusableBagDispense
 		}
 	}
 	
+	/**
+	 * Dispenses bags using the bag dispenser
+	 * @throws EmptyException
+	 * 		If the bag dispenser device is empty
+	 */
 	public void dispenseBags() throws EmptyException {
 		
 		try {

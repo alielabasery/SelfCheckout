@@ -13,15 +13,32 @@ abstract public class ChangeDispenserController<D extends AbstractDevice<O>, O e
 	private BigDecimal denom;
 	private CheckoutController mainController;
 
+	/**
+	 * Constructor for the ChangeDispenserController
+	 * @param newDevice
+	 * 		The device to connect
+	 * @param denom
+	 * 		The denomination
+	 */
 	public ChangeDispenserController(D newDevice, BigDecimal denom) {
 		super(newDevice);
 		this.denom = denom;
 	}
 
+	/**
+	 * Gets the main checkout controller
+	 * @return
+	 * 		The main checkout controller
+	 */
 	final CheckoutController getMainController() {
 		return this.mainController;
 	}
 
+	/**
+	 * Sets the main checkout controller
+	 * @param newMainController
+	 * 		The CheckoutController to set as the new main controller
+	 */
 	public final void setMainController(CheckoutController newMainController) {
 		if (this.mainController != null) {
 			this.mainController.deregisterChangeDispenserController(this.denom, this);
@@ -32,10 +49,20 @@ abstract public class ChangeDispenserController<D extends AbstractDevice<O>, O e
 		}
 	}
 
+	/**
+	 * Sets the denomination
+	 * @param denom
+	 * 		The BigDecimal value of the denomination to set
+	 */
 	void setDenom(BigDecimal denom) {
 		this.denom = denom;
 	}
 
+	/**
+	 * Gets the denomination
+	 * @return
+	 * 		The BigDecimal value of the denomination
+	 */
 	BigDecimal getDenom() {
 		return this.denom;
 	}

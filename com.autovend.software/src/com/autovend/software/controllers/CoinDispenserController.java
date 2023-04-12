@@ -12,6 +12,14 @@ import java.math.BigDecimal;
 
 public class CoinDispenserController extends ChangeDispenserController<CoinDispenser, CoinDispenserObserver>
 		implements CoinDispenserObserver {
+	
+	/**
+	 * The CoinDispenserController constructor
+	 * @param newDevice
+	 * 		The CoinDispenser device
+	 * @param denom
+	 * 		The denomination of the controller
+	 */
 	public CoinDispenserController(CoinDispenser newDevice, BigDecimal denom) {
 		super(newDevice, denom);
 	}
