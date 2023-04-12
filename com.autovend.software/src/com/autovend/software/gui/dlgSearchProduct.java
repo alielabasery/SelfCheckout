@@ -41,6 +41,7 @@ import javax.swing.border.EmptyBorder;
 
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
+import com.autovend.software.attendantgui.AttendantPanel;
 import com.autovend.software.pojo.ProductDescriptionEntry;
 
 import data.DatabaseController;
@@ -63,6 +64,9 @@ public class dlgSearchProduct extends JDialog {
 	public char selectedItemType;
 	private JTextField txKeyword;
 	private JTable table1;
+	
+	private String tempStationName;
+	private dlgSearchProduct selfInstance;
 
 	public dlgSearchProduct(JFrame owner, String title) {
 		setBounds(100, 100, 450, 300);
@@ -133,6 +137,7 @@ public class dlgSearchProduct extends JDialog {
 				        if (selectedRow < 0) return;
 				        selectedItemCode = table1.getModel().getValueAt(table1.getSelectedRow(), 0).toString();
 				        selectedItemType = (char)table1.getModel().getValueAt(table1.getSelectedRow(), 2);
+				        AttendantPanel.addItemToStation(selfInstance, tempStationName);
 				        dlgSearchProduct.this.setVisible(false);
 				        dispose();
 					}
@@ -155,6 +160,12 @@ public class dlgSearchProduct extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+	}
+
+	public void initalize(dlgSearchProduct test, String name) {
+		setVisible(true);
+		tempStationName = name;
+		selfInstance = test;
 	}
 
 }

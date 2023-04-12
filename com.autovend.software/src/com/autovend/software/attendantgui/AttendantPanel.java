@@ -19,6 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
+import com.autovend.Barcode;
+import com.autovend.PriceLookUpCode;
 import com.autovend.devices.SupervisionStation;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
@@ -33,6 +35,7 @@ import com.autovend.software.controllers.StartUpRoutineController;
 import com.autovend.software.gui.dlgSearchProduct;
 import com.autovend.software.pojo.CartLineItem;
 import com.autovend.software.pojo.CartLineItem.CODETYPE;
+import com.autovend.software.utils.CodeUtils;
 
 import Networking.NetworkController;
 import data.DatabaseController;
@@ -258,21 +261,7 @@ public class AttendantPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
         		dlgSearchProduct test = new dlgSearchProduct(null, null);
-        		test.setVisible(true);
-        		if (test.selectedItemCode != null) {
-        			
-        			CheckoutController checkoutController = NetworkController.getCheckoutStationController(name);
-        			
-        			if (test.selectedItemType == 'P') {
-        				PLUCodedProduct product = (PLUCodedProduct) DatabaseController.getProduct(test.selectedItemCode, test.selectedItemType);
-        				checkoutController.addItem(new CartLineItem(product.getPLUCode().toString(), CODETYPE.PLU,
-            					product.getPrice(), product.isPerUnit(), product.getDescription(), 0.0, 1.50, 1));
-        			} else if (test.selectedItemType == 'B') {
-        				BarcodedProduct product = (BarcodedProduct) DatabaseController.getProduct(test.selectedItemCode, test.selectedItemType);
-        				checkoutController.addItem(new CartLineItem(product.getBarcode().toString(), CODETYPE.PLU,
-            					product.getPrice(), product.isPerUnit(), product.getDescription(), product.getExpectedWeight(), 1.50, 1));
-        			}
-        		}
+        		test.initalize(test, name);
             }
         });
 		
@@ -334,5 +323,20 @@ public class AttendantPanel extends JPanel {
 		panel.add(btnNewButton_2);
 		
 		return panel;
+	}
+	
+	public static void addItemToStation(dlgSearchProduct test, String name) {
+		CheckoutController checkoutController = NetworkController.getCheckoutStationController(name);
+		if (test.selectedItemType == 'P') {
+			PriceLookUpCode code = CodeUtils.stringPLUToPLU(test.selectedItemCode);
+			PLUCodedProduct product = (PLUCodedProduct) DatabaseController.getProduct(code, test.selectedItemType);
+			checkoutController.addItem(new CartLineItem(product.getPLUCode().toString(), CODETYPE.PLU,
+					product.getPrice(), product.isPerUnit(), product.getDescription(), 0.0, 1.50, 1));
+		} else if (test.selectedItemType == 'B') {
+			Barcode code = CodeUtils.stringBarcodeToBarcode(test.selectedItemCode);
+			BarcodedProduct product = (BarcodedProduct) DatabaseController.getProduct(code, test.selectedItemType);
+			checkoutController.addItem(new CartLineItem(product.getBarcode().toString(), CODETYPE.BARCODE,
+					product.getPrice(), product.isPerUnit(), product.getDescription(), product.getExpectedWeight(), 1.50, 1));
+		}
 	}
 }
