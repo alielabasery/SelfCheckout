@@ -303,7 +303,6 @@ public class CheckoutPanel extends JPanel {
         txtGiftCard.setBounds(404, 100, 400, 49);
         frame.getContentPane().add(txtGiftCard);
 
-        JButton btnReturn = null;
         JButton btnFinishAndPay = new JButton("Finalize Payment");
         btnFinishAndPay.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -336,7 +335,7 @@ public class CheckoutPanel extends JPanel {
                             lblNewLabel_2_3.setVisible(false);
                             lblNewLabel_2_1.setVisible(false);
                             lblNewLabel_2.setVisible(false);
-                            btnReturn.setVisible(false);
+                            //btnReturn.setVisible(false);
                             btnFinishAndPay.setVisible(false);
                             txtGiftCard.setVisible(false);
                             lblNewLabel.setVisible(false);
@@ -362,7 +361,7 @@ public class CheckoutPanel extends JPanel {
         btnFinishAndPay.setBounds(525, 571, 357, 83);
         frame.getContentPane().add(btnFinishAndPay);
 
-        btnReturn = new JButton("Return");
+        JButton btnReturn = new JButton("Return");
         btnReturn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 lblNewLabel_2_1_1.setVisible(false);
@@ -530,7 +529,7 @@ public class CheckoutPanel extends JPanel {
         lblNewLabel_2_3.setBounds(291, 103, 103, 49);
         frame.getContentPane().add(lblNewLabel_2_3);
 
-        JButton btnReturn;
+
         JButton btnFinishAndPay = new JButton("Finalize Payment");
         btnFinishAndPay.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -601,7 +600,7 @@ public class CheckoutPanel extends JPanel {
                         lblNewLabel_2_3.setVisible(false);
                         lblNewLabel_2_1.setVisible(false);
                         lblNewLabel_2.setVisible(false);
-                        btnReturn.setVisible(false);
+                        //btnReturn.setVisible(false);
                         btnFinishAndPay.setVisible(false);
                         rdbtnDebit.setVisible(false);
                         rdbtnCredit.setVisible(false);
@@ -632,7 +631,7 @@ public class CheckoutPanel extends JPanel {
         btnFinishAndPay.setBounds(525, 571, 357, 83);
         frame.getContentPane().add(btnFinishAndPay);
 
-        btnReturn = new JButton("Return");
+        JButton btnReturn = new JButton("Return");
         btnReturn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 lblNewLabel_2_1_1.setVisible(false);
@@ -664,7 +663,6 @@ public class CheckoutPanel extends JPanel {
     }
 
     private void proceedToCashPaymentMethod(){
-        JButton btnReturn = null;
         JLabel lblNewLabel = new JLabel("Payment");
         lblNewLabel.setFont(new Font("Arial", Font.BOLD, 35));
         lblNewLabel.setBackground(SystemColor.desktop);
@@ -871,7 +869,7 @@ public class CheckoutPanel extends JPanel {
                 if (cash.compareTo(total) >= 0) {
                     //complete
                     lblNewLabel_2_3.setVisible(false);
-                    btnReturn.setVisible(false);
+                    //btnReturn.setVisible(false);
                     btnFinishAndPay.setVisible(false);
                     lblNewLabel.setVisible(false);
                     label_1.setVisible(false);
@@ -909,7 +907,7 @@ public class CheckoutPanel extends JPanel {
         btnFinishAndPay.setBounds(525, 571, 357, 83);
         frame.getContentPane().add(btnFinishAndPay);
 
-        btnReturn = new JButton("Return");
+        JButton btnReturn = new JButton("Return");
         btnReturn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 lblNewLabel_2_3.setVisible(false);
