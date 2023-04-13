@@ -100,6 +100,8 @@ public class ItemRemoverController extends DeviceController<TouchScreen, TouchSc
 		}
 		//	//5. System: Signals to the Customer I/O that the item should be removed from the bagging area.
 		//	signalToRemoveFromBaggingArea(); // implemented by the GUI team
+		
+		scaleController = new ElectronicScaleController(scale);
 
 		if (scaleController.getCurrentWeight() != scaleController.getExpectedWeight()) {
 
