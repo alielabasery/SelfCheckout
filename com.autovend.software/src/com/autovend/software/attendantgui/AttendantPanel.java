@@ -52,13 +52,17 @@ public class AttendantPanel extends JPanel {
 	AttendantShutdownStationController shutdownController;
 	StartUpRoutineController startupController;
 	
+	//Variables for testing button clicks
+	public JButton logoutButton;
+	public JButton addStationButton;
+	
 	
 	//Keeping track of unsupervised Stations and shutdown Stations
 	private ArrayList<String> unsupervisedStations = new ArrayList<String>();
 	private static ArrayList<String> shutdownStations = new ArrayList<String>();
 	
-	Box stationsBox;
-	Box notificationsBox;
+	public Box stationsBox;
+	public Box notificationsBox;
     int stationCounter = 0;
     
     /**
@@ -104,7 +108,7 @@ public class AttendantPanel extends JPanel {
 		/*
 		 * Clicking Logout Button will switch back to the login screen
 		 */
-		JButton logoutButton = new JButton("Logout");
+		logoutButton = new JButton("Logout");
 		logoutButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		logoutButton.setBounds(1185, 20, 85, 21);
 		logoutButton.addActionListener(new ActionListener() {
@@ -118,7 +122,7 @@ public class AttendantPanel extends JPanel {
 		/*
 		 * Adding a new station looks for all stations and see's which of them are unsupervised to add
 		 */
-		JButton addStationButton = new JButton("Add New Station");
+		addStationButton = new JButton("Add New Station");
 		addStationButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		addStationButton.setBounds(801, 661, 156, 27);
 		addStationButton.addActionListener(new ActionListener() {

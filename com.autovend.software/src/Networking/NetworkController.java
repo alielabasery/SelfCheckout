@@ -71,6 +71,11 @@ public class NetworkController {
 		checkoutControllers.remove(checkoutStationName.toLowerCase());
 	}
 	
+	public static void deregisterAllStations() {
+		System.out.println("NetworkController: Deregistering ALL stations");
+		checkoutControllers.clear();
+	}
+	
 	/**
 	 * Returns the attendant controller
 	 * @return

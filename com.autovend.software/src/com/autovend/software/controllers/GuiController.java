@@ -27,6 +27,8 @@ public class GuiController {
     JFrame attendantScreen;
     AttendentController attendantController;
     AttendantLoginLogoutController attendantLogin;
+    public AttendantLogin attendantLoginScreen;
+    public AttendantPanel attendantPanelScreen;
 
     public GuiController(CheckoutController checkout, AttendentController attendant) {
     	this.checkout = checkout;
@@ -146,9 +148,9 @@ public class GuiController {
     	attendantScreen.setPreferredSize(new Dimension(1280, 720));
     	attendantScreen.getContentPane().removeAll();
     	attendantScreen.setLayout(new BorderLayout());
-        AttendantLogin al = new AttendantLogin(this, attendantLogin);
+    	attendantLoginScreen = new AttendantLogin(this, attendantLogin);
         JPanel panel = new JPanel();
-        panel.add(al);
+        panel.add(attendantLoginScreen);
         attendantScreen.getContentPane().add(panel, BorderLayout.CENTER);
         attendantScreen.pack();
         // Make the JFrame display in the middle of the screen
@@ -165,9 +167,9 @@ public class GuiController {
     	attendantScreen.setPreferredSize(new Dimension(1280, 720));
     	attendantScreen.getContentPane().removeAll();
     	attendantScreen.setLayout(new BorderLayout());
-        AttendantPanel ap = new AttendantPanel(this, attendantStation, attendantController, attendantLogin);
+    	attendantPanelScreen = new AttendantPanel(this, attendantStation, attendantController, attendantLogin);
         JPanel panel = new JPanel();
-        panel.add(ap);
+        panel.add(attendantPanelScreen);
         attendantScreen.getContentPane().add(panel, BorderLayout.CENTER);
         attendantScreen.pack();
         // Make the JFrame display in the middle of the screen
