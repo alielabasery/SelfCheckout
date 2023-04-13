@@ -593,7 +593,7 @@ public class CheckoutPanel extends JPanel {
                     expiry.setTime(date);
                     expiry.add(Calendar.MONTH, 6);
                     BigDecimal amount = BigDecimal.valueOf(1000);
-                    //totalAmount.setText("10000");
+                    totalAmount.setText("10000");
                     BigDecimal amountDue = new BigDecimal(totalAmount.getText());
 
                     cardIssuer.addCardData(number, cardHolder, expiry, cvvValue, amount);
