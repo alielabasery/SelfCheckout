@@ -41,6 +41,7 @@ import com.autovend.GiftCard.*;
 import com.autovend.devices.SimulationException;
 import com.autovend.*;
 import com.autovend.external.CardIssuer;
+import com.autovend.software.controllers.CheckoutController;
 
 public class CheckoutPanel extends JPanel {
     private JFrame frame;
@@ -54,7 +55,15 @@ public class CheckoutPanel extends JPanel {
     private CreditCard creditCard;
     private DebitCard debitCard;
     private GiftCard giftCard;
+    private static CheckoutController checkoutController;
 
+    /**
+     * Create the application.
+     */
+    public CheckoutPanel(CheckoutController checkoutController) {
+        initialize();
+        this.checkoutController = checkoutController;
+    }
     /**
      * Launch the application.
      */
@@ -62,7 +71,7 @@ public class CheckoutPanel extends JPanel {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    CheckoutPanel window = new CheckoutPanel();
+                    CheckoutPanel window = new CheckoutPanel(checkoutController);
                     window.frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -71,12 +80,7 @@ public class CheckoutPanel extends JPanel {
         });
     }
 
-    /**
-     * Create the application.
-     */
-    public CheckoutPanel() {
-        initialize();
-    }
+    
 
     /**
      * Initialize the contents of the frame.
