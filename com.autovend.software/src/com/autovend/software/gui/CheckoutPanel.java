@@ -322,7 +322,7 @@ public class CheckoutPanel extends JPanel {
                         Currency currencyValue = Currency.getInstance(currency.getText());
                         BigDecimal amountValue = new BigDecimal(amount.getText());
                         giftCard = new GiftCard(type, number, pin, currencyValue, amountValue);
-                        //totalAmount.setText("10000");
+                        totalAmount.setText("10000");
                         GiftCardInsertData giftCardInsertData;
                         giftCardInsertData = giftCard.createCardInsertData(pin);
                         BigDecimal balance = giftCardInsertData.getRemainingBalance();
