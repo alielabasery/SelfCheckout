@@ -100,7 +100,7 @@ public class AddItemsPanel extends JPanel {
         plubutton.setBackground(Color.decode("#ade89b"));
         plubutton.setForeground(Color.BLACK);
         plubutton.setBorder(new LineBorder(Color.BLACK, 1, true));
-        plubutton.setBounds(590, 300, 150, 20);
+        plubutton.setBounds(640, 300, 175, 50);
         plubutton.setOpaque(true);
         plubutton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
@@ -108,7 +108,7 @@ public class AddItemsPanel extends JPanel {
         browsebutton.setBackground(Color.decode("#ade89b"));
         browsebutton.setForeground(Color.BLACK);
         browsebutton.setBorder(new LineBorder(Color.BLACK, 1, true));
-        browsebutton.setBounds(390, 300, 150, 20);
+        browsebutton.setBounds(440, 300, 175, 50);
         browsebutton.setOpaque(true);
         browsebutton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
@@ -116,7 +116,7 @@ public class AddItemsPanel extends JPanel {
         cartbutton.setBackground(Color.decode("#ad589b"));
         cartbutton.setForeground(Color.BLACK);
         cartbutton.setBorder(new LineBorder(Color.BLACK, 1, true));
-        cartbutton.setBounds(390, 500, 150, 20);
+        cartbutton.setBounds(440, 500, 175, 50);
         cartbutton.setOpaque(true);
         cartbutton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
@@ -124,7 +124,7 @@ public class AddItemsPanel extends JPanel {
         paybutton.setBackground(Color.decode("#ad589b"));
         paybutton.setForeground(Color.BLACK);
         paybutton.setBorder(new LineBorder(Color.BLACK, 1, true));
-        paybutton.setBounds(590, 500, 150, 20);
+        paybutton.setBounds(640, 500, 175, 50);
         paybutton.setOpaque(true);
         paybutton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
