@@ -57,6 +57,9 @@ public class CheckoutPanel extends JPanel {
     private DebitCard debitCard;
     private GiftCard giftCard;
     private CheckoutController checkoutController;
+    
+    public JButton btnFinishAndPay;
+    public String selectedButton;
 
     /**
      * Create the application.
@@ -174,7 +177,7 @@ public class CheckoutPanel extends JPanel {
         lblTotal_1.setBounds(1043, 314, 34, 58);
         frame.getContentPane().add(lblTotal_1);
 
-        JButton btnFinishAndPay = new JButton("Continue To Payment Method");
+        btnFinishAndPay = new JButton("Continue To Payment Method");
         btnFinishAndPay.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 lblNewLabel.setVisible(false);
@@ -184,7 +187,7 @@ public class CheckoutPanel extends JPanel {
                 giftCard.setVisible(false);
                 btnFinishAndPay.setVisible(false);
 
-                String selectedButton = null;
+                selectedButton = null;
                 Enumeration<AbstractButton> allRadioButtons = buttonGroup.getElements();
                 while(allRadioButtons.hasMoreElements()) {
                     JRadioButton button = (JRadioButton) allRadioButtons.nextElement();
@@ -193,9 +196,9 @@ public class CheckoutPanel extends JPanel {
                     }
                 }
 
-                if (selectedButton == "Credit/Debit Card") {
+                if (selectedButton.equals("Credit/Debit Card")) {
                     proceedToCreditDebitPaymentMethod();
-                } else if (selectedButton == "Gift Card") {
+                } else if (selectedButton.equals("Gift Card")) {
                     proceedToGiftCardPaymentMethod();
                 } else {
                     proceedToCashPaymentMethod();
@@ -207,7 +210,7 @@ public class CheckoutPanel extends JPanel {
         frame.getContentPane().add(btnFinishAndPay);
     }
 
-    private void proceedToGiftCardPaymentMethod() {
+    public void proceedToGiftCardPaymentMethod() {
 //		frame = new JFrame();
 //		frame.getContentPane().setBackground(SystemColor.activeCaption);
 //		frame.setBounds(100, 100, 1280, 720);
@@ -661,7 +664,7 @@ public class CheckoutPanel extends JPanel {
         frame.getContentPane().add(btnReturn);
     }
 
-    private void proceedToCashPaymentMethod(){
+    public void proceedToCashPaymentMethod(){
         JLabel lblNewLabel = new JLabel("Payment");
         lblNewLabel.setFont(new Font("Arial", Font.BOLD, 35));
         lblNewLabel.setBackground(SystemColor.desktop);
@@ -958,7 +961,7 @@ public class CheckoutPanel extends JPanel {
         frame.getContentPane().add(btnReturn);
     }
 
-    private void successfulPaymentScreen() {
+    public void successfulPaymentScreen() {
         JLabel lblNewLabel = new JLabel("Transaction Complete");
         lblNewLabel.setFont(new Font("Arial", Font.BOLD, 35));
         lblNewLabel.setBackground(SystemColor.desktop);
