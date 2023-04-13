@@ -30,28 +30,23 @@
 */
 package com.autovend.software.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableModel;
 
-import com.autovend.devices.SimulationException;
+import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.GuiController;
-import com.autovend.software.controllers.MembershipCardController;
-
-import models.FoundProductsTableModel;
 
 public class AddItemsPanel extends JPanel {
     GuiController gc;
@@ -65,10 +60,12 @@ public class AddItemsPanel extends JPanel {
 	JTextField PLUField;
 	JButton cartbutton;
 	JButton paybutton;
+	CheckoutController controller;
 	List<Object> cart;
 	List<Integer> cartcount;
-    public AddItemsPanel(GuiController gc) {
+    public AddItemsPanel(GuiController gc, CheckoutController controller) {
         this.gc = gc;
+        this.controller = controller;
 
         setPreferredSize(new Dimension(1280, 720));
         setLayout(null);

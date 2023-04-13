@@ -112,7 +112,7 @@ public class MembershipDetailsPanel extends JPanel{
                 userID = IDField.getText();
                 try {
                     Boolean success = mcc.isValid(userID);
-                    if (success) { gc.addItemsScreen(); }
+                    if (success) { gc.addItemsScreen(controller); }
                     remove(failLabel);
                     revalidate();
                     repaint();

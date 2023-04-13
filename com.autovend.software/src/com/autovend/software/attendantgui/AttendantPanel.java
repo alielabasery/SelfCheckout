@@ -4,16 +4,17 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -42,6 +43,8 @@ import Networking.NetworkController;
 import data.DatabaseController;
 
 public class AttendantPanel extends JPanel {
+	
+	//Variables relating to the AttendantPanel
 	GuiController gc;
 	SupervisionStation attendantStation;
 	AttendentController attendantController;
@@ -49,13 +52,24 @@ public class AttendantPanel extends JPanel {
 	AttendantShutdownStationController shutdownController;
 	StartUpRoutineController startupController;
 	
+	
+	//Keeping track of unsupervised Stations and shutdown Stations
 	private ArrayList<String> unsupervisedStations = new ArrayList<String>();
 	private static ArrayList<String> shutdownStations = new ArrayList<String>();
 	
 	Box stationsBox;
-	
+	Box notificationsBox;
     int stationCounter = 0;
-        
+    
+    /**
+     * 
+     * Adds all the elements to the screen, and sets up button actions
+     * 
+     * @param gc - To manage all GUI screens
+     * @param attendantStation - SupervisionStation the panel will be using
+     * @param attendantController - AttendantController to control the actions of attendant
+     * @param a - to Control the Attendant Login Logout Actions
+     */
 	public AttendantPanel(GuiController gc, SupervisionStation attendantStation, 
 			AttendentController attendantController, AttendantLoginLogoutController a) {
 		this.gc = gc;
@@ -64,6 +78,8 @@ public class AttendantPanel extends JPanel {
 		this.loginController = a;
 		this.shutdownController = new AttendantShutdownStationController(attendantStation, a);
 		this.startupController = new StartUpRoutineController(attendantStation, a);
+		
+		createNotificationHelper();
 		
 		setPreferredSize(new Dimension(1280, 720));
 		setLayout(null);
@@ -85,6 +101,9 @@ public class AttendantPanel extends JPanel {
 		stationsLabel.setBounds(469, 10, 183, 33);
 		add(stationsLabel);
 		
+		/*
+		 * Clicking Logout Button will switch back to the login screen
+		 */
 		JButton logoutButton = new JButton("Logout");
 		logoutButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		logoutButton.setBounds(1185, 20, 85, 21);
@@ -96,6 +115,9 @@ public class AttendantPanel extends JPanel {
         });
 		add(logoutButton);
 		
+		/*
+		 * Adding a new station looks for all stations and see's which of them are unsupervised to add
+		 */
 		JButton addStationButton = new JButton("Add New Station");
 		addStationButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		addStationButton.setBounds(801, 661, 156, 27);
@@ -111,7 +133,11 @@ public class AttendantPanel extends JPanel {
             	if (input != null) {
             		CheckoutController checkoutController = NetworkController.getCheckoutStationController(input);
             		if (checkoutController != null) {
-            			attendantStation.add(checkoutController.getSelfCheckoutStation());
+            			try {
+            				attendantStation.add(checkoutController.getSelfCheckoutStation());
+            			}catch (Exception IllegalStateException) {
+            				JOptionPane.showMessageDialog(null, "That Station is already being supervised");
+            			}
             			unsupervisedStations.remove(input);
             			updateStationsOnScreen(input);
             		}
@@ -130,17 +156,19 @@ public class AttendantPanel extends JPanel {
 		notificationsPanel.setLayout(new BorderLayout(0, 0));
 		add(notificationsPanel);
 		
-		Box notificationsBox = Box.createVerticalBox();
+		notificationsBox = Box.createVerticalBox();
 		JScrollPane notificationsScrollPanel = new JScrollPane(notificationsBox);
 		notificationsScrollPanel.setPreferredSize(new Dimension(801, 587));
 		notificationsPanel.add(notificationsScrollPanel, BorderLayout.NORTH);
-		
-		for (int i = 0; i < 2; i++) {
-			notificationsBox.add(getNotificationPanels());
-			notificationsBox.add(new JSeparator());
-		}
 	}
 	
+	/**
+	 * 
+	 * This function takes a station Name and uses that name to add a station to supervise
+	 * on the screen
+	 * 
+	 * @param stationName Adding a station on screen with the given name Station Name
+	 */
 	public void updateStationsOnScreen(String stationName) {
 		if (stationName == null) {
 			List<String> stationNames = NetworkController.getCheckoutStationNames();
@@ -160,6 +188,10 @@ public class AttendantPanel extends JPanel {
 		}
 	}
 	
+	/**
+	 * Adds the station to the screen with given name, and refreshes screen
+	 * @param name
+	 */
 	public void addStation(String name) {
 		Component[] temp = getStationPanels(name);
 		stationsBox.add(temp[0]);
@@ -167,10 +199,44 @@ public class AttendantPanel extends JPanel {
 		updateScreen();
 	}
 	
+	/**
+	 * Adds the notification to the screen with given name, and refreshes screen
+	 * @param name
+	 */
+	public void addNotification(String description) {
+		Component[] temp = getNotificationPanels(description);
+		notificationsBox.add(temp[0]);
+		notificationsBox.add(temp[1]);
+		updateScreen();
+	}
+	
+	/**
+	 * 
+	 * Removes the specified Panels and Separators from screen
+	 * this is ran because they are now unsupervised for the attendant
+	 * 
+	 * @param panel - Panel to be removed
+	 * @param separator - Separator to be removed
+	 */
 	public void removeStation(JPanel panel, JSeparator separator) {
 		stationsBox.remove(panel);
 		stationsBox.remove(separator);
 		updateScreen();
+	}
+	
+	/**
+	 * 
+	 * Removes the specified Panels and Separators from screen
+	 * this is ran because they are now confirmed from the attendant
+	 * 
+	 * @param panel - Panel to be removed
+	 * @param separator - Separator to be removed
+	 */
+	public void removeNotification(JPanel panel, JSeparator separator) {
+		notificationsBox.remove(panel);
+		notificationsBox.remove(separator);
+		updateScreen();
+		notificationsBox.repaint();
 	}
 	
 	private void updateScreen() {
@@ -344,21 +410,248 @@ public class AttendantPanel extends JPanel {
 		return temp;
 	}
 	
-	public JPanel getNotificationPanels() {
+	public Component[] getNotificationPanels(String description) {
 		JPanel panel = new JPanel();
+		JSeparator separator = new JSeparator();
 		
-		JLabel lblNewLabel_1 = new JLabel("Notification");
+		JLabel lblNewLabel_1 = new JLabel(description);
 		panel.add(lblNewLabel_1);
 		panel.add(Box.createRigidArea(new Dimension(100, 0)));
 		
-		JButton addStationButton = new JButton("Allow");
+		JButton addStationButton = new JButton("Confirm");
+		addStationButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	removeNotification(panel, separator);
+            }
+        });
 		panel.add(addStationButton);
 		panel.add(Box.createRigidArea(new Dimension(25, 0)));
 		
-		JButton btnNewButton_2 = new JButton("Deny");
-		panel.add(btnNewButton_2);
+		Component[] temp = {panel, separator};
 		
-		return panel;
+		return temp;
+	}
+	
+	private void createNotificationHelper() {
+		JFrame testFrame = new JFrame();
+		testFrame.setTitle("Attendant Notifications Triggers");
+		testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		testFrame.setSize(new Dimension(500, 175));
+		JPanel testPanel = new JPanel();
+		testFrame.getContentPane().add(testPanel);
+		testPanel.setLayout(new GridLayout(7, 1, 0, 0));
+		
+		JButton btnNewButton = new JButton("Create Ink Low Notification");
+		btnNewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	List<String> stationNames = NetworkController.getCheckoutStationNames();
+            	ArrayList<String> supervisedStations = new ArrayList<String>();
+    			for (int i = 0; i < stationNames.size(); i++) {
+    				CheckoutController checkoutController = NetworkController.getCheckoutStationController(stationNames.get(i));
+    				if (checkoutController != null) {
+    					if (attendantStation.supervisedStations().contains(checkoutController.getSelfCheckoutStation())) {
+    						supervisedStations.add(stationNames.get(i));
+    					}
+    				}
+    			}
+    			if (supervisedStations.size() == 0) {
+    				JOptionPane.showMessageDialog(null, "No Stations are being supervised");
+    			} else {
+	    			Object[] choices = supervisedStations.toArray();
+	    			
+	    			String input = (String) JOptionPane.showInputDialog(null, "Choose a Station for the event trigger",
+	            			"Pick One Station", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
+	            	
+	            	if (input != null) {
+	            		addNotification("Station '" + input + "' is Low on Ink");
+	            	}
+    			}
+            }
+        });
+		testPanel.add(btnNewButton);
+		
+		JButton btnNewButton_5 = new JButton("Create Paper Low Notification");
+		btnNewButton_5.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	List<String> stationNames = NetworkController.getCheckoutStationNames();
+            	ArrayList<String> supervisedStations = new ArrayList<String>();
+    			for (int i = 0; i < stationNames.size(); i++) {
+    				CheckoutController checkoutController = NetworkController.getCheckoutStationController(stationNames.get(i));
+    				if (checkoutController != null) {
+    					if (attendantStation.supervisedStations().contains(checkoutController.getSelfCheckoutStation())) {
+    						supervisedStations.add(stationNames.get(i));
+    					}
+    				}
+    			}
+    			if (supervisedStations.size() == 0) {
+    				JOptionPane.showMessageDialog(null, "No Stations are being supervised");
+    			} else {
+	    			Object[] choices = supervisedStations.toArray();
+	    			
+	    			String input = (String) JOptionPane.showInputDialog(null, "Choose a Station for the event trigger",
+	            			"Pick One Station", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
+	            	
+	            	if (input != null) {
+	            		addNotification("Station '" + input + "' is Low on Paper");
+	            	}
+    			}
+            }
+        });
+		testPanel.add(btnNewButton_5);
+		
+		JButton btnNewButton_4 = new JButton("Create Weight Discrepancy Notification");
+		btnNewButton_4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	List<String> stationNames = NetworkController.getCheckoutStationNames();
+            	ArrayList<String> supervisedStations = new ArrayList<String>();
+    			for (int i = 0; i < stationNames.size(); i++) {
+    				CheckoutController checkoutController = NetworkController.getCheckoutStationController(stationNames.get(i));
+    				if (checkoutController != null) {
+    					if (attendantStation.supervisedStations().contains(checkoutController.getSelfCheckoutStation())) {
+    						supervisedStations.add(stationNames.get(i));
+    					}
+    				}
+    			}
+    			if (supervisedStations.size() == 0) {
+    				JOptionPane.showMessageDialog(null, "No Stations are being supervised");
+    			} else {
+	    			Object[] choices = supervisedStations.toArray();
+	    			
+	    			String input = (String) JOptionPane.showInputDialog(null, "Choose a Station for the event trigger",
+	            			"Pick One Station", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
+	            	
+	            	if (input != null) {
+	            		addNotification("Station '" + input + "' has Weight Discrepancy");
+	            	}
+    			}
+            }
+        });
+		testPanel.add(btnNewButton_4);
+		
+		JButton btnNewButton_6 = new JButton("Create Bills Low Notification");
+		btnNewButton_6.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	List<String> stationNames = NetworkController.getCheckoutStationNames();
+            	ArrayList<String> supervisedStations = new ArrayList<String>();
+    			for (int i = 0; i < stationNames.size(); i++) {
+    				CheckoutController checkoutController = NetworkController.getCheckoutStationController(stationNames.get(i));
+    				if (checkoutController != null) {
+    					if (attendantStation.supervisedStations().contains(checkoutController.getSelfCheckoutStation())) {
+    						supervisedStations.add(stationNames.get(i));
+    					}
+    				}
+    			}
+    			if (supervisedStations.size() == 0) {
+    				JOptionPane.showMessageDialog(null, "No Stations are being supervised");
+    			} else {
+	    			Object[] choices = supervisedStations.toArray();
+	    			
+	    			String input = (String) JOptionPane.showInputDialog(null, "Choose a Station for the event trigger",
+	            			"Pick One Station", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
+	            	
+	            	if (input != null) {
+	            		addNotification("Station '" + input + "' is Low on Bills");
+	            	}
+    			}
+            }
+        });
+		testPanel.add(btnNewButton_6);
+		
+		JButton btnNewButton_7 = new JButton("Create Coins Low Notification");
+		btnNewButton_7.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	List<String> stationNames = NetworkController.getCheckoutStationNames();
+            	ArrayList<String> supervisedStations = new ArrayList<String>();
+    			for (int i = 0; i < stationNames.size(); i++) {
+    				CheckoutController checkoutController = NetworkController.getCheckoutStationController(stationNames.get(i));
+    				if (checkoutController != null) {
+    					if (attendantStation.supervisedStations().contains(checkoutController.getSelfCheckoutStation())) {
+    						supervisedStations.add(stationNames.get(i));
+    					}
+    				}
+    			}
+    			if (supervisedStations.size() == 0) {
+    				JOptionPane.showMessageDialog(null, "No Stations are being supervised");
+    			} else {
+	    			Object[] choices = supervisedStations.toArray();
+	    			
+	    			String input = (String) JOptionPane.showInputDialog(null, "Choose a Station for the event trigger",
+	            			"Pick One Station", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
+	            	
+	            	if (input != null) {
+	            		addNotification("Station '" + input + "' is Low on Coins");
+	            	}
+    			}
+            }
+        });
+		testPanel.add(btnNewButton_7);
+		
+		JButton btnNewButton_8 = new JButton("Create Bag Confirmation Notification");
+		btnNewButton_8.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	List<String> stationNames = NetworkController.getCheckoutStationNames();
+            	ArrayList<String> supervisedStations = new ArrayList<String>();
+    			for (int i = 0; i < stationNames.size(); i++) {
+    				CheckoutController checkoutController = NetworkController.getCheckoutStationController(stationNames.get(i));
+    				if (checkoutController != null) {
+    					if (attendantStation.supervisedStations().contains(checkoutController.getSelfCheckoutStation())) {
+    						supervisedStations.add(stationNames.get(i));
+    					}
+    				}
+    			}
+    			if (supervisedStations.size() == 0) {
+    				JOptionPane.showMessageDialog(null, "No Stations are being supervised");
+    			} else {
+	    			Object[] choices = supervisedStations.toArray();
+	    			
+	    			String input = (String) JOptionPane.showInputDialog(null, "Choose a Station for the event trigger",
+	            			"Pick One Station", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
+	            	
+	            	if (input != null) {
+	            		addNotification("Station '" + input + "' Customer Bag Confirmation");
+	            	}
+    			}
+            }
+        });
+		testPanel.add(btnNewButton_8);
+		
+		JButton btnNewButton_1 = new JButton("Create No Bag Request Notification");
+		btnNewButton_1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	List<String> stationNames = NetworkController.getCheckoutStationNames();
+            	ArrayList<String> supervisedStations = new ArrayList<String>();
+    			for (int i = 0; i < stationNames.size(); i++) {
+    				CheckoutController checkoutController = NetworkController.getCheckoutStationController(stationNames.get(i));
+    				if (checkoutController != null) {
+    					if (attendantStation.supervisedStations().contains(checkoutController.getSelfCheckoutStation())) {
+    						supervisedStations.add(stationNames.get(i));
+    					}
+    				}
+    			}
+    			if (supervisedStations.size() == 0) {
+    				JOptionPane.showMessageDialog(null, "No Stations are being supervised");
+    			} else {
+	    			Object[] choices = supervisedStations.toArray();
+	    			
+	    			String input = (String) JOptionPane.showInputDialog(null, "Choose a Station for the event trigger",
+	            			"Pick One Station", JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
+	            	
+	            	if (input != null) {
+	            		addNotification("Station '" + input + "' is Requesting No Bags");
+	            	}
+    			}
+            }
+        });
+		testPanel.add(btnNewButton_1);
+		testFrame.setVisible(true);
 	}
 	
 	public static void addItemToStation(dlgSearchProduct test, String name) {
