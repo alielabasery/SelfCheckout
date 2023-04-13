@@ -37,6 +37,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import javax.swing.*;
 import com.autovend.GiftCard.*;
+import com.autovend.devices.SimulationException;
 import com.autovend.*;
 import com.autovend.external.CardIssuer;
 
@@ -586,53 +587,59 @@ public class CheckoutPanel extends JPanel {
                             }
                         }
                     }
-
-                    CardIssuer cardIssuer = new CardIssuer("Bank");
-                    Date date = new Date();
-                    Calendar expiry = Calendar.getInstance();
-                    expiry.setTime(date);
-                    expiry.add(Calendar.MONTH, 6);
-                    BigDecimal amount = BigDecimal.valueOf(1000);
-                    totalAmount.setText("10000");
-                    BigDecimal amountDue = new BigDecimal(totalAmount.getText());
-
-                    cardIssuer.addCardData(number, cardHolder, expiry, cvvValue, amount);
-                    int hold = cardIssuer.authorizeHold(number, amountDue);
-
-                    if(cardIssuer.postTransaction(number, hold, amountDue)) {
-//                        lblNewLabel_2_1_1.setVisible(false);
-//                        lblNewLabel_2_1_2.setVisible(false);
-//                        lblNewLabel_2_3.setVisible(false);
-//                        lblNewLabel_2_1.setVisible(false);
-//                        lblNewLabel_2.setVisible(false);
-//                        btnReturn.setVisible(false);
-//                        btnFinishAndPay.setVisible(false);
-//                        rdbtnDebit.setVisible(false);
-//                        rdbtnCredit.setVisible(false);
-//                        rdbtnNewRadioButton.setVisible(false);
-//                        rdbtnNo.setVisible(false);
-//                        rdbtnNo_1.setVisible(false);
-//                        rdbtnNewRadioButton_2.setVisible(false);
-//                        lblNewLabel.setVisible(false);
-//                        cardNumber.setVisible(false);
-//                        lblNewLabel_2_1_3.setVisible(false);
-//                        lblNewLabel_2_1_4.setVisible(false);
-//                        pinNumber.setVisible(false);
-//                        cvv.setVisible(false);
-//                        cardholderName.setVisible(false);
-                        Component[] components = frame.getContentPane().getComponents();
-                        for (Component component : components) {
-                            component.setVisible(false);
-                        }
-                        successfulPaymentScreen();
-                    } else {
-                        cvv.setText("didnt go through");
+                    try {
+	                    CardIssuer cardIssuer = new CardIssuer("Bank");
+	                    Date date = new Date();
+	                    Calendar expiry = Calendar.getInstance();
+	                    expiry.setTime(date);
+	                    expiry.add(Calendar.MONTH, 6);
+	                    BigDecimal amount = BigDecimal.valueOf(1000);
+	                    totalAmount.setText("1000");
+	                    BigDecimal amountDue = new BigDecimal(totalAmount.getText());
+	
+	                    cardIssuer.addCardData(number, cardHolder, expiry, cvvValue, amount);
+	                    int hold = cardIssuer.authorizeHold(number, amountDue);
+	
+	                    if(cardIssuer.postTransaction(number, hold, amountDue)) {
+	//                        lblNewLabel_2_1_1.setVisible(false);
+	//                        lblNewLabel_2_1_2.setVisible(false);
+	//                        lblNewLabel_2_3.setVisible(false);
+	//                        lblNewLabel_2_1.setVisible(false);
+	//                        lblNewLabel_2.setVisible(false);
+	//                        btnReturn.setVisible(false);
+	//                        btnFinishAndPay.setVisible(false);
+	//                        rdbtnDebit.setVisible(false);
+	//                        rdbtnCredit.setVisible(false);
+	//                        rdbtnNewRadioButton.setVisible(false);
+	//                        rdbtnNo.setVisible(false);
+	//                        rdbtnNo_1.setVisible(false);
+	//                        rdbtnNewRadioButton_2.setVisible(false);
+	//                        lblNewLabel.setVisible(false);
+	//                        cardNumber.setVisible(false);
+	//                        lblNewLabel_2_1_3.setVisible(false);
+	//                        lblNewLabel_2_1_4.setVisible(false);
+	//                        pinNumber.setVisible(false);
+	//                        cvv.setVisible(false);
+	//                        cardholderName.setVisible(false);
+	                        Component[] components = frame.getContentPane().getComponents();
+	                        for (Component component : components) {
+	                            component.setVisible(false);
+	                        }
+	                        successfulPaymentScreen();
+	                    } else {
+	                        cvv.setText("didnt go through");
+	                    }
+                    } catch (SimulationException e1) {
+                    	cardNumber.setText("Wrong Format!");
+                        cardholderName.setText("Wrong Format!");
+                        cvv.setText("Wrong Format!");
+                        pinNumber.setText("Wrong Format!");
                     }
-                    if (type.equals("Credit")) {
-                        creditCard = new CreditCard(type, number, cardHolder, cvvValue, pinValue, isTapEnabled, hasChip);
-                    } else {
-                        debitCard = new DebitCard(type, number, cardHolder, cvvValue, pinValue, isTapEnabled, hasChip);
-                    }
+//                    if (type.equals("Credit")) {
+//                        creditCard = new CreditCard(type, number, cardHolder, cvvValue, pinValue, isTapEnabled, hasChip);
+//                    } else {
+//                        debitCard = new DebitCard(type, number, cardHolder, cvvValue, pinValue, isTapEnabled, hasChip);
+//                    }
                 }
             }
         });
