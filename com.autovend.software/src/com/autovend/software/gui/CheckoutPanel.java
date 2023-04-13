@@ -34,6 +34,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 import javax.swing.*;
 import com.autovend.GiftCard.*;
@@ -829,19 +830,51 @@ public class CheckoutPanel extends JPanel {
         JButton btnFinishAndPay = new JButton("Finalize Payment");
         btnFinishAndPay.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                double amountPaid = (int)quantityBills100.getSelectedItem() * 100
-                        + (int)quantityBills50.getSelectedItem() * 50
-                        + (int)quantityBills20.getSelectedItem() * 20
-                        + (int)quantityBills10.getSelectedItem() * 10
-                        + (int)quantityBills5.getSelectedItem() * 5
-                        + (int)quantityBills1.getSelectedItem() * 1
-                        + (int)quantityCoins50.getSelectedItem() * 0.50
-                        + (int)quantityCoins25.getSelectedItem() * 0.25
-                        + (int)quantityCoins20.getSelectedItem() * 0.20
-                        + (int)quantityCoins10.getSelectedItem() * 0.10
-                        + (int)quantityCoins5.getSelectedItem() * 0.05
-                        + (int)quantityCoins1.getSelectedItem() * 0.01;
-                BigDecimal cash = BigDecimal.valueOf(amountPaid);
+//                double amountPaid = (int)quantityBills100.getSelectedItem() * 100
+//                        + (int)quantityBills50.getSelectedItem() * 50
+//                        + (int)quantityBills20.getSelectedItem() * 20
+//                        + (int)quantityBills10.getSelectedItem() * 10
+//                        + (int)quantityBills5.getSelectedItem() * 5
+//                        + (int)quantityBills1.getSelectedItem() * 1
+//                        + (int)quantityCoins50.getSelectedItem() * 0.50
+//                        + (int)quantityCoins25.getSelectedItem() * 0.25
+//                        + (int)quantityCoins20.getSelectedItem() * 0.20
+//                        + (int)quantityCoins10.getSelectedItem() * 0.10
+//                        + (int)quantityCoins5.getSelectedItem() * 0.05
+//                        + (int)quantityCoins1.getSelectedItem() * 0.01;
+//                BigDecimal bill100 = BigDecimal.valueOf(100).multiply(BigDecimal.valueOf((int)quantityBills100.getSelectedItem()));;
+//                BigDecimal bill50 = BigDecimal.valueOf(50).multiply(BigDecimal.valueOf((int)quantityBills50.getSelectedItem()));;
+//                BigDecimal bill20 = BigDecimal.valueOf(20).multiply(BigDecimal.valueOf((int)quantityBills20.getSelectedItem()));;
+//                BigDecimal bill10 = BigDecimal.valueOf(10).multiply(BigDecimal.valueOf((int)quantityBills10.getSelectedItem()));;
+//                BigDecimal bill5 = BigDecimal.valueOf(50).multiply(BigDecimal.valueOf((int)quantityBills50.getSelectedItem()));;
+//                BigDecimal bill1 = BigDecimal.valueOf(1).multiply(BigDecimal.valueOf((int)quantityBills1.getSelectedItem()));;
+                
+                BigDecimal cent1 = BigDecimal.valueOf(0.01).multiply(BigDecimal.valueOf((int)quantityCoins1.getSelectedItem()));
+                BigDecimal nickel1 = BigDecimal.valueOf(0.05).multiply(BigDecimal.valueOf((int)quantityCoins5.getSelectedItem()));
+                BigDecimal dime1 = BigDecimal.valueOf(0.10).multiply(BigDecimal.valueOf((int)quantityCoins10.getSelectedItem()));
+                BigDecimal fifth1 = BigDecimal.valueOf(0.20).multiply(BigDecimal.valueOf((int)quantityCoins20.getSelectedItem()));
+                BigDecimal quarter1 = BigDecimal.valueOf(0.25).multiply(BigDecimal.valueOf((int)quantityCoins25.getSelectedItem()));
+                BigDecimal fiftycent1 = BigDecimal.valueOf(0.50).multiply(BigDecimal.valueOf((int)quantityCoins50.getSelectedItem()));
+                
+                Coin cent = new Coin(cent1, Currency.getInstance(getLocale()));
+                Coin nickel = new Coin(nickel1, Currency.getInstance(getLocale()));
+                Coin dime = new Coin(dime1, Currency.getInstance(getLocale()));
+                Coin fifth = new Coin(fifth1, Currency.getInstance(getLocale()));
+                Coin quarter = new Coin(quarter1, Currency.getInstance(getLocale()));
+                Coin fifty = new Coin(fiftycent1, Currency.getInstance(getLocale()));
+                
+                Bill hundred = new Bill((int)quantityBills100.getSelectedItem() * 100, Currency.getInstance(getLocale()));
+                Bill fiftyB = new Bill((int)quantityBills50.getSelectedItem() * 50, Currency.getInstance(getLocale()));
+                Bill twenty = new Bill((int)quantityBills20.getSelectedItem() * 20, Currency.getInstance(getLocale()));
+                Bill ten = new Bill((int)quantityBills10.getSelectedItem() * 10, Currency.getInstance(getLocale()));
+                Bill five = new Bill((int)quantityBills5.getSelectedItem() * 5, Currency.getInstance(getLocale()));
+                Bill one = new Bill((int)quantityBills1.getSelectedItem() * 1, Currency.getInstance(getLocale()));
+                
+                BigDecimal cash = cent.getValue().add(nickel.getValue()).add(dime.getValue()).add(fifth.getValue()).add(quarter.getValue()).add(fifty.getValue());
+                cash.add(BigDecimal.valueOf(hundred.getValue())).add(BigDecimal.valueOf(fiftyB.getValue())).add(BigDecimal.valueOf(twenty.getValue())).
+                add(BigDecimal.valueOf(ten.getValue())).add(BigDecimal.valueOf(five.getValue())).add(BigDecimal.valueOf(one.getValue()));
+                
+                //BigDecimal cash = BigDecimal.valueOf(amountPaid);
                 BigDecimal total = new BigDecimal(totalAmount.getText());
                 if (cash.compareTo(total) >= 0) {
                     //take cash
