@@ -337,7 +337,7 @@ public class CheckoutPanel extends JPanel {
                             }
                             successfulPaymentScreen();
                         } else {
-                        	amount.setText("Not enough money");
+                        	amount.setText("Not enough money on card");
                         }
                     } catch (InvalidPINException e1) {
                         pinNumber.setText("Incorrect Pin Number!");
