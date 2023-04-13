@@ -845,35 +845,6 @@ public class CheckoutPanel extends JPanel {
                 BigDecimal total = new BigDecimal(totalAmount.getText());
                 if (cash.compareTo(total) >= 0) {
                     //take cash
-//                    lblNewLabel_2_3.setVisible(false);
-//                    btnReturn.setVisible(false);
-//                    btnFinishAndPay.setVisible(false);
-//                    lblNewLabel.setVisible(false);
-//                    label_1.setVisible(false);
-//                    label_2.setVisible(false);
-//                    label_3.setVisible(false);
-//                    label_4.setVisible(false);
-//                    label_5.setVisible(false);
-//                    label_6.setVisible(false);
-//                    label_7.setVisible(false);
-//                    label_8.setVisible(false);
-//                    label_9.setVisible(false);
-//                    label_10.setVisible(false);
-//                    label_11.setVisible(false);
-//                    label_12.setVisible(false);
-//                    label_13.setVisible(false);
-//                    quantityBills100.setVisible(false);
-//                    quantityBills50.setVisible(false);
-//                    quantityBills20.setVisible(false);
-//                    quantityBills10.setVisible(false);
-//                    quantityBills5.setVisible(false);
-//                    quantityBills1.setVisible(false);
-//                    quantityCoins50.setVisible(false);
-//                    quantityCoins25.setVisible(false);
-//                    quantityCoins20.setVisible(false);
-//                    quantityCoins10.setVisible(false);
-//                    quantityCoins5.setVisible(false);
-//                    quantityCoins1.setVisible(false);
                     Component[] components = frame.getContentPane().getComponents();
                     for (Component component : components) {
                         component.setVisible(false);
