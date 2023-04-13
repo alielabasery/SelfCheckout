@@ -28,8 +28,21 @@
 * Nam Nguyen Vu (30154892)
 * 
 */
-package com.autovend.software.gui;
 
-public class HaveMembershipPanel {
+package com.autovend.software.controllers;
 
+/**
+ * Thrown to indicate that the application's start up routine failed.
+ * This exception wraps any underlying exception that caused the failure.
+ */
+public class StartUpRoutineFailedException extends Exception {
+    
+    /**
+     * Constructs a new StartUpRoutineFailedException with the specified message
+     *
+     * @param message the exception message 
+     */
+    public StartUpRoutineFailedException(String message) {
+        super(message);
+    }
 }

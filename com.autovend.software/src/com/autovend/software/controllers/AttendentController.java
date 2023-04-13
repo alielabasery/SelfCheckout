@@ -32,16 +32,20 @@ package com.autovend.software.controllers;
 
 import java.util.HashMap;
 
+import com.autovend.devices.SupervisionStation;
 import com.autovend.software.pojo.CartLineItem;
 
 import Networking.NetworkController;
 
 public class AttendentController {
 	
+	SupervisionStation supervisionStation;
+	
 	/**
 	 * Constructor for the AttendantController
 	 */
 	public AttendentController() {
+		supervisionStation = new SupervisionStation();
 		NetworkController.registerAttendentController(this);
 	}
 	
@@ -55,13 +59,20 @@ public class AttendentController {
 	 * 		If the station does not exist
 	 */
 	public void addItemToStationCart(String checkoutStationName, CartLineItem item) throws IllegalArgumentException {
-//		checkoutControllerList.get(checkoutStationName).
 		CheckoutController checkoutController = NetworkController.getCheckoutStationController(checkoutStationName);
 		if (checkoutController != null) {
 			checkoutController.addItem(item);
 		} else {
 			throw new IllegalArgumentException(String.format("Station [%s] not found!",checkoutStationName));
 		}		
+	}
+	
+	public SupervisionStation getSupervisionStation() {
+		return this.supervisionStation;
+	}
+	
+	public CheckoutController getCheckoutController(String stationName) {
+		return NetworkController.getCheckoutStationController(stationName.toLowerCase());
 	}
 
 }

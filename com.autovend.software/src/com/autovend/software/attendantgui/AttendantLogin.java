@@ -28,11 +28,11 @@
 * Nam Nguyen Vu (30154892)
 * 
 */
+
 package com.autovend.software.attendantgui;
 
 import com.autovend.devices.SimulationException;
 import com.autovend.software.controllers.AttendantLoginLogoutController;
-import com.autovend.software.attendantgui.AttendantPanel;
 import com.autovend.software.controllers.GuiController;
 
 
@@ -54,15 +54,11 @@ public class AttendantLogin extends JPanel {
     private static final String attendant1Id = "001";
     private static final String attendant1Password = "Attendant1!";
 
-    AttendantLoginLogoutController a = new AttendantLoginLogoutController();
+    AttendantLoginLogoutController a;
 
-    /**
-     * Constructor for Attendant Login
-     * @param gc
-     * 		The GuiController to set as the default GuiController
-     */
-    public AttendantLogin(GuiController gc) {
+    public AttendantLogin(GuiController gc, AttendantLoginLogoutController a) {
         this.gc = gc;
+        this.a = a;
 
         AttendantLoginLogoutController.idAndPasswords.put(attendant1Id, attendant1Password);
 
@@ -106,7 +102,7 @@ public class AttendantLogin extends JPanel {
                 try {
                     // If login information passes, got to attendant panel
                     a.AttendantLogin(userID, password);
-                    gc.attendantLoginToAttendantScreen();
+                    gc.attendantScreen();
                 } catch (SimulationException s) {
                     // If login failed
                     IDField.setText("");

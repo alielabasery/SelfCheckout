@@ -34,8 +34,10 @@ package com.autovend.software.test;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Before;
@@ -59,14 +61,21 @@ public class AdjustBanknotesTest {
         adjuster = new AdjustBanknotesForChange();
     }
 
-    @Test
-    public void testAdjustBillToCoin() throws OverloadException {
-        Bill bill = new Bill(6, Currency.getInstance("CAD"));
-        List<List<Integer>> expectedCoins = Arrays.asList(Arrays.asList(25, 25, 25, 25,
-        		25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25));
-        List<List<Integer>> actualCoins = adjuster.adjustBillToCoin(bill);
-        assertEquals(expectedCoins, actualCoins);
-    }
+    
+  @Test
+  public void testAdjustBillToCoin() throws OverloadException {
+      Bill bill = new Bill(6, Currency.getInstance("CAD"));
+      List<Coin> expectedCoin = new ArrayList<Coin>();
+      Coin coin = new Coin(BigDecimal.valueOf(25), Currency.getInstance("CAD"));
+      for (int i = 0; i < 24; i++) {
+      	expectedCoin.add(coin);
+      }
+      List<Coin> actualCoins = adjuster.adjustBillToCoin(bill);
+      for (int i = 0; i < 24; i++) {
+      	assertEquals(expectedCoin.get(i).getValue(), actualCoins.get(i).getValue());
+      }
+  }
+
 
     @Test(expected = OverloadException.class)
     public void testAdjustBillToCoinWithLargeBill() throws OverloadException {

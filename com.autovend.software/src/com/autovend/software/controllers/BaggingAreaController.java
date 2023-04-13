@@ -27,7 +27,7 @@
 * Daniel Boettcher (30153811) 
 * Nam Nguyen Vu (30154892)
 * 
-*/D
+*/
 
 package com.autovend.software.controllers;
 import com.autovend.software.controllers.*;

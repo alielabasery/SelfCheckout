@@ -56,7 +56,7 @@ public class LowInkPaperTest {
 		coinDenominations = new BigDecimal[] { new BigDecimal(25), new BigDecimal(100), new BigDecimal(5) };
 		station = new SelfCheckoutStation(currency, billDenominations, coinDenominations, 1000, 1);
 
-		checkoutController = new CheckoutController(station);
+		checkoutController = new CheckoutController("1", station);
 
 		receiptPrinter = station.printer;
 		receiptPrinterController = new ReceiptPrinterController(receiptPrinter);

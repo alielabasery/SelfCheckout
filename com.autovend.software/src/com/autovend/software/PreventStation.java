@@ -30,8 +30,13 @@
 */
 package com.autovend.software;
 
-public class PreventStation {
+import java.util.ArrayList;
+import java.util.List;
 
+import com.autovend.software.controllers.CheckoutController;
+
+public class PreventStation extends CheckoutController {
+	private static List<PreventStation> suspendedStations = new ArrayList<>();
     private boolean isSuspended;
     private boolean isSessionInProgress;
 
@@ -48,53 +53,48 @@ public class PreventStation {
      * @return isSuspended
      * 		Boolean value of if the station is suspended
      */
+
     public boolean isSuspended() {
         return isSuspended;
     }
 
-    /**
-     * Method to check if there is a session in progress
-     * @return isSessionInProgress
-     * 		Boolean value of if the station has a transaction in progress
-     */
     public boolean isSessionInProgress() {
         return isSessionInProgress;
     }
 
-    /**
-     * Setter for "Session In Progress"
-     * @param isSessionInProgress
-     * 		Boolean value to set the sessionInProgress value to
-     */
     public void setSessionInProgress(boolean isSessionInProgress) {
         this.isSessionInProgress = isSessionInProgress;
     }
 
-    /**
-     * Method to suspend use of the station
-     */
-    public void suspend() {
+    public void suspend(CheckoutController controller) {
         if (!isSessionInProgress || isSuspended) {
             isSuspended = true;
+            suspendedStations.add(this);
             System.out.println("Station ID: " + this.hashCode() + " is now suspended.");
+            // Notify the CheckoutController about the suspension
+            controller.onStationSuspended(this);
         } else {
             System.out.println("Cannot suspend Station ID: " + this.hashCode() + " as it has an ongoing session.");
         }
     }
 
-    /**
-     * Force the suspension of the system
-     */
-    public void forceSuspend() {
+    public void forceSuspend(CheckoutController controller) {
         isSuspended = true;
+        controller.onStationSuspended(this);
         System.out.println("Station ID: " + this.hashCode() + " is now force suspended.");
     }
 
-    /**
-     * Unsuspend the use of the system.
-     */
-    public void unsuspend() {
-        isSuspended = false;
-        System.out.println("Station ID: " + this.hashCode() + " is now un-suspended.");
+    public void unsuspend(CheckoutController controller) {
+        if (isSuspended) {
+            isSuspended = false;
+            suspendedStations.remove(this);
+            System.out.println("Station ID: " + this.hashCode() + " is now un-suspended.");
+            controller.onStationUnsuspended(this);
+        } else {
+            System.out.println("Station ID: " + this.hashCode() + " is not suspended.");
+        }
+    }
+    public static List<PreventStation> getSuspendedStations() {
+        return suspendedStations;
     }
 }
