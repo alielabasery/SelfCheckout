@@ -38,8 +38,10 @@ public class dlgPLUProduct extends JDialog {
 	public final JPanel contentPanel = new JPanel();
 	public String selectedItemCode;
 	public char selectedItemType;
-	private JTextField txKeyword;
-	private JTable table1;
+	public JButton okButton;
+	public JButton btnFind;
+	public JTextField txKeyword;
+	public JTable table1;
 	CheckoutController controller;
 	
 	public dlgPLUProduct(JFrame owner, String title, CheckoutController controller) {
@@ -65,7 +67,7 @@ public class dlgPLUProduct extends JDialog {
 			txKeyword.setColumns(10);
 		}
 		{
-			JButton btnFind = new JButton("Search");
+			btnFind = new JButton("Search");
 			btnFind.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String keyword = txKeyword.getText();
@@ -103,7 +105,7 @@ public class dlgPLUProduct extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
+				okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						
