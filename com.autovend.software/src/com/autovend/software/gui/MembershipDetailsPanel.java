@@ -73,22 +73,23 @@ public class MembershipDetailsPanel extends JPanel {
 	public MembershipDetailsPanel(GuiController gc, MembershipCardController mcc, CheckoutController controller) {
         this.gc = gc;
         this.mcc = mcc;
-        
-
-        
+      
         setPreferredSize(new Dimension(1280, 720));
         setLayout(null);
-
+        
         membershipByTypingLabel = new JLabel("Please enter your membership below:");
         membershipByTypingLabel.setBounds(450, 150, 750, 150);
         membershipByTypingLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 18));
+        
+        //Used for entering membership number 
         IDField = new JTextField();
         IDField.setBounds(540, 200, 200, 100);
         IDField.setHorizontalAlignment(JTextField.CENTER); // set the horizontal alignment
         IDLabel = new JLabel("Membership Number:");
         IDField.setBounds(540, 270, 200, 25);
         IDField.setHorizontalAlignment(JLabel.CENTER); // set the horizontal alignment
-
+        
+        //Used when the user enters a valid membership number 
         button = new JButton("Connect");
         button.setBackground(Color.decode("#ade89b"));
         button.setForeground(Color.BLACK);
@@ -104,7 +105,8 @@ public class MembershipDetailsPanel extends JPanel {
         backButton.setBorder(new LineBorder(Color.BLACK, 1, true));
         backButton.setOpaque(true);
         backButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
+        
+        //To go to the previous panel 
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -114,11 +116,13 @@ public class MembershipDetailsPanel extends JPanel {
 
         add(backButton);
        
-
+        
         failLabel = new JLabel("The membership number entered was invalid");
         failLabel.setBounds(510, 365, 300, 20);
         failLabel.setForeground(Color.RED);
         
+        
+        //Buttons for virtual keyboard 
         zero = new JButton("0");
         zero.setBounds(630, 460, 20, 20);
         zero.setBackground(Color.decode("#ade89b"));
@@ -253,18 +257,21 @@ public class MembershipDetailsPanel extends JPanel {
 		}
 		});
 		
+		//On submit
 		 button.addActionListener(new ActionListener() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
 	                userID = IDField.getText();
 	                try {
+	                	//If it's valid
 	                    Boolean success = mcc.isValid(userID);
 	                    if (success) { gc.addItemsScreen(); }
 	                    remove(failLabel);
 	                    revalidate();
 	                    repaint();
-	                    
+	                   
 	                } catch (IllegalDigitException s) {
+	                	//Otherwise reset text field and prompt error message
 	                    IDField.setText("");
 	                    vkeyboard="";
 	                    add(failLabel);
@@ -274,7 +281,7 @@ public class MembershipDetailsPanel extends JPanel {
 	                }
 	            }
 	        });
-	        
+	    //Adding it to the panel
         add(zero);
         add(one);
         add(two);
