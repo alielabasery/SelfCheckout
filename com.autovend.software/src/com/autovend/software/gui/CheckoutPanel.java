@@ -34,11 +34,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 import javax.swing.*;
 import com.autovend.GiftCard.*;
+import com.autovend.devices.SimulationException;
 import com.autovend.*;
 import com.autovend.external.CardIssuer;
+import com.autovend.software.controllers.CheckoutController;
 
 public class CheckoutPanel extends JPanel {
     private JFrame frame;
@@ -52,7 +55,15 @@ public class CheckoutPanel extends JPanel {
     private CreditCard creditCard;
     private DebitCard debitCard;
     private GiftCard giftCard;
+    private static CheckoutController checkoutController;
 
+    /**
+     * Create the application.
+     */
+    public CheckoutPanel(CheckoutController checkoutController) {
+        initialize();
+        this.checkoutController = checkoutController;
+    }
     /**
      * Launch the application.
      */
@@ -60,7 +71,7 @@ public class CheckoutPanel extends JPanel {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    CheckoutPanel window = new CheckoutPanel();
+                    CheckoutPanel window = new CheckoutPanel(checkoutController);
                     window.frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -69,12 +80,7 @@ public class CheckoutPanel extends JPanel {
         });
     }
 
-    /**
-     * Create the application.
-     */
-    public CheckoutPanel() {
-        initialize();
-    }
+    
 
     /**
      * Initialize the contents of the frame.
@@ -150,6 +156,11 @@ public class CheckoutPanel extends JPanel {
 
         JTextField totalAmount = new JTextField();
         totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
+        if (checkoutController != null) {
+        	totalAmount.setText(checkoutController.getCost().toString());
+        } else {
+        	totalAmount.setText("1");
+        }
         totalAmount.setEditable(false);
         totalAmount.setBounds(1075, 314, 131, 58);
         frame.getContentPane().add(totalAmount);
@@ -234,6 +245,11 @@ public class CheckoutPanel extends JPanel {
 
         JTextField totalAmount = new JTextField();
         totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
+        if (checkoutController != null) {
+        	totalAmount.setText(checkoutController.getCost().toString());
+        } else {
+        	totalAmount.setText("1");
+        }
         totalAmount.setEditable(false);
         totalAmount.setBounds(1075, 314, 131, 58);
         frame.getContentPane().add(totalAmount);
@@ -322,7 +338,7 @@ public class CheckoutPanel extends JPanel {
                         Currency currencyValue = Currency.getInstance(currency.getText());
                         BigDecimal amountValue = new BigDecimal(amount.getText());
                         giftCard = new GiftCard(type, number, pin, currencyValue, amountValue);
-                        totalAmount.setText("10000");
+                        //totalAmount.setText("10000");
                         GiftCardInsertData giftCardInsertData;
                         giftCardInsertData = giftCard.createCardInsertData(pin);
                         BigDecimal balance = giftCardInsertData.getRemainingBalance();
@@ -330,27 +346,13 @@ public class CheckoutPanel extends JPanel {
                         int compare = balance.compareTo(total);
                         if (compare >= 0) {
                             giftCardInsertData.deduct(total);
-//                            lblNewLabel_2_1_1.setVisible(false);
-//                            lblNewLabel_2_1_2.setVisible(false);
-//                            lblNewLabel_2_3.setVisible(false);
-//                            lblNewLabel_2_1.setVisible(false);
-//                            lblNewLabel_2.setVisible(false);
-
                             Component[] components = frame.getContentPane().getComponents();
                             for (Component component : components) {
                                 component.setVisible(false);
                             }
-                            //btnReturn.setVisible(false);
-//                            btnFinishAndPay.setVisible(false);
-//                            txtGiftCard.setVisible(false);
-//                            lblNewLabel.setVisible(false);
-//                            cardNumber.setVisible(false);
-//                            amount.setVisible(false);
-//                            currency.setVisible(false);
-//                            pinNumber.setVisible(false);
                             successfulPaymentScreen();
                         } else {
-                            currency.setText("Declined");
+                        	amount.setText("Not enough money on card");
                         }
                     } catch (InvalidPINException e1) {
                         pinNumber.setText("Incorrect Pin Number!");
@@ -425,6 +427,11 @@ public class CheckoutPanel extends JPanel {
 
         JTextField totalAmount = new JTextField();
         totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
+        if (checkoutController != null) {
+        	totalAmount.setText(checkoutController.getCost().toString());
+        } else {
+        	totalAmount.setText("1");
+        }
         totalAmount.setEditable(false);
         totalAmount.setBounds(1075, 314, 131, 58);
         frame.getContentPane().add(totalAmount);
@@ -586,52 +593,33 @@ public class CheckoutPanel extends JPanel {
                             }
                         }
                     }
-
-                    CardIssuer cardIssuer = new CardIssuer("Bank");
-                    Date date = new Date();
-                    Calendar expiry = Calendar.getInstance();
-                    expiry.setTime(date);
-                    expiry.add(Calendar.MONTH, 6);
-                    BigDecimal amount = BigDecimal.valueOf(1000);
-                    //totalAmount.setText("10000");
-                    BigDecimal amountDue = new BigDecimal(totalAmount.getText());
-
-                    cardIssuer.addCardData(number, cardHolder, expiry, cvvValue, amount);
-                    int hold = cardIssuer.authorizeHold(number, amountDue);
-
-                    if(cardIssuer.postTransaction(number, hold, amountDue)) {
-//                        lblNewLabel_2_1_1.setVisible(false);
-//                        lblNewLabel_2_1_2.setVisible(false);
-//                        lblNewLabel_2_3.setVisible(false);
-//                        lblNewLabel_2_1.setVisible(false);
-//                        lblNewLabel_2.setVisible(false);
-//                        btnReturn.setVisible(false);
-//                        btnFinishAndPay.setVisible(false);
-//                        rdbtnDebit.setVisible(false);
-//                        rdbtnCredit.setVisible(false);
-//                        rdbtnNewRadioButton.setVisible(false);
-//                        rdbtnNo.setVisible(false);
-//                        rdbtnNo_1.setVisible(false);
-//                        rdbtnNewRadioButton_2.setVisible(false);
-//                        lblNewLabel.setVisible(false);
-//                        cardNumber.setVisible(false);
-//                        lblNewLabel_2_1_3.setVisible(false);
-//                        lblNewLabel_2_1_4.setVisible(false);
-//                        pinNumber.setVisible(false);
-//                        cvv.setVisible(false);
-//                        cardholderName.setVisible(false);
-                        Component[] components = frame.getContentPane().getComponents();
-                        for (Component component : components) {
-                            component.setVisible(false);
-                        }
-                        successfulPaymentScreen();
-                    } else {
-                        cvv.setText("didnt go through");
-                    }
-                    if (type.equals("Credit")) {
-                        creditCard = new CreditCard(type, number, cardHolder, cvvValue, pinValue, isTapEnabled, hasChip);
-                    } else {
-                        debitCard = new DebitCard(type, number, cardHolder, cvvValue, pinValue, isTapEnabled, hasChip);
+                    try {
+	                    CardIssuer cardIssuer = new CardIssuer("Bank");
+	                    Date date = new Date();
+	                    Calendar expiry = Calendar.getInstance();
+	                    expiry.setTime(date);
+	                    expiry.add(Calendar.MONTH, 6);
+	                    BigDecimal amount = BigDecimal.valueOf(1000);
+	                    //totalAmount.setText("1000");
+	                    BigDecimal amountDue = new BigDecimal(totalAmount.getText());
+	
+	                    cardIssuer.addCardData(number, cardHolder, expiry, cvvValue, amount);
+	                    int hold = cardIssuer.authorizeHold(number, amountDue);
+	
+	                    if(cardIssuer.postTransaction(number, hold, amountDue)) {
+	                        Component[] components = frame.getContentPane().getComponents();
+	                        for (Component component : components) {
+	                            component.setVisible(false);
+	                        }
+	                        successfulPaymentScreen();
+	                    } else {
+	                        cvv.setText("didnt go through");
+	                    }
+                    } catch (SimulationException e1) {
+                    	cardNumber.setText("Wrong Format!");
+                        cardholderName.setText("Wrong Format!");
+                        cvv.setText("Wrong Format!");
+                        pinNumber.setText("Wrong Format!");
                     }
                 }
             }
@@ -705,6 +693,11 @@ public class CheckoutPanel extends JPanel {
 
         JTextField totalAmount = new JTextField();
         totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
+        if (checkoutController != null) {
+        	totalAmount.setText(checkoutController.getCost().toString());
+        } else {
+        	totalAmount.setText("1");
+        }
         totalAmount.setEditable(false);
         totalAmount.setBounds(1075, 314, 131, 58);
         frame.getContentPane().add(totalAmount);
@@ -861,51 +854,54 @@ public class CheckoutPanel extends JPanel {
         JButton btnFinishAndPay = new JButton("Finalize Payment");
         btnFinishAndPay.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                double amountPaid = (int)quantityBills100.getSelectedItem() * 100
-                        + (int)quantityBills50.getSelectedItem() * 50
-                        + (int)quantityBills20.getSelectedItem() * 20
-                        + (int)quantityBills10.getSelectedItem() * 10
-                        + (int)quantityBills5.getSelectedItem() * 5
-                        + (int)quantityBills1.getSelectedItem() * 1
-                        + (int)quantityCoins50.getSelectedItem() * 0.50
-                        + (int)quantityCoins25.getSelectedItem() * 0.25
-                        + (int)quantityCoins20.getSelectedItem() * 0.20
-                        + (int)quantityCoins10.getSelectedItem() * 0.10
-                        + (int)quantityCoins5.getSelectedItem() * 0.05
-                        + (int)quantityCoins1.getSelectedItem() * 0.01;
-                BigDecimal cash = BigDecimal.valueOf(amountPaid);
+//                double amountPaid = (int)quantityBills100.getSelectedItem() * 100
+//                        + (int)quantityBills50.getSelectedItem() * 50
+//                        + (int)quantityBills20.getSelectedItem() * 20
+//                        + (int)quantityBills10.getSelectedItem() * 10
+//                        + (int)quantityBills5.getSelectedItem() * 5
+//                        + (int)quantityBills1.getSelectedItem() * 1
+//                        + (int)quantityCoins50.getSelectedItem() * 0.50
+//                        + (int)quantityCoins25.getSelectedItem() * 0.25
+//                        + (int)quantityCoins20.getSelectedItem() * 0.20
+//                        + (int)quantityCoins10.getSelectedItem() * 0.10
+//                        + (int)quantityCoins5.getSelectedItem() * 0.05
+//                        + (int)quantityCoins1.getSelectedItem() * 0.01;
+//                BigDecimal bill100 = BigDecimal.valueOf(100).multiply(BigDecimal.valueOf((int)quantityBills100.getSelectedItem()));;
+//                BigDecimal bill50 = BigDecimal.valueOf(50).multiply(BigDecimal.valueOf((int)quantityBills50.getSelectedItem()));;
+//                BigDecimal bill20 = BigDecimal.valueOf(20).multiply(BigDecimal.valueOf((int)quantityBills20.getSelectedItem()));;
+//                BigDecimal bill10 = BigDecimal.valueOf(10).multiply(BigDecimal.valueOf((int)quantityBills10.getSelectedItem()));;
+//                BigDecimal bill5 = BigDecimal.valueOf(50).multiply(BigDecimal.valueOf((int)quantityBills50.getSelectedItem()));;
+//                BigDecimal bill1 = BigDecimal.valueOf(1).multiply(BigDecimal.valueOf((int)quantityBills1.getSelectedItem()));;
+                
+                BigDecimal cent1 = BigDecimal.valueOf(0.01).multiply(BigDecimal.valueOf((int)quantityCoins1.getSelectedItem()));
+                BigDecimal nickel1 = BigDecimal.valueOf(0.05).multiply(BigDecimal.valueOf((int)quantityCoins5.getSelectedItem()));
+                BigDecimal dime1 = BigDecimal.valueOf(0.10).multiply(BigDecimal.valueOf((int)quantityCoins10.getSelectedItem()));
+                BigDecimal fifth1 = BigDecimal.valueOf(0.20).multiply(BigDecimal.valueOf((int)quantityCoins20.getSelectedItem()));
+                BigDecimal quarter1 = BigDecimal.valueOf(0.25).multiply(BigDecimal.valueOf((int)quantityCoins25.getSelectedItem()));
+                BigDecimal fiftycent1 = BigDecimal.valueOf(0.50).multiply(BigDecimal.valueOf((int)quantityCoins50.getSelectedItem()));
+                
+                Coin cent = new Coin(cent1, Currency.getInstance(getLocale()));
+                Coin nickel = new Coin(nickel1, Currency.getInstance(getLocale()));
+                Coin dime = new Coin(dime1, Currency.getInstance(getLocale()));
+                Coin fifth = new Coin(fifth1, Currency.getInstance(getLocale()));
+                Coin quarter = new Coin(quarter1, Currency.getInstance(getLocale()));
+                Coin fifty = new Coin(fiftycent1, Currency.getInstance(getLocale()));
+                
+                Bill hundred = new Bill((int)quantityBills100.getSelectedItem() * 100, Currency.getInstance(getLocale()));
+                Bill fiftyB = new Bill((int)quantityBills50.getSelectedItem() * 50, Currency.getInstance(getLocale()));
+                Bill twenty = new Bill((int)quantityBills20.getSelectedItem() * 20, Currency.getInstance(getLocale()));
+                Bill ten = new Bill((int)quantityBills10.getSelectedItem() * 10, Currency.getInstance(getLocale()));
+                Bill five = new Bill((int)quantityBills5.getSelectedItem() * 5, Currency.getInstance(getLocale()));
+                Bill one = new Bill((int)quantityBills1.getSelectedItem() * 1, Currency.getInstance(getLocale()));
+                
+                BigDecimal cash = cent.getValue().add(nickel.getValue()).add(dime.getValue()).add(fifth.getValue()).add(quarter.getValue()).add(fifty.getValue());
+                cash.add(BigDecimal.valueOf(hundred.getValue())).add(BigDecimal.valueOf(fiftyB.getValue())).add(BigDecimal.valueOf(twenty.getValue())).
+                add(BigDecimal.valueOf(ten.getValue())).add(BigDecimal.valueOf(five.getValue())).add(BigDecimal.valueOf(one.getValue()));
+                
+                //BigDecimal cash = BigDecimal.valueOf(amountPaid);
                 BigDecimal total = new BigDecimal(totalAmount.getText());
                 if (cash.compareTo(total) >= 0) {
-                    //complete
-//                    lblNewLabel_2_3.setVisible(false);
-//                    btnReturn.setVisible(false);
-//                    btnFinishAndPay.setVisible(false);
-//                    lblNewLabel.setVisible(false);
-//                    label_1.setVisible(false);
-//                    label_2.setVisible(false);
-//                    label_3.setVisible(false);
-//                    label_4.setVisible(false);
-//                    label_5.setVisible(false);
-//                    label_6.setVisible(false);
-//                    label_7.setVisible(false);
-//                    label_8.setVisible(false);
-//                    label_9.setVisible(false);
-//                    label_10.setVisible(false);
-//                    label_11.setVisible(false);
-//                    label_12.setVisible(false);
-//                    label_13.setVisible(false);
-//                    quantityBills100.setVisible(false);
-//                    quantityBills50.setVisible(false);
-//                    quantityBills20.setVisible(false);
-//                    quantityBills10.setVisible(false);
-//                    quantityBills5.setVisible(false);
-//                    quantityBills1.setVisible(false);
-//                    quantityCoins50.setVisible(false);
-//                    quantityCoins25.setVisible(false);
-//                    quantityCoins20.setVisible(false);
-//                    quantityCoins10.setVisible(false);
-//                    quantityCoins5.setVisible(false);
-//                    quantityCoins1.setVisible(false);
+                    //take cash
                     Component[] components = frame.getContentPane().getComponents();
                     for (Component component : components) {
                         component.setVisible(false);

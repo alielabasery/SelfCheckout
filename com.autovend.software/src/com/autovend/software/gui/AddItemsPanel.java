@@ -163,4 +163,8 @@ public class AddItemsPanel extends JPanel {
         add(cartbutton);
         add(paybutton);
     }
+
+    public CheckoutController getCheckoutController() {
+        return this.controller;
+    }
 }
