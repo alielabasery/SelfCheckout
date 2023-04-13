@@ -121,10 +121,10 @@ public class CheckoutPanel extends JPanel {
         cash.setBounds(301, 410, 495, 114);
         frame.getContentPane().add(cash);
 
-        JLabel lblNewLabel_1 = new JLabel("Please choose from one of the following payment options: ");
+        JLabel lblNewLabel_1 = new JLabel("Choose one of the following payment options: ");
         lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, 32));
         lblNewLabel_1.setBackground(SystemColor.activeCaption);
-        lblNewLabel_1.setBounds(96, 90, 939, 58);
+        lblNewLabel_1.setBounds(185, 90, 939, 58);
         frame.getContentPane().add(lblNewLabel_1);
 
         JSeparator separator_1 = new JSeparator();
@@ -149,8 +149,9 @@ public class CheckoutPanel extends JPanel {
         frame.getContentPane().add(lblBalance);
 
         JTextField totalAmount = new JTextField();
+        totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
         totalAmount.setEditable(false);
-        totalAmount.setBounds(1087, 314, 86, 58);
+        totalAmount.setBounds(1075, 314, 131, 58);
         frame.getContentPane().add(totalAmount);
         totalAmount.setColumns(10);
 
@@ -184,7 +185,7 @@ public class CheckoutPanel extends JPanel {
                 } else if (selectedButton == "Gift Card") {
                     proceedToGiftCardPaymentMethod();
                 } else {
-                    //Cash selected
+                    proceedToCashPaymentMethod();
                 }
             }
         });
@@ -232,8 +233,9 @@ public class CheckoutPanel extends JPanel {
         frame.getContentPane().add(lblBalance);
 
         JTextField totalAmount = new JTextField();
+        totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
         totalAmount.setEditable(false);
-        totalAmount.setBounds(1087, 314, 86, 58);
+        totalAmount.setBounds(1075, 314, 131, 58);
         frame.getContentPane().add(totalAmount);
         totalAmount.setColumns(10);
 
@@ -313,27 +315,31 @@ public class CheckoutPanel extends JPanel {
                 } else if (amount.getText().equals("")) {
                     amount.setText("Enter Amount!");
                 } else {
-                    String type = txtGiftCard.getText();
-                    String number = cardNumber.getText();
-                    String pin = pinNumber.getText();
-                    Currency currencyValue = Currency.getInstance(currency.getText());
-                    BigDecimal amountValue = new BigDecimal(amount.getText());
-                    giftCard = new GiftCard(type, number, pin, currencyValue, amountValue);
-                    GiftCardInsertData giftCardInsertData;
                     try {
+                        String type = txtGiftCard.getText();
+                        String number = cardNumber.getText();
+                        String pin = pinNumber.getText();
+                        Currency currencyValue = Currency.getInstance(currency.getText());
+                        BigDecimal amountValue = new BigDecimal(amount.getText());
+                        giftCard = new GiftCard(type, number, pin, currencyValue, amountValue);
+                        //totalAmount.setText("10000");
+                        GiftCardInsertData giftCardInsertData;
                         giftCardInsertData = giftCard.createCardInsertData(pin);
                         BigDecimal balance = giftCardInsertData.getRemainingBalance();
                         BigDecimal total = new BigDecimal(totalAmount.getText());
                         int compare = balance.compareTo(total);
                         if (compare >= 0) {
                             giftCardInsertData.deduct(total);
+                            currency.setText("Accepted");
                         } else {
-                            //insufficient funds
+                            currency.setText("Declined");
                         }
                     } catch (InvalidPINException e1) {
                         pinNumber.setText("Incorrect Pin Number!");
                     } catch (ChipFailureException e1) {
                         cardNumber.setText("Chip failure!");
+                    } catch (IllegalArgumentException e1) {
+                        currency.setText("Incorrect Currency type!");
                     }
                 }
             }
@@ -400,8 +406,9 @@ public class CheckoutPanel extends JPanel {
         frame.getContentPane().add(lblBalance);
 
         JTextField totalAmount = new JTextField();
+        totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
         totalAmount.setEditable(false);
-        totalAmount.setBounds(1087, 314, 86, 58);
+        totalAmount.setBounds(1075, 314, 131, 58);
         frame.getContentPane().add(totalAmount);
         totalAmount.setColumns(10);
 
@@ -567,15 +574,16 @@ public class CheckoutPanel extends JPanel {
                     expiry.setTime(date);
                     expiry.add(Calendar.MONTH, 6);
                     BigDecimal amount = BigDecimal.valueOf(1000);
+                    //totalAmount.setText("10000");
                     BigDecimal amountDue = new BigDecimal(totalAmount.getText());
 
                     cardIssuer.addCardData(number, cardHolder, expiry, cvvValue, amount);
                     int hold = cardIssuer.authorizeHold(number, amountDue);
 
                     if(cardIssuer.postTransaction(number, hold, amountDue)) {
-                        //went through
+                        cvv.setText("Went through");
                     } else {
-                        //didnt go through
+                        cvv.setText("didnt go through");
                     }
                     if (type.equals("Credit")) {
                         creditCard = new CreditCard(type, number, cardHolder, cvvValue, pinValue, isTapEnabled, hasChip);
@@ -612,6 +620,261 @@ public class CheckoutPanel extends JPanel {
                 pinNumber.setVisible(false);
                 cvv.setVisible(false);
                 cardholderName.setVisible(false);
+                initialize();
+            }
+        });
+        btnReturn.setFont(new Font("Arial", Font.BOLD, 35));
+        btnReturn.setBounds(98, 571, 357, 83);
+        frame.getContentPane().add(btnReturn);
+    }
+
+    private void proceedToCashPaymentMethod(){
+        JLabel lblNewLabel = new JLabel("Payment");
+        lblNewLabel.setFont(new Font("Arial", Font.BOLD, 35));
+        lblNewLabel.setBackground(SystemColor.desktop);
+        lblNewLabel.setBounds(516, 11, 185, 58);
+        frame.getContentPane().add(lblNewLabel);
+
+        JSeparator separator = new JSeparator();
+        separator.setBounds(0, 67, 1264, 12);
+        frame.getContentPane().add(separator);
+
+        JSeparator separator_1 = new JSeparator();
+        separator_1.setBounds(0, 537, 1264, 12);
+        frame.getContentPane().add(separator_1);
+
+        JSeparator separator_1_1 = new JSeparator();
+        separator_1_1.setOrientation(SwingConstants.VERTICAL);
+        separator_1_1.setBounds(1014, 67, 21, 471);
+        frame.getContentPane().add(separator_1_1);
+
+        JLabel lblTotal = new JLabel("Total");
+        lblTotal.setFont(new Font("Arial", Font.BOLD, 42));
+        lblTotal.setBackground(Color.BLACK);
+        lblTotal.setBounds(1075, 176, 131, 58);
+        frame.getContentPane().add(lblTotal);
+
+        JLabel lblBalance = new JLabel("Amount");
+        lblBalance.setFont(new Font("Arial", Font.BOLD, 42));
+        lblBalance.setBackground(Color.BLACK);
+        lblBalance.setBounds(1045, 234, 167, 58);
+        frame.getContentPane().add(lblBalance);
+
+        JTextField totalAmount = new JTextField();
+        totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
+        totalAmount.setEditable(false);
+        totalAmount.setBounds(1075, 314, 131, 58);
+        frame.getContentPane().add(totalAmount);
+        totalAmount.setColumns(10);
+
+        JLabel lblTotal_1 = new JLabel("$");
+        lblTotal_1.setFont(new Font("Arial", Font.BOLD, 42));
+        lblTotal_1.setBackground(Color.BLACK);
+        lblTotal_1.setBounds(1043, 314, 34, 58);
+        frame.getContentPane().add(lblTotal_1);
+
+        JLabel lblNewLabel_2_3 = new JLabel("Cash");
+        lblNewLabel_2_3.setFont(new Font("Arial", Font.BOLD, 35));
+        lblNewLabel_2_3.setBounds(352, 90, 103, 49);
+        frame.getContentPane().add(lblNewLabel_2_3);
+
+        JLabel label_13 = new JLabel("Coins");
+        label_13.setFont(new Font("Arial", Font.BOLD, 35));
+        label_13.setBounds(779, 90, 103, 49);
+        frame.getContentPane().add(label_13);
+
+        JComboBox<Integer> quantityBills100 = new JComboBox<Integer>();
+        quantityBills100.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
+        quantityBills100.setFont(new Font("Arial", Font.BOLD, 35));
+        quantityBills100.setBounds(278, 150, 256, 49);
+        frame.getContentPane().add(quantityBills100);
+
+        JComboBox<Integer> quantityBills50 = new JComboBox<Integer>();
+        quantityBills50.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
+        quantityBills50.setFont(new Font("Arial", Font.BOLD, 35));
+        quantityBills50.setBounds(278, 210, 256, 49);
+        frame.getContentPane().add(quantityBills50);
+
+        JComboBox<Integer> quantityBills20 = new JComboBox<Integer>();
+        quantityBills20.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
+        quantityBills20.setFont(new Font("Arial", Font.BOLD, 35));
+        quantityBills20.setBounds(278, 270, 256, 49);
+        frame.getContentPane().add(quantityBills20);
+
+        JComboBox<Integer> quantityBills10 = new JComboBox<Integer>();
+        quantityBills10.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
+        quantityBills10.setFont(new Font("Arial", Font.BOLD, 35));
+        quantityBills10.setBounds(278, 330, 256, 49);
+        frame.getContentPane().add(quantityBills10);
+
+        JComboBox<Integer> quantityBills5 = new JComboBox<Integer>();
+        quantityBills5.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
+        quantityBills5.setFont(new Font("Arial", Font.BOLD, 35));
+        quantityBills5.setBounds(278, 390, 256, 49);
+        frame.getContentPane().add(quantityBills5);
+
+        JComboBox<Integer> quantityBills1 = new JComboBox<Integer>();
+        quantityBills1.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
+        quantityBills1.setFont(new Font("Arial", Font.BOLD, 35));
+        quantityBills1.setBounds(278, 450, 256, 49);
+        frame.getContentPane().add(quantityBills1);
+
+        JLabel label_7 = new JLabel("$100");
+        label_7.setFont(new Font("Arial", Font.BOLD, 30));
+        label_7.setBounds(200, 152, 68, 49);
+        frame.getContentPane().add(label_7);
+
+        JLabel label_8 = new JLabel("$50");
+        label_8.setFont(new Font("Arial", Font.BOLD, 30));
+        label_8.setBounds(217, 212, 51, 49);
+        frame.getContentPane().add(label_8);
+
+        JLabel label_9 = new JLabel("$20");
+        label_9.setFont(new Font("Arial", Font.BOLD, 30));
+        label_9.setBounds(217, 272, 51, 49);
+        frame.getContentPane().add(label_9);
+
+        JLabel label_10 = new JLabel("$5");
+        label_10.setFont(new Font("Arial", Font.BOLD, 30));
+        label_10.setBounds(229, 392, 39, 49);
+        frame.getContentPane().add(label_10);
+
+        JLabel label_11 = new JLabel("$1");
+        label_11.setFont(new Font("Arial", Font.BOLD, 30));
+        label_11.setBounds(229, 452, 39, 49);
+        frame.getContentPane().add(label_11);
+
+        JLabel label_12 = new JLabel("$10");
+        label_12.setFont(new Font("Arial", Font.BOLD, 30));
+        label_12.setBounds(217, 332, 51, 49);
+        frame.getContentPane().add(label_12);
+
+        JComboBox<Integer> quantityCoins50 = new JComboBox<Integer>();
+        quantityCoins50.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
+        quantityCoins50.setFont(new Font("Arial", Font.BOLD, 35));
+        quantityCoins50.setBounds(701, 150, 256, 49);
+        frame.getContentPane().add(quantityCoins50);
+
+        JComboBox<Integer> quantityCoins25 = new JComboBox<Integer>();
+        quantityCoins25.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
+        quantityCoins25.setFont(new Font("Arial", Font.BOLD, 35));
+        quantityCoins25.setBounds(701, 210, 256, 49);
+        frame.getContentPane().add(quantityCoins25);
+
+        JComboBox<Integer> quantityCoins20 = new JComboBox<Integer>();
+        quantityCoins20.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
+        quantityCoins20.setFont(new Font("Arial", Font.BOLD, 35));
+        quantityCoins20.setBounds(701, 270, 256, 49);
+        frame.getContentPane().add(quantityCoins20);
+
+        JComboBox<Integer> quantityCoins10 = new JComboBox<Integer>();
+        quantityCoins10.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
+        quantityCoins10.setFont(new Font("Arial", Font.BOLD, 35));
+        quantityCoins10.setBounds(701, 330, 256, 49);
+        frame.getContentPane().add(quantityCoins10);
+
+        JComboBox<Integer> quantityCoins1 = new JComboBox<Integer>();
+        quantityCoins1.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
+        quantityCoins1.setFont(new Font("Arial", Font.BOLD, 35));
+        quantityCoins1.setBounds(701, 450, 256, 49);
+        frame.getContentPane().add(quantityCoins1);
+
+        JComboBox<Integer> quantityCoins5 = new JComboBox<Integer>();
+        quantityCoins5.setModel(new DefaultComboBoxModel<Integer>(new Integer[] {0, 1, 2, 3, 4, 5}));
+        quantityCoins5.setFont(new Font("Arial", Font.BOLD, 35));
+        quantityCoins5.setBounds(701, 390, 256, 49);
+        frame.getContentPane().add(quantityCoins5);
+
+        JLabel label_1 = new JLabel("50¢");
+        label_1.setFont(new Font("Arial", Font.BOLD, 30));
+        label_1.setBounds(640, 152, 51, 49);
+        frame.getContentPane().add(label_1);
+
+        JLabel label_2 = new JLabel("25¢");
+        label_2.setFont(new Font("Arial", Font.BOLD, 30));
+        label_2.setBounds(640, 208, 51, 49);
+        frame.getContentPane().add(label_2);
+
+        JLabel label_3 = new JLabel("20¢");
+        label_3.setFont(new Font("Arial", Font.BOLD, 30));
+        label_3.setBounds(640, 270, 51, 49);
+        frame.getContentPane().add(label_3);
+
+        JLabel label_4 = new JLabel("10¢");
+        label_4.setFont(new Font("Arial", Font.BOLD, 30));
+        label_4.setBounds(640, 330, 51, 49);
+        frame.getContentPane().add(label_4);
+
+        JLabel label_5 = new JLabel("5¢");
+        label_5.setFont(new Font("Arial", Font.BOLD, 30));
+        label_5.setBounds(650, 392, 39, 49);
+        frame.getContentPane().add(label_5);
+
+        JLabel label_6 = new JLabel("1¢");
+        label_6.setFont(new Font("Arial", Font.BOLD, 30));
+        label_6.setBounds(652, 452, 39, 49);
+        frame.getContentPane().add(label_6);
+
+        JButton btnFinishAndPay = new JButton("Finalize Payment");
+        btnFinishAndPay.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                double amountPaid = (int)quantityBills100.getSelectedItem() * 100
+                        + (int)quantityBills50.getSelectedItem() * 50
+                        + (int)quantityBills20.getSelectedItem() * 20
+                        + (int)quantityBills10.getSelectedItem() * 10
+                        + (int)quantityBills5.getSelectedItem() * 5
+                        + (int)quantityBills1.getSelectedItem() * 1
+                        + (int)quantityCoins50.getSelectedItem() * 0.50
+                        + (int)quantityCoins25.getSelectedItem() * 0.25
+                        + (int)quantityCoins20.getSelectedItem() * 0.20
+                        + (int)quantityCoins10.getSelectedItem() * 0.10
+                        + (int)quantityCoins5.getSelectedItem() * 0.05
+                        + (int)quantityCoins1.getSelectedItem() * 0.01;
+                BigDecimal cash = BigDecimal.valueOf(amountPaid);
+                BigDecimal total = new BigDecimal(totalAmount.getText());
+                if (cash.compareTo(total) >= 0) {
+                    //complete
+                } else {
+                    //incomplete
+                }
+            }
+        });
+        btnFinishAndPay.setFont(new Font("Arial", Font.BOLD, 35));
+        btnFinishAndPay.setBounds(525, 571, 357, 83);
+        frame.getContentPane().add(btnFinishAndPay);
+
+        JButton btnReturn = new JButton("Return");
+        btnReturn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                lblNewLabel_2_3.setVisible(false);
+                btnReturn.setVisible(false);
+                btnFinishAndPay.setVisible(false);
+                lblNewLabel.setVisible(false);
+                label_1.setVisible(false);
+                label_2.setVisible(false);
+                label_3.setVisible(false);
+                label_4.setVisible(false);
+                label_5.setVisible(false);
+                label_6.setVisible(false);
+                label_7.setVisible(false);
+                label_8.setVisible(false);
+                label_9.setVisible(false);
+                label_10.setVisible(false);
+                label_11.setVisible(false);
+                label_12.setVisible(false);
+                label_13.setVisible(false);
+                quantityBills100.setVisible(false);
+                quantityBills50.setVisible(false);
+                quantityBills20.setVisible(false);
+                quantityBills10.setVisible(false);
+                quantityBills5.setVisible(false);
+                quantityBills1.setVisible(false);
+                quantityCoins50.setVisible(false);
+                quantityCoins25.setVisible(false);
+                quantityCoins20.setVisible(false);
+                quantityCoins10.setVisible(false);
+                quantityCoins5.setVisible(false);
+                quantityCoins1.setVisible(false);
                 initialize();
             }
         });

@@ -30,23 +30,32 @@
 */
 package com.autovend.software.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
 
+import com.autovend.devices.SimulationException;
+import com.autovend.devices.TouchScreen;
+import com.autovend.software.controllers.AddItemByPLUController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.GuiController;
+import com.autovend.software.controllers.MembershipCardController;
+
+import models.FoundProductsTableModel;
 
 public class AddItemsPanel extends JPanel {
     GuiController gc;
@@ -61,11 +70,22 @@ public class AddItemsPanel extends JPanel {
 	JButton cartbutton;
 	JButton paybutton;
 	CheckoutController controller;
-	List<Object> cart;
-	List<Integer> cartcount;
+	ArrayList<Object> cart;
+	ArrayList<Integer> cartcount;
+	AddItemsPanel itempanel;
+	public TouchScreen touchScreen;
+	public AddItemByPLUController addItemByPLUController;
     public AddItemsPanel(GuiController gc, CheckoutController controller) {
+    	cart = new ArrayList<Object>();
+    	cartcount = new ArrayList<Integer>();
         this.gc = gc;
         this.controller = controller;
+        //CheckoutController cc = new CheckoutController("Station 1", this.gc.station);
+        //touchScreen = new TouchScreen();
+        //addItemByPLUController = new AddItemByPLUController(touchScreen);
+        //addItemByPLUController.setMainController(cc);
+        //addItemByPLUController.addProducts();
+        //touchScreen.register(addItemByPLUController);
 
         setPreferredSize(new Dimension(1280, 720));
         setLayout(null);
@@ -105,11 +125,13 @@ public class AddItemsPanel extends JPanel {
         paybutton.setBounds(590, 500, 150, 20);
         paybutton.setOpaque(true);
         paybutton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+    	itempanel = this;
 
         plubutton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dlgPLUProduct dlg = new dlgPLUProduct(new JFrame(), "Add By PLU Code.");
+                dlgPLUProduct dlg = new dlgPLUProduct(new JFrame(), "Add By PLU Code.", itempanel);
                 dlg.setVisible(true);
             }
         });
