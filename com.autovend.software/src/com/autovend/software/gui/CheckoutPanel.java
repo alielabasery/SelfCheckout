@@ -330,19 +330,24 @@ public class CheckoutPanel extends JPanel {
                         int compare = balance.compareTo(total);
                         if (compare >= 0) {
                             giftCardInsertData.deduct(total);
-                            lblNewLabel_2_1_1.setVisible(false);
-                            lblNewLabel_2_1_2.setVisible(false);
-                            lblNewLabel_2_3.setVisible(false);
-                            lblNewLabel_2_1.setVisible(false);
-                            lblNewLabel_2.setVisible(false);
+//                            lblNewLabel_2_1_1.setVisible(false);
+//                            lblNewLabel_2_1_2.setVisible(false);
+//                            lblNewLabel_2_3.setVisible(false);
+//                            lblNewLabel_2_1.setVisible(false);
+//                            lblNewLabel_2.setVisible(false);
+                            
+                            Component[] components = frame.getContentPane().getComponents();
+                            for (Component component : components) {
+                                component.setVisible(false);
+                            }
                             //btnReturn.setVisible(false);
-                            btnFinishAndPay.setVisible(false);
-                            txtGiftCard.setVisible(false);
-                            lblNewLabel.setVisible(false);
-                            cardNumber.setVisible(false);
-                            amount.setVisible(false);
-                            currency.setVisible(false);
-                            pinNumber.setVisible(false);
+//                            btnFinishAndPay.setVisible(false);
+//                            txtGiftCard.setVisible(false);
+//                            lblNewLabel.setVisible(false);
+//                            cardNumber.setVisible(false);
+//                            amount.setVisible(false);
+//                            currency.setVisible(false);
+//                            pinNumber.setVisible(false);
                             successfulPaymentScreen();
                         } else {
                             currency.setText("Declined");
@@ -595,26 +600,30 @@ public class CheckoutPanel extends JPanel {
                     int hold = cardIssuer.authorizeHold(number, amountDue);
 
                     if(cardIssuer.postTransaction(number, hold, amountDue)) {
-                        lblNewLabel_2_1_1.setVisible(false);
-                        lblNewLabel_2_1_2.setVisible(false);
-                        lblNewLabel_2_3.setVisible(false);
-                        lblNewLabel_2_1.setVisible(false);
-                        lblNewLabel_2.setVisible(false);
-                        //btnReturn.setVisible(false);
-                        btnFinishAndPay.setVisible(false);
-                        rdbtnDebit.setVisible(false);
-                        rdbtnCredit.setVisible(false);
-                        rdbtnNewRadioButton.setVisible(false);
-                        rdbtnNo.setVisible(false);
-                        rdbtnNo_1.setVisible(false);
-                        rdbtnNewRadioButton_2.setVisible(false);
-                        lblNewLabel.setVisible(false);
-                        cardNumber.setVisible(false);
-                        lblNewLabel_2_1_3.setVisible(false);
-                        lblNewLabel_2_1_4.setVisible(false);
-                        pinNumber.setVisible(false);
-                        cvv.setVisible(false);
-                        cardholderName.setVisible(false);
+//                        lblNewLabel_2_1_1.setVisible(false);
+//                        lblNewLabel_2_1_2.setVisible(false);
+//                        lblNewLabel_2_3.setVisible(false);
+//                        lblNewLabel_2_1.setVisible(false);
+//                        lblNewLabel_2.setVisible(false);
+//                        btnReturn.setVisible(false);
+//                        btnFinishAndPay.setVisible(false);
+//                        rdbtnDebit.setVisible(false);
+//                        rdbtnCredit.setVisible(false);
+//                        rdbtnNewRadioButton.setVisible(false);
+//                        rdbtnNo.setVisible(false);
+//                        rdbtnNo_1.setVisible(false);
+//                        rdbtnNewRadioButton_2.setVisible(false);
+//                        lblNewLabel.setVisible(false);
+//                        cardNumber.setVisible(false);
+//                        lblNewLabel_2_1_3.setVisible(false);
+//                        lblNewLabel_2_1_4.setVisible(false);
+//                        pinNumber.setVisible(false);
+//                        cvv.setVisible(false);
+//                        cardholderName.setVisible(false);
+                    	Component[] components = frame.getContentPane().getComponents();
+                        for (Component component : components) {
+                            component.setVisible(false);
+                        }
                         successfulPaymentScreen();
                     } else {
                         cvv.setText("didnt go through");
@@ -868,35 +877,39 @@ public class CheckoutPanel extends JPanel {
                 BigDecimal total = new BigDecimal(totalAmount.getText());
                 if (cash.compareTo(total) >= 0) {
                     //complete
-                    lblNewLabel_2_3.setVisible(false);
-                    //btnReturn.setVisible(false);
-                    btnFinishAndPay.setVisible(false);
-                    lblNewLabel.setVisible(false);
-                    label_1.setVisible(false);
-                    label_2.setVisible(false);
-                    label_3.setVisible(false);
-                    label_4.setVisible(false);
-                    label_5.setVisible(false);
-                    label_6.setVisible(false);
-                    label_7.setVisible(false);
-                    label_8.setVisible(false);
-                    label_9.setVisible(false);
-                    label_10.setVisible(false);
-                    label_11.setVisible(false);
-                    label_12.setVisible(false);
-                    label_13.setVisible(false);
-                    quantityBills100.setVisible(false);
-                    quantityBills50.setVisible(false);
-                    quantityBills20.setVisible(false);
-                    quantityBills10.setVisible(false);
-                    quantityBills5.setVisible(false);
-                    quantityBills1.setVisible(false);
-                    quantityCoins50.setVisible(false);
-                    quantityCoins25.setVisible(false);
-                    quantityCoins20.setVisible(false);
-                    quantityCoins10.setVisible(false);
-                    quantityCoins5.setVisible(false);
-                    quantityCoins1.setVisible(false);
+//                    lblNewLabel_2_3.setVisible(false);
+//                    btnReturn.setVisible(false);
+//                    btnFinishAndPay.setVisible(false);
+//                    lblNewLabel.setVisible(false);
+//                    label_1.setVisible(false);
+//                    label_2.setVisible(false);
+//                    label_3.setVisible(false);
+//                    label_4.setVisible(false);
+//                    label_5.setVisible(false);
+//                    label_6.setVisible(false);
+//                    label_7.setVisible(false);
+//                    label_8.setVisible(false);
+//                    label_9.setVisible(false);
+//                    label_10.setVisible(false);
+//                    label_11.setVisible(false);
+//                    label_12.setVisible(false);
+//                    label_13.setVisible(false);
+//                    quantityBills100.setVisible(false);
+//                    quantityBills50.setVisible(false);
+//                    quantityBills20.setVisible(false);
+//                    quantityBills10.setVisible(false);
+//                    quantityBills5.setVisible(false);
+//                    quantityBills1.setVisible(false);
+//                    quantityCoins50.setVisible(false);
+//                    quantityCoins25.setVisible(false);
+//                    quantityCoins20.setVisible(false);
+//                    quantityCoins10.setVisible(false);
+//                    quantityCoins5.setVisible(false);
+//                    quantityCoins1.setVisible(false);
+                	Component[] components = frame.getContentPane().getComponents();
+                    for (Component component : components) {
+                        component.setVisible(false);
+                    }
                     successfulPaymentScreen();
                 } else {
                     //incomplete
