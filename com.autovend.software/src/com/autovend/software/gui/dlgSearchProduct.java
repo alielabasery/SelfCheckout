@@ -69,8 +69,10 @@ public class dlgSearchProduct extends JDialog {
 	public final JPanel contentPanel = new JPanel();
 	public String selectedItemCode;
 	public char selectedItemType;
-	private JTextField txKeyword;
-	private JTable table1;
+	public JButton okButton;
+	public JButton btnFind;
+	public JTextField txKeyword;
+	public JTable table1;
 	
 	private String tempStationName;
 	private dlgSearchProduct selfInstance;

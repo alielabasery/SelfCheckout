@@ -66,11 +66,11 @@ public class AddItemsPanel extends JPanel {
     JLabel plulabel;
     JPanel browsepanel;
     JLabel browselabel;
-    JButton plubutton;
-    JButton browsebutton;
+    public JButton plubutton;
+    public JButton browsebutton;
 	JTextField PLUField;
-	JButton cartbutton;
-	JButton paybutton;
+	public JButton cartbutton;
+	public JButton paybutton;
 	CheckoutController controller;
 	ArrayList<Object> cart;
 	ArrayList<Integer> cartcount;

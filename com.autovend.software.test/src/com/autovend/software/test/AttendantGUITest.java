@@ -26,6 +26,7 @@ import com.autovend.software.controllers.GuiController;
 import com.autovend.software.gui.dlgSearchProduct;
 import com.autovend.software.utils.CodeUtils;
 
+import Networking.NetworkController;
 import data.DatabaseController;
 
 public class AttendantGUITest {
@@ -42,6 +43,7 @@ public class AttendantGUITest {
 	
 	@Before
 	public void setup() {
+		
 		currency = Currency.getInstance("CAD");
 		billDenominations = new int[] { 5, 10, 20, 50, 100 };
 		coinDenominations = new BigDecimal[] {new BigDecimal("0.05"), new BigDecimal("0.1"), 
@@ -76,6 +78,7 @@ public class AttendantGUITest {
 	public void testAttendantButtonClicks() {
 		gc.attendantScreen();
 		gc.attendantPanelScreen.logoutButton.doClick();
+		gc.attendantPanelScreen.testing = true;
 		gc.attendantPanelScreen.addStationButton.doClick();
 	}
 	

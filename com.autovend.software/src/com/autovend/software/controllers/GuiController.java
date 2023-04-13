@@ -58,6 +58,7 @@ public class GuiController {
     AttendantLoginLogoutController attendantLogin;
     public AttendantLogin attendantLoginScreen;
     public AttendantPanel attendantPanelScreen;
+    public CheckoutPanel cp;
 
     public GuiController(AttendentController attendant) {
         this.attendantStation = attendant.getSupervisionStation();
@@ -155,7 +156,7 @@ public class GuiController {
         screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
-        CheckoutPanel cp = new CheckoutPanel(checkout, screen);
+        cp = new CheckoutPanel(checkout, screen);
         JPanel panel = new JPanel();
         panel.add(cp);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
@@ -211,9 +212,8 @@ public class GuiController {
     public void validateAttendantScreen() {
         attendantScreen.revalidate();
     }
-
-    // Delete later
-    public static void main(String[] args) {
+    
+    public static void populateDatabase() {
     	try {        	
             PriceLookUpCode code = new PriceLookUpCode(new Numeral[] {Numeral.eight, Numeral.five, Numeral.six, Numeral.eight});
             DatabaseController.addPLUdProduct(code, new PLUCodedProduct(code, "Gala Apples", new BigDecimal(1.50)));
@@ -236,6 +236,12 @@ public class GuiController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // Delete later
+    public static void main(String[] args) {
+    	
+    	populateDatabase();
     	
         Currency c = Currency.getInstance("CAD");
         int[] noteDenom = {5, 10, 20, 50, 100};

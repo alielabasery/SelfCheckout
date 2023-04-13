@@ -87,7 +87,7 @@ public class AttendantPanel extends JPanel {
 	//Variables for testing button clicks
 	public JButton logoutButton;
 	public JButton addStationButton;
-	
+	public boolean testing = false;
 	
 	//Keeping track of unsupervised Stations and shutdown Stations
 	private ArrayList<String> unsupervisedStations = new ArrayList<String>();
@@ -163,8 +163,13 @@ public class AttendantPanel extends JPanel {
             	
             	Object[] choices = unsupervisedStations.toArray();
             	
-            	String input = (String) JOptionPane.showInputDialog(null, "Choose an unsupervised Station from below: ",
-            			"Add Station", JOptionPane.QUESTION_MESSAGE, null, choices, unsupervisedStations.get(0));
+            	String input;
+            	if (!testing) {
+            		input = (String) JOptionPane.showInputDialog(null, "Choose an unsupervised Station from below: ",
+                			"Add Station", JOptionPane.QUESTION_MESSAGE, null, choices, unsupervisedStations.get(0));
+            	} else {
+            		input = "Station 1";
+            	}
             	
             	if (input != null) {
             		CheckoutController checkoutController = NetworkController.getCheckoutStationController(input);
@@ -172,7 +177,7 @@ public class AttendantPanel extends JPanel {
             			try {
             				attendantStation.add(checkoutController.getSelfCheckoutStation());
             			}catch (Exception IllegalStateException) {
-            				JOptionPane.showMessageDialog(null, "That Station is already being supervised");
+            				if (!testing) JOptionPane.showMessageDialog(null, "That Station is already being supervised");
             			}
             			unsupervisedStations.remove(input);
             			updateStationsOnScreen(input);

@@ -50,6 +50,8 @@ import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.StartUpRoutineController;
 import com.autovend.software.controllers.StartUpRoutineFailedException;
 
+import Networking.NetworkController;
+
 import java.io.File;
 
 public class StartUpRoutineControllerTest {
@@ -64,6 +66,8 @@ public class StartUpRoutineControllerTest {
 		private SelfCheckoutStation 			selfCheckoutStation;
 		
 		private void setup() {
+			NetworkController.deregisterAllStations();
+
 	    	attendantLoginLogoutController 		= new AttendantLoginLogoutController();
 	    	// Register attendant credentials in database  
 	    	AttendantLoginLogoutController.idAndPasswords.put(DEFAULT_USERNAME, DEFAULT_PASSWORD);
@@ -100,6 +104,8 @@ public class StartUpRoutineControllerTest {
 			Boolean initialStartup = true;  
 			 
 			CheckoutController selfCheckoutStationController = null;
+			NetworkController.deregisterAllStations();
+
 			try {
 				// Run start up routine and save result
 				selfCheckoutStationController = startUpRoutineController.runStartUpRoutine(selfCheckoutStation, "Station_1", initialStartup);
@@ -170,6 +176,8 @@ public class StartUpRoutineControllerTest {
 			Boolean initialStartup = false; 
 			
 			CheckoutController selfCheckoutStationController = null;
+			NetworkController.deregisterAllStations();
+
 	        try {
 	        	// Run start up routine and save result
 				selfCheckoutStationController = startUpRoutineController.runStartUpRoutine(selfCheckoutStation, "Station_1", initialStartup);
@@ -223,6 +231,8 @@ public class StartUpRoutineControllerTest {
 			Boolean initialStartup = true;  
 			 
 			CheckoutController selfCheckoutStationController = null;
+			NetworkController.deregisterAllStations();
+
 			try {
 				// Run start up routine and save result
 				selfCheckoutStationController = startUpRoutineController.runStartUpRoutine(selfCheckoutStation, "Station_1", initialStartup);
