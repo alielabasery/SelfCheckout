@@ -322,7 +322,7 @@ public class CheckoutPanel extends JPanel {
                         Currency currencyValue = Currency.getInstance(currency.getText());
                         BigDecimal amountValue = new BigDecimal(amount.getText());
                         giftCard = new GiftCard(type, number, pin, currencyValue, amountValue);
-                        //totalAmount.setText("10000");
+                        totalAmount.setText("10000");
                         GiftCardInsertData giftCardInsertData;
                         giftCardInsertData = giftCard.createCardInsertData(pin);
                         BigDecimal balance = giftCardInsertData.getRemainingBalance();
@@ -330,7 +330,20 @@ public class CheckoutPanel extends JPanel {
                         int compare = balance.compareTo(total);
                         if (compare >= 0) {
                             giftCardInsertData.deduct(total);
-                            currency.setText("Accepted");
+                            lblNewLabel_2_1_1.setVisible(false);
+                            lblNewLabel_2_1_2.setVisible(false);
+                            lblNewLabel_2_3.setVisible(false);
+                            lblNewLabel_2_1.setVisible(false);
+                            lblNewLabel_2.setVisible(false);
+                            //btnReturn.setVisible(false);
+                            btnFinishAndPay.setVisible(false);
+                            txtGiftCard.setVisible(false);
+                            lblNewLabel.setVisible(false);
+                            cardNumber.setVisible(false);
+                            amount.setVisible(false);
+                            currency.setVisible(false);
+                            pinNumber.setVisible(false);
+                            successfulPaymentScreen();
                         } else {
                             currency.setText("Declined");
                         }
@@ -516,6 +529,7 @@ public class CheckoutPanel extends JPanel {
         lblNewLabel_2_3.setBounds(291, 103, 103, 49);
         frame.getContentPane().add(lblNewLabel_2_3);
 
+
         JButton btnFinishAndPay = new JButton("Finalize Payment");
         btnFinishAndPay.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -581,7 +595,27 @@ public class CheckoutPanel extends JPanel {
                     int hold = cardIssuer.authorizeHold(number, amountDue);
 
                     if(cardIssuer.postTransaction(number, hold, amountDue)) {
-                        cvv.setText("Went through");
+                        lblNewLabel_2_1_1.setVisible(false);
+                        lblNewLabel_2_1_2.setVisible(false);
+                        lblNewLabel_2_3.setVisible(false);
+                        lblNewLabel_2_1.setVisible(false);
+                        lblNewLabel_2.setVisible(false);
+                        //btnReturn.setVisible(false);
+                        btnFinishAndPay.setVisible(false);
+                        rdbtnDebit.setVisible(false);
+                        rdbtnCredit.setVisible(false);
+                        rdbtnNewRadioButton.setVisible(false);
+                        rdbtnNo.setVisible(false);
+                        rdbtnNo_1.setVisible(false);
+                        rdbtnNewRadioButton_2.setVisible(false);
+                        lblNewLabel.setVisible(false);
+                        cardNumber.setVisible(false);
+                        lblNewLabel_2_1_3.setVisible(false);
+                        lblNewLabel_2_1_4.setVisible(false);
+                        pinNumber.setVisible(false);
+                        cvv.setVisible(false);
+                        cardholderName.setVisible(false);
+                        successfulPaymentScreen();
                     } else {
                         cvv.setText("didnt go through");
                     }
@@ -629,7 +663,6 @@ public class CheckoutPanel extends JPanel {
     }
 
     private void proceedToCashPaymentMethod(){
-        JButton btnReturn;
         JLabel lblNewLabel = new JLabel("Payment");
         lblNewLabel.setFont(new Font("Arial", Font.BOLD, 35));
         lblNewLabel.setBackground(SystemColor.desktop);
@@ -835,6 +868,36 @@ public class CheckoutPanel extends JPanel {
                 BigDecimal total = new BigDecimal(totalAmount.getText());
                 if (cash.compareTo(total) >= 0) {
                     //complete
+                    lblNewLabel_2_3.setVisible(false);
+                    //btnReturn.setVisible(false);
+                    btnFinishAndPay.setVisible(false);
+                    lblNewLabel.setVisible(false);
+                    label_1.setVisible(false);
+                    label_2.setVisible(false);
+                    label_3.setVisible(false);
+                    label_4.setVisible(false);
+                    label_5.setVisible(false);
+                    label_6.setVisible(false);
+                    label_7.setVisible(false);
+                    label_8.setVisible(false);
+                    label_9.setVisible(false);
+                    label_10.setVisible(false);
+                    label_11.setVisible(false);
+                    label_12.setVisible(false);
+                    label_13.setVisible(false);
+                    quantityBills100.setVisible(false);
+                    quantityBills50.setVisible(false);
+                    quantityBills20.setVisible(false);
+                    quantityBills10.setVisible(false);
+                    quantityBills5.setVisible(false);
+                    quantityBills1.setVisible(false);
+                    quantityCoins50.setVisible(false);
+                    quantityCoins25.setVisible(false);
+                    quantityCoins20.setVisible(false);
+                    quantityCoins10.setVisible(false);
+                    quantityCoins5.setVisible(false);
+                    quantityCoins1.setVisible(false);
+                    successfulPaymentScreen();
                 } else {
                     //incomplete
                 }
@@ -844,7 +907,7 @@ public class CheckoutPanel extends JPanel {
         btnFinishAndPay.setBounds(525, 571, 357, 83);
         frame.getContentPane().add(btnFinishAndPay);
 
-        btnReturn = new JButton("Return");
+        JButton btnReturn = new JButton("Return");
         btnReturn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 lblNewLabel_2_3.setVisible(false);
@@ -907,13 +970,13 @@ public class CheckoutPanel extends JPanel {
         JLabel lblTotal = new JLabel("Total");
         lblTotal.setFont(new Font("Arial", Font.BOLD, 42));
         lblTotal.setBackground(Color.BLACK);
-        lblTotal.setBounds(1075, 165, 131, 58);
+        lblTotal.setBounds(1075, 176, 131, 58);
         frame.getContentPane().add(lblTotal);
 
         JLabel lblBalance = new JLabel("Amount");
         lblBalance.setFont(new Font("Arial", Font.BOLD, 42));
         lblBalance.setBackground(Color.BLACK);
-        lblBalance.setBounds(1075, 209, 167, 58);
+        lblBalance.setBounds(1045, 234, 167, 58);
         frame.getContentPane().add(lblBalance);
 
         JTextField totalAmount = new JTextField();
@@ -966,11 +1029,5 @@ public class CheckoutPanel extends JPanel {
         totalPaidToday.setColumns(10);
         totalPaidToday.setBounds(707, 329, 131, 58);
         frame.getContentPane().add(totalPaidToday);
-
-        JLabel lblDue = new JLabel("Due");
-        lblDue.setFont(new Font("Arial", Font.BOLD, 42));
-        lblDue.setBackground(Color.BLACK);
-        lblDue.setBounds(1075, 255, 131, 58);
-        frame.getContentPane().add(lblDue);
     }
 }
