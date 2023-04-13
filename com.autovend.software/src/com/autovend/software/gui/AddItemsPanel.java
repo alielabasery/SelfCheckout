@@ -40,6 +40,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +55,7 @@ import com.autovend.software.controllers.AddItemByPLUController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.GuiController;
 import com.autovend.software.controllers.MembershipCardController;
+import com.autovend.software.pojo.CartLineItem;
 
 import models.FoundProductsTableModel;
 
@@ -147,8 +149,19 @@ public class AddItemsPanel extends JPanel {
         cartbutton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dlgcartpay dlg = new dlgcartpay(new JFrame(), "Cart", false);
-                dlg.setVisible(true);
+            	ArrayList<CartLineItem> order = controller.getCart().getCartLineItems();
+            	Object[][] rows = new Object[order.size()][5];
+            	for (int i = 0; i < order.size(); i++) {
+            		rows[i][0] = order.get(i).getProductCode();
+            		rows[i][1] = order.get(i).getDescription();
+            		rows[i][2] = order.get(i).getPrice().setScale(2, RoundingMode.HALF_EVEN);
+            		rows[i][3] = (int)order.get(i).getQuantity();
+            		rows[i][4] = controller.cost.setScale(2, RoundingMode.HALF_EVEN);
+            	}
+        		String[] cols = {"ID", "Description", "Price", "Quantity", "Total"};
+        		JTable table = new JTable(rows, cols);
+        		table.setDefaultEditor(Object.class, null);
+        		JOptionPane.showMessageDialog(null, new JScrollPane(table));
             }
         });
 
