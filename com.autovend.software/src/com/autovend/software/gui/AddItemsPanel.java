@@ -131,7 +131,7 @@ public class AddItemsPanel extends JPanel {
         plubutton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dlgPLUProduct dlg = new dlgPLUProduct(new JFrame(), "Add By PLU Code.", itempanel);
+                dlgPLUProduct dlg = new dlgPLUProduct(new JFrame(), "Add By PLU Code.", controller);
                 dlg.setVisible(true);
             }
         });

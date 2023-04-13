@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,9 @@ import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
 import com.autovend.products.Product;
+import com.autovend.software.controllers.CheckoutController;
+import com.autovend.software.pojo.CartLineItem;
+import com.autovend.software.pojo.CartLineItem.CODETYPE;
 import com.autovend.software.pojo.ProductDescriptionEntry;
 import com.autovend.software.utils.CodeUtils;
 
@@ -36,10 +40,10 @@ public class dlgPLUProduct extends JDialog {
 	public char selectedItemType;
 	private JTextField txKeyword;
 	private JTable table1;
-	AddItemsPanel itempanel;
+	CheckoutController controller;
 	
-	public dlgPLUProduct(JFrame owner, String title, AddItemsPanel itempanel) {
-		this.itempanel = itempanel;
+	public dlgPLUProduct(JFrame owner, String title, CheckoutController controller) {
+		this.controller = controller;
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -65,54 +69,17 @@ public class dlgPLUProduct extends JDialog {
 			btnFind.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String keyword = txKeyword.getText();
-					try {
-						
+					ArrayList<ProductDescriptionEntry> foundProducts = new ArrayList<>();
 					PriceLookUpCode PLUcode = CodeUtils.stringPLUToPLU(keyword);
-					Product search = DatabaseController.getProduct(PLUcode, 'P');
-					if (search == null) {
-						System.out.println("No item of this PLU could be found.");
-				        ArrayList<ProductDescriptionEntry> foundProducts = new ArrayList<>();
-				        if (search instanceof PLUCodedProduct) {
-				        	foundProducts.add(new ProductDescriptionEntry(((PLUCodedProduct)search).getDescription(), 'P', ((PLUCodedProduct)search).getPLUCode()));
-				        }
-				        FoundProductsTableModel model = new FoundProductsTableModel(foundProducts, columnNames);
-				        table1.setModel(model);
-				        table1.clearSelection();
-					}
-					if (search instanceof PLUCodedProduct) {
-						System.out.println("Found item"+".");
-						PLUCodedProduct item = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUcode);
-						if (!itempanel.cart.contains(item)) {
-							itempanel.cart.add(item);
-							int countindex = itempanel.cart.indexOf(item);
-							itempanel.cartcount.add(countindex, 1);
-						}
-						else {
-							int countindex = itempanel.cart.indexOf(item);
-							int count = itempanel.cartcount.get(countindex);
-							count++;
-							itempanel.cartcount.remove(countindex);
-							itempanel.cartcount.add(countindex, count);
-						}
-			        }
-					}
-					catch (Exception ex){
-						Product search = null;
-						System.out.println(itempanel.cart.contains(search));
-						System.out.println("Invalid PLU.");
-					}
-					
-					/**
-			        List<Object> products = DatabaseController.findProductByDescription(keyword);
+					Product product = DatabaseController.getProduct(PLUcode, 'P');
 
-			        for (Object product: products) {
-			            if (product instanceof BarcodedProduct) {
-			                foundProducts.add(new ProductDescriptionEntry(((BarcodedProduct)product).getDescription(), 'B', ((BarcodedProduct)product).getBarcode()));
-			            } else if (product instanceof PLUCodedProduct) {
-			                foundProducts.add(new ProductDescriptionEntry(((PLUCodedProduct)product).getDescription(), 'P', ((PLUCodedProduct)product).getPLUCode()));
-			            }
-			        }
-			        			        */
+					if (product instanceof PLUCodedProduct) {
+		                foundProducts.add(new ProductDescriptionEntry(((PLUCodedProduct)product).getDescription(), 'P', ((PLUCodedProduct)product).getPLUCode()));
+		            }
+					
+			        FoundProductsTableModel model = new FoundProductsTableModel(foundProducts, columnNames);
+			        table1.setModel(model);
+			        table1.clearSelection();
 				}
 			});
 			GridBagConstraints gbc_btnFind = new GridBagConstraints();
@@ -139,10 +106,17 @@ public class dlgPLUProduct extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						
 						int selectedRow = table1.getSelectedRow();
 				        if (selectedRow < 0) return;
 				        selectedItemCode = table1.getModel().getValueAt(table1.getSelectedRow(), 0).toString();
 				        selectedItemType = (char)table1.getModel().getValueAt(table1.getSelectedRow(), 2);
+				        
+				        PriceLookUpCode PLUcode = CodeUtils.stringPLUToPLU(selectedItemCode);						
+						PLUCodedProduct item = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUcode);
+						controller.addItem(new CartLineItem(item.getPLUCode().toString(), CODETYPE.PLU, 
+								item.getPrice().setScale(2, RoundingMode.HALF_EVEN), item.isPerUnit(), item.getDescription(), 0.0, 1.0, 1.0));
+						
 				        dlgPLUProduct.this.setVisible(false);
 				        dispose();
 					}
@@ -156,10 +130,6 @@ public class dlgPLUProduct extends JDialog {
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						selectedItemCode = null;
-						for (int i = 0; i < itempanel.cart.size(); i++) {
-							PLUCodedProduct plu = (PLUCodedProduct) itempanel.cart.get(i);
-							System.out.println(plu.getDescription() + " " + itempanel.cartcount.get(i));
-						}
 				        dlgPLUProduct.this.setVisible(false);
 				        dispose();
 					}
