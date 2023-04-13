@@ -1034,6 +1034,11 @@ public class CheckoutPanel extends JPanel {
         frame.getContentPane().add(lblTotalPaidToday);
 
         JTextField totalPaidToday = new JTextField();
+        if (checkoutController != null) {
+            totalPaidToday.setText(checkoutController.getCost().toString());
+        } else {
+            totalPaidToday.setText("1");
+        }
         totalPaidToday.setFont(new Font("Arial", Font.PLAIN, 35));
         totalPaidToday.setEditable(false);
         totalPaidToday.setColumns(10);
