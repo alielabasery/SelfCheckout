@@ -35,6 +35,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.*;
 import javax.swing.*;
 import com.autovend.GiftCard.*;
@@ -158,7 +159,7 @@ public class CheckoutPanel extends JPanel {
         JTextField totalAmount = new JTextField();
         totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
         if (checkoutController != null) {
-        	totalAmount.setText(checkoutController.getCost().toString());
+        	totalAmount.setText(checkoutController.getCost().setScale(2, RoundingMode.HALF_EVEN).toString());
         } else {
         	totalAmount.setText("1");
         }

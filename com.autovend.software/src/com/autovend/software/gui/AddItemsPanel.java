@@ -140,7 +140,7 @@ public class AddItemsPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dlgSearchProduct dlg = new dlgSearchProduct(new JFrame(), "Add By Browsing.");
-                dlg.setVisible(true);
+                dlg.customerAddItem(controller);
             }
         });
 
