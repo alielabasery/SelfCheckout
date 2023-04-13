@@ -844,7 +844,7 @@ public class CheckoutPanel extends JPanel {
                 BigDecimal cash = BigDecimal.valueOf(amountPaid);
                 BigDecimal total = new BigDecimal(totalAmount.getText());
                 if (cash.compareTo(total) >= 0) {
-                    //complete
+                    //take cash
 //                    lblNewLabel_2_3.setVisible(false);
 //                    btnReturn.setVisible(false);
 //                    btnFinishAndPay.setVisible(false);
