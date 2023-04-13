@@ -28,33 +28,21 @@
 * Nam Nguyen Vu (30154892)
 * 
 */
+
 package com.autovend.software.controllers;
 
-import com.autovend.devices.BillSlot;
-import com.autovend.devices.observers.BillSlotObserver;
-
-public class BillChangeSlotController extends ChangeSlotController<BillSlot, BillSlotObserver>
-		implements BillSlotObserver {
-	
-	/**
-	 * The constructor for the BillChangeSlotController
-	 * @param newDevice
-	 * 		The BillSlot to connect
-	 */
-	public BillChangeSlotController(BillSlot newDevice) {
-		super(newDevice);
-	}
-
-	@Override
-	public void reactToBillInsertedEvent(BillSlot slot) {
-	}
-
-	@Override
-	public void reactToBillEjectedEvent(BillSlot slot) {
-	}
-
-	@Override
-	public void reactToBillRemovedEvent(BillSlot slot) {
-		this.getMainController().dispenseChange(this);
-	}
+/**
+ * Thrown to indicate that the application's start up routine failed.
+ * This exception wraps any underlying exception that caused the failure.
+ */
+public class StartUpRoutineFailedException extends Exception {
+    
+    /**
+     * Constructs a new StartUpRoutineFailedException with the specified message
+     *
+     * @param message the exception message 
+     */
+    public StartUpRoutineFailedException(String message) {
+        super(message);
+    }
 }
