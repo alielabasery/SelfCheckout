@@ -149,8 +149,9 @@ public class CheckoutPanel extends JPanel {
         frame.getContentPane().add(lblBalance);
 
         JTextField totalAmount = new JTextField();
+        totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
         totalAmount.setEditable(false);
-        totalAmount.setBounds(1087, 314, 86, 58);
+        totalAmount.setBounds(1075, 314, 131, 58);
         frame.getContentPane().add(totalAmount);
         totalAmount.setColumns(10);
 
@@ -232,8 +233,9 @@ public class CheckoutPanel extends JPanel {
         frame.getContentPane().add(lblBalance);
 
         JTextField totalAmount = new JTextField();
+        totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
         totalAmount.setEditable(false);
-        totalAmount.setBounds(1087, 314, 86, 58);
+        totalAmount.setBounds(1075, 314, 131, 58);
         frame.getContentPane().add(totalAmount);
         totalAmount.setColumns(10);
 
@@ -404,8 +406,9 @@ public class CheckoutPanel extends JPanel {
         frame.getContentPane().add(lblBalance);
 
         JTextField totalAmount = new JTextField();
+        totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
         totalAmount.setEditable(false);
-        totalAmount.setBounds(1087, 314, 86, 58);
+        totalAmount.setBounds(1075, 314, 131, 58);
         frame.getContentPane().add(totalAmount);
         totalAmount.setColumns(10);
 
@@ -658,8 +661,9 @@ public class CheckoutPanel extends JPanel {
         frame.getContentPane().add(lblBalance);
 
         JTextField totalAmount = new JTextField();
+        totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
         totalAmount.setEditable(false);
-        totalAmount.setBounds(1087, 314, 86, 58);
+        totalAmount.setBounds(1075, 314, 131, 58);
         frame.getContentPane().add(totalAmount);
         totalAmount.setColumns(10);
 
