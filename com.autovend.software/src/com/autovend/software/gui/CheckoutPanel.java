@@ -882,4 +882,94 @@ public class CheckoutPanel extends JPanel {
         btnReturn.setBounds(98, 571, 357, 83);
         frame.getContentPane().add(btnReturn);
     }
+
+    private void successfulPaymentScreen() {
+        JLabel lblNewLabel = new JLabel("Transaction Complete");
+        lblNewLabel.setFont(new Font("Arial", Font.BOLD, 35));
+        lblNewLabel.setBackground(SystemColor.desktop);
+        lblNewLabel.setBounds(376, 11, 395, 58);
+        frame.getContentPane().add(lblNewLabel);
+
+        JSeparator separator = new JSeparator();
+        separator.setBounds(0, 67, 1264, 12);
+        frame.getContentPane().add(separator);
+
+        JSeparator separator_1 = new JSeparator();
+        separator_1.setBounds(0, 537, 1264, 12);
+        frame.getContentPane().add(separator_1);
+
+        JSeparator separator_1_1 = new JSeparator();
+        separator_1_1.setOrientation(SwingConstants.VERTICAL);
+        separator_1_1.setBounds(1014, 67, 21, 471);
+        frame.getContentPane().add(separator_1_1);
+
+        JLabel lblTotal = new JLabel("Total");
+        lblTotal.setFont(new Font("Arial", Font.BOLD, 42));
+        lblTotal.setBackground(Color.BLACK);
+        lblTotal.setBounds(1075, 165, 131, 58);
+        frame.getContentPane().add(lblTotal);
+
+        JLabel lblBalance = new JLabel("Amount");
+        lblBalance.setFont(new Font("Arial", Font.BOLD, 42));
+        lblBalance.setBackground(Color.BLACK);
+        lblBalance.setBounds(1075, 209, 167, 58);
+        frame.getContentPane().add(lblBalance);
+
+        JTextField totalAmount = new JTextField();
+        totalAmount.setText("0.00");
+        totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
+        totalAmount.setEditable(false);
+        totalAmount.setBounds(1075, 314, 131, 58);
+        frame.getContentPane().add(totalAmount);
+        totalAmount.setColumns(10);
+
+        JLabel lblTotal_1 = new JLabel("$");
+        lblTotal_1.setFont(new Font("Arial", Font.BOLD, 42));
+        lblTotal_1.setBackground(Color.BLACK);
+        lblTotal_1.setBounds(1043, 314, 34, 58);
+        frame.getContentPane().add(lblTotal_1);
+
+        JButton btnReturn = new JButton("Close Checkout GUI");
+        btnReturn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+        btnReturn.setFont(new Font("Arial", Font.BOLD, 35));
+        btnReturn.setBounds(366, 571, 440, 83);
+        frame.getContentPane().add(btnReturn);
+
+        JLabel lblYourPaymentMethod = new JLabel("Your payment method");
+        lblYourPaymentMethod.setForeground(Color.GREEN);
+        lblYourPaymentMethod.setFont(new Font("Arial", Font.BOLD, 45));
+        lblYourPaymentMethod.setBackground(Color.BLACK);
+        lblYourPaymentMethod.setBounds(308, 122, 522, 74);
+        frame.getContentPane().add(lblYourPaymentMethod);
+
+        JLabel lblHasBeenAccepted = new JLabel("Has been accepted");
+        lblHasBeenAccepted.setForeground(Color.GREEN);
+        lblHasBeenAccepted.setFont(new Font("Arial", Font.BOLD, 45));
+        lblHasBeenAccepted.setBackground(Color.BLACK);
+        lblHasBeenAccepted.setBounds(343, 195, 423, 65);
+        frame.getContentPane().add(lblHasBeenAccepted);
+
+        JLabel lblTotalPaidToday = new JLabel("Total Paid Today: $");
+        lblTotalPaidToday.setFont(new Font("Arial", Font.BOLD, 42));
+        lblTotalPaidToday.setBackground(Color.BLACK);
+        lblTotalPaidToday.setBounds(308, 329, 389, 58);
+        frame.getContentPane().add(lblTotalPaidToday);
+
+        JTextField totalPaidToday = new JTextField();
+        totalPaidToday.setFont(new Font("Arial", Font.PLAIN, 35));
+        totalPaidToday.setEditable(false);
+        totalPaidToday.setColumns(10);
+        totalPaidToday.setBounds(707, 329, 131, 58);
+        frame.getContentPane().add(totalPaidToday);
+
+        JLabel lblDue = new JLabel("Due");
+        lblDue.setFont(new Font("Arial", Font.BOLD, 42));
+        lblDue.setBackground(Color.BLACK);
+        lblDue.setBounds(1075, 255, 131, 58);
+        frame.getContentPane().add(lblDue);
+    }
 }
