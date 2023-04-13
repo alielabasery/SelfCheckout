@@ -336,6 +336,8 @@ public class CheckoutPanel extends JPanel {
                             lblNewLabel_2_1.setVisible(false);
                             lblNewLabel_2.setVisible(false);
                             //btnReturn.setVisible(false);
+                            lblTotal.setVisible(false);
+                            lblBalance.setVisible(false);
                             btnFinishAndPay.setVisible(false);
                             txtGiftCard.setVisible(false);
                             lblNewLabel.setVisible(false);
@@ -601,6 +603,8 @@ public class CheckoutPanel extends JPanel {
                         lblNewLabel_2_1.setVisible(false);
                         lblNewLabel_2.setVisible(false);
                         //btnReturn.setVisible(false);
+                        lblTotal.setVisible(false);
+                        lblBalance.setVisible(false);
                         btnFinishAndPay.setVisible(false);
                         rdbtnDebit.setVisible(false);
                         rdbtnCredit.setVisible(false);
@@ -885,6 +889,8 @@ public class CheckoutPanel extends JPanel {
                     label_11.setVisible(false);
                     label_12.setVisible(false);
                     label_13.setVisible(false);
+                    lblTotal.setVisible(false);
+                    lblBalance.setVisible(false);
                     quantityBills100.setVisible(false);
                     quantityBills50.setVisible(false);
                     quantityBills20.setVisible(false);
