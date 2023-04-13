@@ -7,7 +7,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({AddItemByBrowsingTest.class, AddItemTest.class, AddOwnBagsTest.class, AdjustBanknotesTest.class, 
+@SuiteClasses({AddItemByBrowsingTest.class, AddItemGUITest.class, AddItemTest.class, AddOwnBagsTest.class, AdjustBanknotesTest.class, 
 	AttendantGUITest.class, AttendantLoginLogoutTest.class, BaggingAreaTest.class, BillDispenserControllerTest.class, 
 	BillPaymentControllerTest.class, CardPaymentTest.class, CheckoutPanelTesting.class, 
 	DeregisterCheckoutControllerTest.class, GuiControllerTest.class, 
