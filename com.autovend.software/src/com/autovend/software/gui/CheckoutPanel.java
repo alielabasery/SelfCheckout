@@ -156,6 +156,11 @@ public class CheckoutPanel extends JPanel {
 
         JTextField totalAmount = new JTextField();
         totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
+        if (checkoutController.getCost().compareTo(BigDecimal.ZERO) == 0) {
+        	totalAmount.setText("1");
+        } else {
+        	totalAmount.setText(checkoutController.getCost().toString());
+        }
         totalAmount.setEditable(false);
         totalAmount.setBounds(1075, 314, 131, 58);
         frame.getContentPane().add(totalAmount);
@@ -240,6 +245,11 @@ public class CheckoutPanel extends JPanel {
 
         JTextField totalAmount = new JTextField();
         totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
+        if (checkoutController.getCost().compareTo(BigDecimal.ZERO) == 0) {
+        	totalAmount.setText("1");
+        } else {
+        	totalAmount.setText(checkoutController.getCost().toString());
+        }
         totalAmount.setEditable(false);
         totalAmount.setBounds(1075, 314, 131, 58);
         frame.getContentPane().add(totalAmount);
@@ -417,6 +427,11 @@ public class CheckoutPanel extends JPanel {
 
         JTextField totalAmount = new JTextField();
         totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
+        if (checkoutController.getCost().compareTo(BigDecimal.ZERO) == 0) {
+        	totalAmount.setText("1");
+        } else {
+        	totalAmount.setText(checkoutController.getCost().toString());
+        }
         totalAmount.setEditable(false);
         totalAmount.setBounds(1075, 314, 131, 58);
         frame.getContentPane().add(totalAmount);
@@ -678,6 +693,11 @@ public class CheckoutPanel extends JPanel {
 
         JTextField totalAmount = new JTextField();
         totalAmount.setFont(new Font("Arial", Font.PLAIN, 35));
+        if (checkoutController.getCost().compareTo(BigDecimal.ZERO) == 0) {
+        	totalAmount.setText("1");
+        } else {
+        	totalAmount.setText(checkoutController.getCost().toString());
+        }
         totalAmount.setEditable(false);
         totalAmount.setBounds(1075, 314, 131, 58);
         frame.getContentPane().add(totalAmount);
