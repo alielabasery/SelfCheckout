@@ -62,7 +62,7 @@ public class StartScreenPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
             	checkoutController.sessionInProgress = true;
-                gc.addItemsScreen();
+                gc.addItemsScreen(checkoutController);
             }
         });
 

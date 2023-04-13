@@ -55,13 +55,13 @@ public class GuiController {
         station.screen.setVisible(true);
     }
 
-    public void addItemsScreen() {
+    public void addItemsScreen(CheckoutController controller) {
         JFrame screen = station.screen.getFrame();
         screen.setExtendedState(JFrame.NORMAL);
         screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
-        AddItemsPanel aip = new AddItemsPanel(this);
+        AddItemsPanel aip = new AddItemsPanel(this, controller);
         JPanel panel = new JPanel();
         panel.add(aip);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
@@ -178,7 +178,7 @@ public class GuiController {
     }
 
     public void validateAttendantScreen() {
-        attendantScreen.validate();
+        attendantScreen.revalidate();
     }
 
     // Delete later
@@ -226,7 +226,7 @@ public class GuiController {
         GuiController gc = new GuiController(s, ss);
         // change below to gc.attendantLoginScreen to see the Attendant Station
         // change below to gc.startScreen to see the Customer Station
-//        gc.attendantLoginScreen();
-        gc.startScreen(cc);
+        gc.attendantLoginScreen();
+//        gc.startScreen(cc);
     }
 }

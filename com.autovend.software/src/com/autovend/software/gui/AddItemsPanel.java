@@ -69,15 +69,17 @@ public class AddItemsPanel extends JPanel {
 	JTextField PLUField;
 	JButton cartbutton;
 	JButton paybutton;
+	CheckoutController controller;
 	ArrayList<Object> cart;
 	ArrayList<Integer> cartcount;
 	AddItemsPanel itempanel;
 	public TouchScreen touchScreen;
 	public AddItemByPLUController addItemByPLUController;
-    public AddItemsPanel(GuiController gc) {
+    public AddItemsPanel(GuiController gc, CheckoutController controller) {
     	cart = new ArrayList<Object>();
     	cartcount = new ArrayList<Integer>();
         this.gc = gc;
+        this.controller = controller;
         //CheckoutController cc = new CheckoutController("Station 1", this.gc.station);
         //touchScreen = new TouchScreen();
         //addItemByPLUController = new AddItemByPLUController(touchScreen);
