@@ -629,6 +629,7 @@ public class CheckoutPanel extends JPanel {
     }
 
     private void proceedToCashPaymentMethod(){
+        JButton btnReturn;
         JLabel lblNewLabel = new JLabel("Payment");
         lblNewLabel.setFont(new Font("Arial", Font.BOLD, 35));
         lblNewLabel.setBackground(SystemColor.desktop);
@@ -843,7 +844,7 @@ public class CheckoutPanel extends JPanel {
         btnFinishAndPay.setBounds(525, 571, 357, 83);
         frame.getContentPane().add(btnFinishAndPay);
 
-        JButton btnReturn = new JButton("Return");
+        btnReturn = new JButton("Return");
         btnReturn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 lblNewLabel_2_3.setVisible(false);
