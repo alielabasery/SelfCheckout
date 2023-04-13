@@ -336,8 +336,6 @@ public class CheckoutPanel extends JPanel {
                             lblNewLabel_2_1.setVisible(false);
                             lblNewLabel_2.setVisible(false);
                             //btnReturn.setVisible(false);
-                            lblTotal.setVisible(false);
-                            lblBalance.setVisible(false);
                             btnFinishAndPay.setVisible(false);
                             txtGiftCard.setVisible(false);
                             lblNewLabel.setVisible(false);
@@ -603,8 +601,6 @@ public class CheckoutPanel extends JPanel {
                         lblNewLabel_2_1.setVisible(false);
                         lblNewLabel_2.setVisible(false);
                         //btnReturn.setVisible(false);
-                        lblTotal.setVisible(false);
-                        lblBalance.setVisible(false);
                         btnFinishAndPay.setVisible(false);
                         rdbtnDebit.setVisible(false);
                         rdbtnCredit.setVisible(false);
@@ -889,8 +885,6 @@ public class CheckoutPanel extends JPanel {
                     label_11.setVisible(false);
                     label_12.setVisible(false);
                     label_13.setVisible(false);
-                    lblTotal.setVisible(false);
-                    lblBalance.setVisible(false);
                     quantityBills100.setVisible(false);
                     quantityBills50.setVisible(false);
                     quantityBills20.setVisible(false);
@@ -976,13 +970,13 @@ public class CheckoutPanel extends JPanel {
         JLabel lblTotal = new JLabel("Total");
         lblTotal.setFont(new Font("Arial", Font.BOLD, 42));
         lblTotal.setBackground(Color.BLACK);
-        lblTotal.setBounds(1075, 165, 131, 58);
+        lblTotal.setBounds(1075, 176, 131, 58);
         frame.getContentPane().add(lblTotal);
 
         JLabel lblBalance = new JLabel("Amount");
         lblBalance.setFont(new Font("Arial", Font.BOLD, 42));
         lblBalance.setBackground(Color.BLACK);
-        lblBalance.setBounds(1075, 209, 167, 58);
+        lblBalance.setBounds(1045, 234, 167, 58);
         frame.getContentPane().add(lblBalance);
 
         JTextField totalAmount = new JTextField();
@@ -1035,11 +1029,5 @@ public class CheckoutPanel extends JPanel {
         totalPaidToday.setColumns(10);
         totalPaidToday.setBounds(707, 329, 131, 58);
         frame.getContentPane().add(totalPaidToday);
-
-        JLabel lblDue = new JLabel("Due");
-        lblDue.setFont(new Font("Arial", Font.BOLD, 42));
-        lblDue.setBackground(Color.BLACK);
-        lblDue.setBounds(1075, 255, 131, 58);
-        frame.getContentPane().add(lblDue);
     }
 }
