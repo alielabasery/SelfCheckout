@@ -323,7 +323,7 @@ public class CheckoutPanel extends JPanel {
                         Currency currencyValue = Currency.getInstance(currency.getText());
                         BigDecimal amountValue = new BigDecimal(amount.getText());
                         giftCard = new GiftCard(type, number, pin, currencyValue, amountValue);
-                        totalAmount.setText("10000");
+                        //totalAmount.setText("10000");
                         GiftCardInsertData giftCardInsertData;
                         giftCardInsertData = giftCard.createCardInsertData(pin);
                         BigDecimal balance = giftCardInsertData.getRemainingBalance();
@@ -580,7 +580,7 @@ public class CheckoutPanel extends JPanel {
 	                    expiry.setTime(date);
 	                    expiry.add(Calendar.MONTH, 6);
 	                    BigDecimal amount = BigDecimal.valueOf(1000);
-	                    totalAmount.setText("1000");
+	                    //totalAmount.setText("1000");
 	                    BigDecimal amountDue = new BigDecimal(totalAmount.getText());
 	
 	                    cardIssuer.addCardData(number, cardHolder, expiry, cvvValue, amount);
