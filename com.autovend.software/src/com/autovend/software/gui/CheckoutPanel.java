@@ -350,7 +350,7 @@ public class CheckoutPanel extends JPanel {
 //                            pinNumber.setVisible(false);
                             successfulPaymentScreen();
                         } else {
-                            currency.setText("Declined");
+                        	amount.setText("Not enough money");
                         }
                     } catch (InvalidPINException e1) {
                         pinNumber.setText("Incorrect Pin Number!");
