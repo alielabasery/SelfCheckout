@@ -20,7 +20,7 @@
 * Naheen Kabir (30142101) 
 * Jose Perales Rivera (30143354) 
 * Aditi Yadav (30143652)
-* Sahaj Malhotra () 
+* Sahaj Malhotra (30144405) 
 * Ali Elabasery (30148424)
 * Fabiha Fairuzz Subha (30148674) 
 * Umesh Oad (30152293)
@@ -44,8 +44,8 @@ public class AttendentController {
 	/**
 	 * Constructor for the AttendantController
 	 */
-	public AttendentController() {
-		supervisionStation = new SupervisionStation();
+	public AttendentController(SupervisionStation ss) {
+		supervisionStation = ss;
 		NetworkController.registerAttendentController(this);
 	}
 	

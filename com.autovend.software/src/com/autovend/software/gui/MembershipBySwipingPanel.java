@@ -28,33 +28,8 @@
 * Nam Nguyen Vu (30154892)
 * 
 */
-package com.autovend.software.controllers;
+package com.autovend.software.gui;
 
-import com.autovend.devices.BillSlot;
-import com.autovend.devices.observers.BillSlotObserver;
+public class MembershipBySwipingPanel {
 
-public class BillChangeSlotController extends ChangeSlotController<BillSlot, BillSlotObserver>
-		implements BillSlotObserver {
-	
-	/**
-	 * The constructor for the BillChangeSlotController
-	 * @param newDevice
-	 * 		The BillSlot to connect
-	 */
-	public BillChangeSlotController(BillSlot newDevice) {
-		super(newDevice);
-	}
-
-	@Override
-	public void reactToBillInsertedEvent(BillSlot slot) {
-	}
-
-	@Override
-	public void reactToBillEjectedEvent(BillSlot slot) {
-	}
-
-	@Override
-	public void reactToBillRemovedEvent(BillSlot slot) {
-		this.getMainController().dispenseChange(this);
-	}
 }

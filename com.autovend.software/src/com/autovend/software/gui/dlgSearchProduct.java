@@ -20,7 +20,7 @@
 * Naheen Kabir (30142101) 
 * Jose Perales Rivera (30143354) 
 * Aditi Yadav (30143652)
-* Sahaj Malhotra () 
+* Sahaj Malhotra (30144405) 
 * Ali Elabasery (30148424)
 * Fabiha Fairuzz Subha (30148674) 
 * Umesh Oad (30152293)
@@ -32,29 +32,37 @@ package com.autovend.software.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import com.autovend.Barcode;
+import com.autovend.PriceLookUpCode;
+import com.autovend.external.ProductDatabases;
 import com.autovend.products.BarcodedProduct;
 import com.autovend.products.PLUCodedProduct;
+import com.autovend.software.attendantgui.AttendantPanel;
+import com.autovend.software.controllers.CheckoutController;
+import com.autovend.software.pojo.CartLineItem;
 import com.autovend.software.pojo.ProductDescriptionEntry;
+import com.autovend.software.pojo.CartLineItem.CODETYPE;
+import com.autovend.software.utils.CodeUtils;
 
 import data.DatabaseController;
 import models.FoundProductsTableModel;
-
-import java.awt.GridBagLayout;
-import javax.swing.JTextField;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.JTable;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.event.ActionEvent;
 
 public class dlgSearchProduct extends JDialog {
 	String[] columnNames = {"Code", "Description"};
@@ -63,6 +71,11 @@ public class dlgSearchProduct extends JDialog {
 	public char selectedItemType;
 	private JTextField txKeyword;
 	private JTable table1;
+	
+	private String tempStationName;
+	private dlgSearchProduct selfInstance;
+	
+	private CheckoutController controller;
 
 	public dlgSearchProduct(JFrame owner, String title) {
 		setBounds(100, 100, 450, 300);
@@ -133,6 +146,23 @@ public class dlgSearchProduct extends JDialog {
 				        if (selectedRow < 0) return;
 				        selectedItemCode = table1.getModel().getValueAt(table1.getSelectedRow(), 0).toString();
 				        selectedItemType = (char)table1.getModel().getValueAt(table1.getSelectedRow(), 2);
+				        
+				        if (selfInstance != null && tempStationName != null) AttendantPanel.addItemToStation(selfInstance, tempStationName);
+				        else if (controller != null) {
+				        	if (selectedItemType == 'P') {
+				        		PriceLookUpCode PLUcode = CodeUtils.stringPLUToPLU(selectedItemCode);						
+								PLUCodedProduct item = ProductDatabases.PLU_PRODUCT_DATABASE.get(PLUcode);
+								controller.addItem(new CartLineItem(item.getPLUCode().toString(), CODETYPE.PLU, 
+										item.getPrice().setScale(2, RoundingMode.HALF_EVEN), item.isPerUnit(), 
+										item.getDescription(), 0.0, 1.0, 1.0));
+				        	} else if (selectedItemType == 'B') {
+				        		Barcode code = CodeUtils.stringBarcodeToBarcode(selectedItemCode);
+				    			BarcodedProduct product = (BarcodedProduct) DatabaseController.getProduct(code, selectedItemType);
+				    			controller.addItem(new CartLineItem(product.getBarcode().toString(), CODETYPE.BARCODE,
+				    					product.getPrice().setScale(2, RoundingMode.HALF_EVEN), product.isPerUnit(), product.getDescription(), product.getExpectedWeight(), 1.50, 1));
+				        	}
+				        	
+				        }
 				        dlgSearchProduct.this.setVisible(false);
 				        dispose();
 					}
@@ -146,7 +176,6 @@ public class dlgSearchProduct extends JDialog {
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						selectedItemCode = null;
-
 				        dlgSearchProduct.this.setVisible(false);
 				        dispose();
 					}
@@ -155,6 +184,17 @@ public class dlgSearchProduct extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+	}
+
+	public void initalize(dlgSearchProduct test, String name) {
+		setVisible(true);
+		tempStationName = name;
+		selfInstance = test;
+	}
+	
+	public void customerAddItem(CheckoutController controller) {
+		setVisible(true);
+		this.controller = controller;
 	}
 
 }

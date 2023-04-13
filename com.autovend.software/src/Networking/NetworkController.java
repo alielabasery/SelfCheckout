@@ -20,7 +20,7 @@
 * Naheen Kabir (30142101) 
 * Jose Perales Rivera (30143354) 
 * Aditi Yadav (30143652)
-* Sahaj Malhotra () 
+* Sahaj Malhotra (30144405) 
 * Ali Elabasery (30148424)
 * Fabiha Fairuzz Subha (30148674) 
 * Umesh Oad (30152293)
@@ -69,6 +69,11 @@ public class NetworkController {
 	public static void deregisterCheckoutStation(String checkoutStationName) {
 		System.out.println("NetworkController: Deregistering station " + checkoutStationName);
 		checkoutControllers.remove(checkoutStationName.toLowerCase());
+	}
+	
+	public static void deregisterAllStations() {
+		System.out.println("NetworkController: Deregistering ALL stations");
+		checkoutControllers.clear();
 	}
 	
 	/**
