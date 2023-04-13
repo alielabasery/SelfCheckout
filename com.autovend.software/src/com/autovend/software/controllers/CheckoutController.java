@@ -594,6 +594,81 @@ public class CheckoutController {
 		}
 		this.cart.addCartItem(item);
 	}
+	
+	public void removeItem(CartLineItem item) {
+		// Lock the system and bagging area
+		baggingItemLock = true;
+		systemProtectionLock = true;
+		
+		if (item.getCodeType() == CODETYPE.PLU) {
+			PriceLookUpCode code = CodeUtils.stringPLUToPLU(item.getProductCode());
+			PLUCodedProduct product = (PLUCodedProduct) DatabaseController.getProduct(code, 'P');
+			Number[] currentItemInfo = new Number[] { BigDecimal.ZERO, BigDecimal.ZERO };
+
+			// Add item to order
+			if (this.order.containsKey(product)) {
+				currentItemInfo = this.order.get(product);
+			}
+
+			// Subtract the cost of the removed item from the current cost.
+			this.cost = this.cost.subtract(product.getPrice());
+
+			if (currentItemInfo[0].intValue() > 1) {
+				// Decrement the quantity of the item in the order
+				currentItemInfo[0] = currentItemInfo[0].intValue() - 1;
+				currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).subtract(product.getPrice());
+				this.order.put(product, currentItemInfo);
+				
+			} else {
+				// Remove the item from the order if there is only one left
+				this.order.remove(product);
+			}
+
+			for (BaggingAreaController baggingController : this.validBaggingControllers) {
+				ElectronicScaleController scale = (ElectronicScaleController) baggingController;
+				scale.updateExpectedBaggingArea(item.getWeight());
+			}
+
+		} else {
+			Barcode code = CodeUtils.stringBarcodeToBarcode(item.getProductCode());
+			BarcodedProduct product = (BarcodedProduct) DatabaseController.getProduct(code, 'B');
+			Number[] currentItemInfo = new Number[] { BigDecimal.ZERO, BigDecimal.ZERO };
+
+			// Add item to order
+			if (this.order.containsKey(product)) {
+				currentItemInfo = this.order.get(product);
+			}
+
+			// Subtract the cost of the removed item from the current cost.
+			this.cost = this.cost.subtract(product.getPrice());
+
+			if (currentItemInfo[0].intValue() > 1) {
+				// Decrement the quantity of the item in the order
+				currentItemInfo[0] = currentItemInfo[0].intValue() - 1;
+				currentItemInfo[1] = ((BigDecimal) currentItemInfo[1]).subtract(product.getPrice());
+				this.order.put(product, currentItemInfo);
+				
+			} else {
+				// Remove the item from the order if there is only one left
+				this.order.remove(product);
+			}
+
+			for (BaggingAreaController baggingController : this.validBaggingControllers) {
+				ElectronicScaleController scale = (ElectronicScaleController) baggingController;
+				scale.updateExpectedBaggingArea(item.getWeight());
+			}
+
+		}
+		ArrayList<CartLineItem> items = this.cart.getCartLineItems();
+		for (int i = 0; i < items.size(); i++) {
+			if (items.get(i).getDescription().equals(item.getDescription()) 
+					&& items.get(i).getProductCode().equals(item.getProductCode())) {
+				this.cart.removeLineItem(i);
+				break;
+			}
+		}
+		
+	}
 
 	/*
 	 * Methods used by ItemAdderControllers
