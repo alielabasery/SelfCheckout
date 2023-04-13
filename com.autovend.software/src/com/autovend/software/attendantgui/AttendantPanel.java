@@ -65,6 +65,7 @@ import com.autovend.software.controllers.AttendentController;
 import com.autovend.software.controllers.CheckoutController;
 import com.autovend.software.controllers.GuiController;
 import com.autovend.software.controllers.StartUpRoutineController;
+import com.autovend.software.controllers.StartUpRoutineFailedException;
 import com.autovend.software.gui.dlgSearchProduct;
 import com.autovend.software.pojo.CartLineItem;
 import com.autovend.software.pojo.CartLineItem.CODETYPE;
@@ -327,14 +328,21 @@ public class AttendantPanel extends JPanel {
         			}
         			else if (bttn.getText().equals("Reboot " + name)) {
 //        				NetworkController.removeCheckoutStation(name);
-        				CheckoutController newController = startupController.runsStartUpRoutine(checkoutController.getSelfCheckoutStation(), true);
-        				NetworkController.registerCheckoutStation(name, newController);
-        				shutdownStations.remove(name);
-            			bttn.setText("Shutdown " + name);
-            			bttn2.setEnabled(true);
-            			bttn3.setEnabled(true);
-            			bttn4.setEnabled(true);
-            			updateScreen();
+        				CheckoutController newController;
+						try {
+							newController = startupController.runStartUpRoutine(checkoutController.getSelfCheckoutStation(), name, true);
+							NetworkController.registerCheckoutStation(name, newController);
+	        				shutdownStations.remove(name);
+	            			bttn.setText("Shutdown " + name);
+	            			bttn2.setEnabled(true);
+	            			bttn3.setEnabled(true);
+	            			bttn4.setEnabled(true);
+	            			updateScreen();
+						} catch (StartUpRoutineFailedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+        				
         			}
         		}
             }
