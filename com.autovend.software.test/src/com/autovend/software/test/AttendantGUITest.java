@@ -54,7 +54,7 @@ public class AttendantGUITest {
     	
     	addItemsToDatabase();
     	
-		gc = new GuiController(controller, attendantController);
+		gc = new GuiController(attendantController);
 	}
 	
 	@Test
