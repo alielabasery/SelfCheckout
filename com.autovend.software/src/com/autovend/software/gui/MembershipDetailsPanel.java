@@ -265,7 +265,7 @@ public class MembershipDetailsPanel extends JPanel {
 	                try {
 	                	//If it's valid
 	                    Boolean success = mcc.isValid(userID);
-	                    if (success) { gc.addItemsScreen(); }
+	                    if (success) { gc.addItemsScreen(controller); }
 	                    remove(failLabel);
 	                    revalidate();
 	                    repaint();

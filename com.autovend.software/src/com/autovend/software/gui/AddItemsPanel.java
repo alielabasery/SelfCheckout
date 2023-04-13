@@ -154,7 +154,7 @@ public class AddItemsPanel extends JPanel {
 
         paybutton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) { gc.checkoutScreen(); }
+            public void actionPerformed(ActionEvent e) { gc.checkoutScreen(controller); }
         });
 
         add(itemlabel);

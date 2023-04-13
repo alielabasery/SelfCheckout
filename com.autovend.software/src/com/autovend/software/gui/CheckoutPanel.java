@@ -55,39 +55,40 @@ public class CheckoutPanel extends JPanel {
     private CreditCard creditCard;
     private DebitCard debitCard;
     private GiftCard giftCard;
-    private static CheckoutController checkoutController;
+    private CheckoutController checkoutController;
 
     /**
      * Create the application.
      */
-    public CheckoutPanel(CheckoutController checkoutController) {
+    public CheckoutPanel(CheckoutController checkoutController, JFrame owner) {
+    	this.frame = owner;
+    	this.checkoutController = checkoutController;
         initialize();
-        this.checkoutController = checkoutController;
+        frame.setVisible(true);
     }
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    CheckoutPanel window = new CheckoutPanel(checkoutController);
-                    window.frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    
+//    /**
+//     * Launch the application.
+//     */
+//    public static void main(String[] args) {
+//        EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                try {
+//                    CheckoutPanel window = new CheckoutPanel(checkoutController);
+//                    window.frame.setVisible(true);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//    }
+//
+//    
 
     /**
      * Initialize the contents of the frame.
      */
     private void initialize() {
         if (!alreadyDisplay) {
-            frame = new JFrame();
             frame.getContentPane().setBackground(SystemColor.activeCaption);
             frame.setBounds(100, 100, 1280, 720);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
