@@ -1,12 +1,19 @@
 package com.autovend.software.gui;
 
-import com.autovend.software.controllers.GuiController;
-
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
+
+import com.autovend.software.controllers.CheckoutController;
+import com.autovend.software.controllers.GuiController;
 
 public class MembershipPanel extends JPanel {
     GuiController gc;
@@ -16,7 +23,7 @@ public class MembershipPanel extends JPanel {
     JButton typingButton;
     JButton goToHomeButton;
     JLabel membershipText;
-    public MembershipPanel(GuiController gc) {
+    public MembershipPanel(GuiController gc, CheckoutController controller) {
         this.gc = gc;
 
         setPreferredSize(new Dimension(1280, 720));
@@ -25,7 +32,7 @@ public class MembershipPanel extends JPanel {
         scanningButton = new JButton("Scan Membership");
         scanningButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) { gc.membershipDetailsScreen(); }
+            public void actionPerformed(ActionEvent e) { gc.membershipDetailsScreen(controller); }
         });
 
         scanningButton.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
@@ -39,7 +46,7 @@ public class MembershipPanel extends JPanel {
         typingButton = new JButton("Enter Membership");
         typingButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) { gc.membershipDetailsScreen(); }
+            public void actionPerformed(ActionEvent e) { gc.membershipDetailsScreen(controller); }
         });
 
         typingButton.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
@@ -53,7 +60,7 @@ public class MembershipPanel extends JPanel {
         swipingButton = new JButton("Swipe Membership");
         swipingButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) { gc.membershipDetailsScreen(); }
+            public void actionPerformed(ActionEvent e) { gc.membershipDetailsScreen(controller); }
         });
 
         swipingButton.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));
@@ -67,7 +74,7 @@ public class MembershipPanel extends JPanel {
         goToHomeButton = new JButton("Go back home");
         goToHomeButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) { gc.startScreen(); }
+            public void actionPerformed(ActionEvent e) { gc.startScreen(controller); }
         });
 
         goToHomeButton.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 20));

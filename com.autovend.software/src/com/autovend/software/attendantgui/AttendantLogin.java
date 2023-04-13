@@ -45,12 +45,12 @@ import java.awt.event.ActionListener;
 public class AttendantLogin extends JPanel {
     GuiController gc;
     JLabel loginLabel;
-    JTextField IDField;
-    JPasswordField passField;
+    public JTextField IDField;
+    public JPasswordField passField;
     JLabel IDLabel;
     JLabel passLabel;
-    JButton button;
-    JLabel failLabel;
+    public JButton button;
+    public JLabel failLabel;
     private static final String attendant1Id = "001";
     private static final String attendant1Password = "Attendant1!";
 

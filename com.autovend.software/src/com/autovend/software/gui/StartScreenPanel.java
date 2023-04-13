@@ -30,13 +30,20 @@
 */
 package com.autovend.software.gui;
 
-import com.autovend.software.controllers.GuiController;
-
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
+
+import com.autovend.software.controllers.CheckoutController;
+import com.autovend.software.controllers.GuiController;
 
 public class StartScreenPanel extends JPanel {
     GuiController gc;
@@ -44,7 +51,7 @@ public class StartScreenPanel extends JPanel {
     JButton membershipButton;
     JLabel welcomeLabel;
     JLabel startLabel;
-    public StartScreenPanel(GuiController gc) {
+    public StartScreenPanel(GuiController gc, CheckoutController checkoutController) {
         this.gc = gc;
 
         setPreferredSize(new Dimension(1280, 720));
@@ -54,7 +61,8 @@ public class StartScreenPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                gc.addItemsScreen();
+            	checkoutController.sessionInProgress = true;
+                gc.addItemsScreen(checkoutController);
             }
         });
 
@@ -71,7 +79,7 @@ public class StartScreenPanel extends JPanel {
         membershipButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                gc.membershipScreen();
+                gc.membershipScreen(checkoutController);
             }
         });
 

@@ -44,8 +44,8 @@ public class AttendentController {
 	/**
 	 * Constructor for the AttendantController
 	 */
-	public AttendentController() {
-		supervisionStation = new SupervisionStation();
+	public AttendentController(SupervisionStation ss) {
+		supervisionStation = ss;
 		NetworkController.registerAttendentController(this);
 	}
 	

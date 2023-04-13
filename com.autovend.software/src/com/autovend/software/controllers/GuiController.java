@@ -52,27 +52,27 @@ import java.math.BigDecimal;
 import java.util.Currency;
 
 public class GuiController {
-    SelfCheckoutStation station;
     SupervisionStation attendantStation;
     JFrame attendantScreen;
     AttendentController attendantController;
     AttendantLoginLogoutController attendantLogin;
+    public AttendantLogin attendantLoginScreen;
+    public AttendantPanel attendantPanelScreen;
 
-    public GuiController(SelfCheckoutStation station, SupervisionStation attendantStation) {
-        this.station = station;
-        this.attendantStation = attendantStation;
+    public GuiController(AttendentController attendant) {
+        this.attendantStation = attendant.getSupervisionStation();
         attendantScreen = attendantStation.screen.getFrame();
-        attendantController = new AttendentController();
+        attendantController = attendant;
         attendantLogin = new AttendantLoginLogoutController();
     }
 
-    public void startScreen() {
-        JFrame screen = station.screen.getFrame();
+    public void startScreen(CheckoutController checkout) {
+        JFrame screen = checkout.getSelfCheckoutStation().screen.getFrame();
         screen.setExtendedState(JFrame.NORMAL);
         screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
-        StartScreenPanel scp = new StartScreenPanel(this);
+        StartScreenPanel scp = new StartScreenPanel(this, checkout);
         JPanel panel = new JPanel();
         panel.add(scp);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
@@ -83,16 +83,16 @@ public class GuiController {
         int y = (int) (screenSize.getHeight() - screen.getHeight()) / 2;
         screen.setLocation(x, y);
         screen.validate();
-        station.screen.setVisible(true);
+        screen.setVisible(true);
     }
 
-    public void addItemsScreen() {
-        JFrame screen = station.screen.getFrame();
+    public void addItemsScreen(CheckoutController checkout) {
+        JFrame screen = checkout.getSelfCheckoutStation().screen.getFrame();
         screen.setExtendedState(JFrame.NORMAL);
         screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
-        AddItemsPanel aip = new AddItemsPanel(this);
+        AddItemsPanel aip = new AddItemsPanel(this, checkout);
         JPanel panel = new JPanel();
         panel.add(aip);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
@@ -103,16 +103,16 @@ public class GuiController {
         int y = (int) (screenSize.getHeight() - screen.getHeight()) / 2;
         screen.setLocation(x, y);
         screen.validate();
-        station.screen.setVisible(true);
+        screen.setVisible(true);
     }
 
-    public void membershipScreen() {
-        JFrame screen = station.screen.getFrame();
+    public void membershipScreen(CheckoutController checkout) {
+        JFrame screen = checkout.getSelfCheckoutStation().screen.getFrame();
         screen.setExtendedState(JFrame.NORMAL);
         screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
-        MembershipPanel hvp = new MembershipPanel(this);
+        MembershipPanel hvp = new MembershipPanel(this, checkout);
         JPanel panel = new JPanel();
         panel.add(hvp);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
@@ -123,16 +123,16 @@ public class GuiController {
         int y = (int) (screenSize.getHeight() - screen.getHeight()) / 2;
         screen.setLocation(x, y);
         screen.validate();
-        station.screen.setVisible(true);
+        screen.setVisible(true);
     }
 
-    public void membershipDetailsScreen() {
-        JFrame screen = station.screen.getFrame();
+    public void membershipDetailsScreen(CheckoutController checkout) {
+        JFrame screen = checkout.getSelfCheckoutStation().screen.getFrame();
         screen.setExtendedState(JFrame.NORMAL);
         screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
-        MembershipDetailsPanel mdp = new MembershipDetailsPanel(this, new MembershipCardController());
+        MembershipDetailsPanel mdp = new MembershipDetailsPanel(this, new MembershipCardController(), checkout);
         JPanel panel = new JPanel();
         panel.add(mdp);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
@@ -149,13 +149,13 @@ public class GuiController {
         screen.setVisible(true);
     }
 
-    public void checkoutScreen() {
-        JFrame screen = station.screen.getFrame();
+    public void checkoutScreen(CheckoutController checkout) {
+        JFrame screen = checkout.getSelfCheckoutStation().screen.getFrame();
         screen.setExtendedState(JFrame.NORMAL);
         screen.setPreferredSize(new Dimension(1280, 720));
         screen.getContentPane().removeAll();
         screen.setLayout(new BorderLayout());
-        CheckoutPanel cp = new CheckoutPanel();
+        CheckoutPanel cp = new CheckoutPanel(checkout, screen);
         JPanel panel = new JPanel();
         panel.add(cp);
         screen.getContentPane().add(panel, BorderLayout.CENTER);
@@ -166,7 +166,7 @@ public class GuiController {
         int y = (int) (screenSize.getHeight() - screen.getHeight()) / 2;
         screen.setLocation(x, y);
         screen.validate();
-        station.screen.setVisible(true);
+        screen.setVisible(true);
     }
 
     // Attendant Station
@@ -175,9 +175,9 @@ public class GuiController {
     	attendantScreen.setPreferredSize(new Dimension(1280, 720));
     	attendantScreen.getContentPane().removeAll();
     	attendantScreen.setLayout(new BorderLayout());
-        AttendantLogin al = new AttendantLogin(this, attendantLogin);
+    	attendantLoginScreen = new AttendantLogin(this, attendantLogin);
         JPanel panel = new JPanel();
-        panel.add(al);
+        panel.add(attendantLoginScreen);
         attendantScreen.getContentPane().add(panel, BorderLayout.CENTER);
         attendantScreen.pack();
         // Make the JFrame display in the middle of the screen
@@ -194,9 +194,9 @@ public class GuiController {
     	attendantScreen.setPreferredSize(new Dimension(1280, 720));
     	attendantScreen.getContentPane().removeAll();
     	attendantScreen.setLayout(new BorderLayout());
-        AttendantPanel ap = new AttendantPanel(this, attendantStation, attendantController, attendantLogin);
+    	attendantPanelScreen = new AttendantPanel(this, attendantStation, attendantController, attendantLogin);
         JPanel panel = new JPanel();
-        panel.add(ap);
+        panel.add(attendantPanelScreen);
         attendantScreen.getContentPane().add(panel, BorderLayout.CENTER);
         attendantScreen.pack();
         // Make the JFrame display in the middle of the screen
@@ -209,7 +209,7 @@ public class GuiController {
     }
 
     public void validateAttendantScreen() {
-        attendantScreen.validate();
+        attendantScreen.revalidate();
     }
 
     // Delete later
@@ -244,20 +244,21 @@ public class GuiController {
         SelfCheckoutStation s2 = new SelfCheckoutStation(c, noteDenom, coinDenom, 10000, 1);
         SelfCheckoutStation s3 = new SelfCheckoutStation(c, noteDenom, coinDenom, 10000, 1);
         
-//        CheckoutController cc = new CheckoutController(s);
-//        CheckoutController cc2 = new CheckoutController(s2);
-//        CheckoutController cc3 = new CheckoutController(s3);
-        
-//        NetworkController.registerCheckoutStation("Station 1", cc);
-//        NetworkController.registerCheckoutStation("Station 2", cc2);
-//        NetworkController.registerCheckoutStation("Station 3", cc3);
+        CheckoutController cc = new CheckoutController("Station 1", s);
+        CheckoutController cc2 = new CheckoutController("Station 2", s2);
+        CheckoutController cc3 = new CheckoutController("Station 3", s3);
+       
+        NetworkController.registerCheckoutStation("Station 1", cc);
+        NetworkController.registerCheckoutStation("Station 2", cc2);
+        NetworkController.registerCheckoutStation("Station 3", cc3);
         
         SupervisionStation ss = new SupervisionStation();
+        AttendentController as = new AttendentController(ss);
         
-        GuiController gc = new GuiController(s, ss);
+        GuiController gc = new GuiController(as);
         // change below to gc.attendantLoginScreen to see the Attendant Station
         // change below to gc.startScreen to see the Customer Station
 //        gc.attendantLoginScreen();
-        gc.startScreen();
+        gc.startScreen(cc);
     }
 }
