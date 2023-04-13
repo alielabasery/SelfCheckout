@@ -357,15 +357,8 @@ public class AttendantPanel extends JPanel {
                 	}
             		
             		if (checkoutController != null) {
-            			if (order.get(indexOfItem).getCodeType() == CODETYPE.PLU) {
-            				PriceLookUpCode code = CodeUtils.stringPLUToPLU(order.get(indexOfItem).getProductCode());
-            				PLUCodedProduct product = (PLUCodedProduct) DatabaseController.getProduct(code, 'P');
-//            				checkoutController.removeItem(checkoutController.getItemRemover(), product, order.get(indexOfItem).getWeight());
-            			} else if (order.get(indexOfItem).getCodeType() == CODETYPE.BARCODE) {
-            				Barcode code = CodeUtils.stringBarcodeToBarcode(order.get(indexOfItem).getProductCode());
-            				BarcodedProduct product = (BarcodedProduct) DatabaseController.getProduct(code, 'B');
-//            				checkoutController.removeItem(checkoutController.getItemRemover(), product, order.get(indexOfItem).getWeight());
-            			}
+            			CartLineItem item = order.get(indexOfItem);
+        				checkoutController.removeItem(item);
             		}
             	}
             }
